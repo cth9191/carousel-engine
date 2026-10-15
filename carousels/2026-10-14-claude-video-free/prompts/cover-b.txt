@@ -1,0 +1,23 @@
+Create slide 1 of 10 for an Instagram carousel: the cover. Portrait 4:5 composition, intended final delivery at 1080 x 1350.
+
+Visual system: a hand-made "sketchnote" explainer page. Warm off-white cream paper ground (#FBF7EE) with a very faint paper grain, no grid. Headline in a heavy, tightly spaced black grotesk sans (like Inter Black), sentence case, with one key phrase in Claude orange (#D9551F). Body text in a clean regular grotesk, near-black. Margin notes in a small, neat handwritten marker script in dark grey with a short scribbled underline. Thin hand-drawn ink arrows with slightly wobbly lines. The most important phrase sits in a soft yellow highlighter pill (#FBE38E). Small square tag box top-left with the slide counter. Thin rule near the bottom with the footer centred under it. Generous whitespace; flat, crisp, print-like; no gradients, no 3D, no photo textures.
+
+References: Image 1 and Image 2 are the S11 style exemplars: use their layout vocabulary only (tag box, heavy two-tone headline, wobbly arrows, handwritten margin notes, yellow highlighter pill); do NOT copy their words, frames, diagrams or icons. No cartoon characters or mascots anywhere.
+
+Framing: every element sits inside a uniform empty margin of at least 8% of the width on the left and right and 9% of the height at top and bottom. Readable at phone-feed size; the footer as large as small body text.
+
+Composition, top to bottom:
+At the top left, the small square tag box holding the counter. At the top right, a handwritten margin note in two short lines with a wobbly arrow curving down to the player below it.
+In the upper half, the hero: a clean hand-drawn video player window, about 84% of the page width and centred, drawn with a thin ink outline, rounded outer corners and a very faint shadow; under its screen a slim control bar with a play triangle and a scrub line with a dot about one third along. Its screen area is ONE solid flat magenta #FF00FF rectangle with an aspect of 16:9: pure uniform magenta edge to edge, perfectly flat and frontal, no gradient, no texture, no glow, no text and no UI inside it, no tilt.
+In the lower half, the headline set very large across two or three lines, left aligned, heavy black grotesk: "Claude Code now makes videos." with "makes videos." in Claude orange. Under it, a yellow highlighter pill containing "(for free)" in the heavy grotesk. Under the pill, the kicker in clean regular grotesk on one or two lines.
+At the bottom, a thin rule with the footer centred under it.
+
+Visible copy, verbatim, each exactly once:
+Tag box: "01 / 10"
+Handwritten note at top right: "made by Claude Code, Claude's coding app · one prompt"
+Headline: "Claude Code now makes videos."
+Highlighter pill: "(for free)"
+Kicker: "No video editor. No AI video credits. Runs on your Claude plan."
+Footer: "CHASE AI"
+
+Keep layout instructions internal; do not render section names or reference labels. Every quoted string appears exactly once, verbatim. No extra readable captions, invented UI text, duplicate lines, watermarks, handles or logos. No purple, violet, pink or magenta anywhere except the player's screen rectangle.

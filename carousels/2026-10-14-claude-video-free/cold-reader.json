@@ -1,0 +1,88 @@
+{
+  "pass": true,
+  "ran_at": "2026-10-14T21:23:21.325Z",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "medium",
+  "codex_version": "codex-cli 0.162.1",
+  "codex_bin": "codex (npm global, on PATH)",
+  "flags": "exec --ignore-user-config -m gpt-6.1-sol -c model_reasoning_effort=\"medium\" -c service_tier=\"priority\" -c web_search=\"disabled\" --disable apps --disable image_generation -s read-only --skip-git-repo-check --ephemeral --json",
+  "wall_ms": {
+    "reader": 16719,
+    "judge": 10202,
+    "total": 26923
+  },
+  "usage": {
+    "reader": {
+      "input_tokens": 20463,
+      "cached_input_tokens": 0,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 578,
+      "reasoning_output_tokens": 213
+    },
+    "judge": {
+      "input_tokens": 20877,
+      "cached_input_tokens": 0,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 328,
+      "reasoning_output_tokens": 63
+    }
+  },
+  "notes": [],
+  "reader": {
+    "what": "Claude Code, Claude’s coding app, can turn a written request into an animated video by writing code that draws its pictures.",
+    "what_confidence": "clear",
+    "what_understood_on_slide": 1,
+    "why": "It lets me make animated explainers without buying video editing software or video generation credits, using my Claude plan.",
+    "why_confidence": "clear",
+    "first_step": "Comment ANIMATE to receive the free animate skill and installation steps.",
+    "first_step_confidence": "clear",
+    "undefined_terms": [
+      {
+        "term": "MP4",
+        "slide": 2,
+        "guess": "Guess: a type of video file.",
+        "impact": "minor"
+      },
+      {
+        "term": "riso",
+        "slide": 9,
+        "guess": "Guess: a visual style represented by one of the sample pictures, but I cannot tell what distinguishes it.",
+        "impact": "minor"
+      },
+      {
+        "term": "isometric",
+        "slide": 9,
+        "guess": "Guess: a style that makes drawings look three-dimensional from an angled view.",
+        "impact": "minor"
+      }
+    ],
+    "confusing_slides": [
+      {
+        "slide": 7,
+        "issue": "It tells me to paste a prompt now, but says installation comes on slide 9; I am unsure whether I should install the tools before trying this prompt."
+      }
+    ],
+    "summary": "Use Claude Code to make and check code-drawn animated videos with free tools; comment ANIMATE to get the saved instructions and setup steps."
+  },
+  "judge": {
+    "what_match": {
+      "match": "yes",
+      "reason": "The reader understood on slide 1 that Claude Code makes animated videos by writing drawing code, matching the mechanism clarified by slide 2’s “Not AI video. Code that draws.”"
+    },
+    "why_match": {
+      "match": "yes",
+      "reason": "The reader recovered the benefit of making animated videos without paying for video software or generation credits, as stated on slide 3."
+    },
+    "first_step_match": {
+      "match": "partial",
+      "reason": "The reader recovered slide 10’s “Comment ANIMATE” instruction but omitted slide 9’s next actions: paste the skill link into Claude Code to install it, then request a video."
+    },
+    "undefined_terms_blocking": [],
+    "verdict": "pass",
+    "fix_hints": [
+      "Slide 10: repeat the complete sequence: “Comment ANIMATE → paste the link into Claude Code to install → ask for your video.”",
+      "Slide 7: replace “Paste this into Claude Code” with “After installing on slide 9, paste this into Claude Code” to clarify the order."
+    ]
+  },
+  "reader_input": "--- SLIDE 1 of 10 ---\nHeadline: Claude Code now makes videos.\nText:\n- CHASE AI\n- (for free)\n- No video editor. No AI video credits. Runs on your Claude plan.\n- made by Claude Code, Claude's coding app · one prompt\n[A still from a finished video Claude Code made from one short prompt: the word CLAUDE in white letters orbiting an orange ring on black, inside a video player with a play button]\n\n--- SLIDE 2 of 10 ---\nHeadline: Not AI video. Code that draws.\nText:\n- WHAT IT IS\n- AI video tools guess every pixel. Claude Code writes code that draws each picture, then joins the pictures into an MP4 video.\n- drawn by hand\n- AI video\n- You describe it → Claude codes every picture → checks them → you get an MP4\n[A frame from a video Claude Code made: a circle-and-wave animation, with the words 'drawn by hand' and 'AI video' crossed out underneath]\n\n--- SLIDE 3 of 10 ---\nHeadline: The only bill: your Claude plan\nText:\n- WHAT IT COSTS\n- Video editing software | $0 · not needed\n- AI video generator credits | $0 · not needed\n- The 2 tools it runs on your computer | $0 · free and open source\n- Voice-over | optional\n- Your Claude plan | the one you already have\n- Total extra: $0\n- Free ≠ unlimited: videos count toward your Claude usage limits.\n[A receipt: video software $0, AI video credits $0, the 2 tools $0, voice-over optional, your Claude plan, total extra $0]\n\n--- SLIDE 4 of 10 ---\nHeadline: A video is 60 pictures a second\nText:\n- HOW IT WORKS\n- 1 · JavaScript: the code language web pages run on\n- 2 · Playwright: a hidden copy of Chrome that draws each frame\n- 3 · Frame: one picture. 60 make one second.\n- 4 · FFmpeg: a free tool that stitches frames into an MP4\n- Playwright and FFmpeg are both free and open source.\n[Diagram from the explainer Claude made about itself: a box of code, a browser drawing a circle-and-wave picture, a stack of frames, FFmpeg, a video play button; numbered 1-4 to match the labels]\n\n--- SLIDE 5 of 10 ---\nHeadline: It checks its own work\nText:\n- THE LOOP\n- This is the part that makes it click.\n- Claude can't watch a video. So it pulls a contact sheet: one image with many frames in a grid. It spots what's wrong, fixes the code, re-renders and repeats.\n- Before: label cut off\n- After: fixed\n- Shown in the explainer Claude made about itself.\n[Two contact sheets side by side from Claude's own explainer: before, frames flagged where a label is cut off; after, the same frames with checkmarks]\n\n--- SLIDE 6 of 10 ---\nHeadline: Ask for a storyboard first\nText:\n- PRO TIP\n- A full render can take 20+ minutes. So ask for a storyboard first: one page with a key frame for every scene. Approve it before the long build starts.\n- Storyboard: one key frame per scene\n- 7 scenes to approve before the full build\n[A real storyboard page: 7 numbered key frames of the planned video, each with its timing and sound, and a note to give each panel a thumbs up or down]\n\n--- SLIDE 7 of 10 ---\nHeadline: Paste this into Claude Code\nText:\n- THE PROMPT\n- PROMPT\n- Make a 30-second animated explainer of how [TOPIC] works, 16:9.\n- Build it in JavaScript on a canvas, with a soundtrack generated in code,\n- and render it to an MP4 with Playwright and FFmpeg.\n- Before you call it done, use FFmpeg to pull a contact sheet,\n- look at it, fix what's wrong, re-render, and repeat.\n- + add: “Storyboard it first and wait for my OK.”\n- [TOPIC] = your subject · canvas = a drawing area on a web page · 16:9 = widescreen\n- First time? Step 2 on slide 9 installs the free tools for you.\n[The prompt as a clean text card with one key line under it]\n\n--- SLIDE 8 of 10 ---\nHeadline: Three real videos it made\nText:\n- PROOF\n- 1 · An explainer of how it all works, made in one attempt\n- 2 · A 15-second motion-graphics reel from one short prompt\n- 3 · A history video in a reference video's style, new subject\n- Reference video\n- Claude Code's remake\n[Three real frames: a dark circle-and-wave explainer, a frame from the motion reel, and a side-by-side of an old-paper history video and Claude's remake in the same style]\n\n--- SLIDE 9 of 10 ---\nHeadline: Start here: 3 steps\nText:\n- START HERE\n- 1 · Comment ANIMATE. I'll send you my free animate skill: a saved set of steps Claude Code follows.\n- 2 · Paste its link into Claude Code. It installs the free tools for you.\n- 3 · Type:\n- /animate a 45-second history of the bicycle, cut paper\n- Styles: cut paper, crosshatch, riso, sketchbook, math, pixel, isometric, or your own look\n[A command card with the /animate line above a strip of 7 small sample frames, one per style]\n\n--- SLIDE 10 of 10 ---\nHeadline: Comment ANIMATE\nText:\n- GET THE SKILL\n- I'll send you my free animate skill + the install steps.\n[Text-only CTA: big Comment ANIMATE in a hand-drawn speech bubble, no evidence]"
+}

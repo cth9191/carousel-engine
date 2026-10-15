@@ -1,0 +1,5 @@
+Edit Image 1 (an Instagram carousel slide, portrait 4:5) and return the full edited slide.
+
+The only change: delete the three small square number tags (the pastel boxes containing just "1", "2" and "3") that sit above each row's text on the right. Keep the row texts themselves, which already start with "1 ·", "2 ·" and "3 ·". Fill the freed space with the plain cream background (the row texts may move up slightly to sit level with the top of their magenta rectangle).
+
+Keep everything else exactly as it is: the "08 / 10" tag box and "PROOF" eyebrow, the headline "Three real videos" in black and "it made" in orange, the three framed solid flat magenta #FF00FF rectangles on the left at exactly the same positions and sizes (pure uniform magenta, no texture), the two tiny handwritten labels "Reference video" and "Claude Code's remake" with their arrows above the third rectangle, the three row texts verbatim, the bottom rule and the "CHASE AI" footer. Same fonts, colours and sizes. Do not add any new text or elements.

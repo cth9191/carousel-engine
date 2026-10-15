@@ -1,0 +1,5 @@
+Edit Image 1 (an Instagram carousel slide, portrait 4:5) and return the full edited slide.
+
+The only change: remove the small handwritten note in the top-right corner (the three short lines starting "No extra fees." with its little scribble underline). Fill that area with the same plain cream paper background.
+
+Keep everything else exactly as it is, pixel for pixel where possible: the "03 / 10" tag box and "WHAT IT COSTS" eyebrow, the two-line headline "The only bill:" in black and "your Claude plan" in orange, the receipt card with all five rows, dotted leaders, the dashed rule and "Total extra: $0", the zigzag bottom edge, the yellow highlighter footnote "Free ≠ unlimited: videos count toward your Claude usage limits.", the bottom rule and the "CHASE AI" footer. Same layout, same sizes, same colours, same fonts. Do not add any new text or elements.

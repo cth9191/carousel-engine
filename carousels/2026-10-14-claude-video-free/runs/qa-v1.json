@@ -1,0 +1,369 @@
+[
+ {
+  "n": 1,
+  "verdict": "minor",
+  "phone_readable": true,
+  "notes": "Every intended string is present once and verbatim: '01 / 10'; the note 'made by Claude Code, / Claude's coding app · one prompt' (curly apostrophe, OK); 'Claude Code now' in black with 'makes videos.' in orange; '(for free)' in the yellow pill; the two-line kicker; 'CHASE AI'. No invented text: the player has only icons, and the zigzag under the note is decoration. Keying is clean: a pixel scan found 0 magenta pixels around the screen, the rounded screen corners are clean, there is no webcam bubble or face, the mirror-filled tick marks in the bottom-right look natural, and boosting the dark area shows no seam. The HUD timecode '00:00:13:39' from the source is cropped out. The cyan/red fringe on the letters belongs to the reel itself and is not a keying error. Truth: the frame is the low-effort one-prompt reel at 5:05 with C-L-A-U-D-E orbiting the orange ring, which matches the note. At 360 px wide the headline, pill and kicker read easily; only the handwritten note is small.",
+  "defects": [
+   {
+    "severity": "minor",
+    "kind": "layout/readability",
+    "where": "top-right handwritten note",
+    "detail": "The note sits 41 px (3.0%) from the top edge and 52 px (4.8%) from the right edge ('prompt' ends at x=1027), which is under the 5% floor and well under the prompt's 8%/9% framing. At 360 px wide its x-height is only about 5-6 px. This note is also where the glossary defines Claude Code ('Claude's coding app'), so it matters for cold readers.",
+    "fix": "Cover plate prompt: 'the handwritten margin note sits at least 9% from the top and right edges, about 1.3x larger, set over two lines that end no further right than the player's right edge.' If the plate stays locked, patch the note in post: shift it about 30 px left and 25 px down, then scale it to 1.2x."
+   },
+   {
+    "severity": "minor",
+    "kind": "composite framing",
+    "where": "player screen (zone M1)",
+    "detail": "The plate's screen is 2.08:1, not 16:9, so the cover fit cut 31.5% of the shot's height. The orange ring now sits only about 8 px below the top of the screen and about 10 px above the bottom, so the hero looks cramped and nearly clipped.",
+    "fix": "In runs/composite/01.json, grow the s01 focus box vertically, e.g. focus [400,40,1010,810] instead of [470,100,870,690]. That keeps about 30 output px of black headroom above and below the ring, and the 1792 px shot width covers it at 2.075:1. Re-check the mirror-filled bottom-right ticks after the wider crop. Alternatively, re-plate with an exact 16:9 screen."
+   },
+   {
+    "severity": "minor",
+    "kind": "layout",
+    "where": "footer 'CHASE AI'",
+    "detail": "The footer text ends at y=1308, which leaves 42 px (3.1%) below it, under the 5% floor. This chrome is the same across the deck.",
+    "fix": "Move the rule and footer up about 30 px (rule at about y=1240, footer baseline at about y=1280), or say in the plate prompt: 'footer at least 6% above the bottom edge'."
+   }
+  ]
+ },
+ {
+  "n": 2,
+  "verdict": "fail",
+  "phone_readable": true,
+  "notes": "Every intended string is present verbatim and the right number of times: '02 / 10', 'WHAT IT IS', 'Not AI video.' in black and 'Code that draws.' in orange, the two-line body, and four strip boxes 'You describe it' → 'Claude codes every picture' → 'checks them' → 'you get an MP4' with drawn arrows, plus 'CHASE AI'. The captured strings 'drawn by hand' and 'AI video' are both fully struck through inside the real frame. 'sin θ' is also real frame text. There is no invented, duplicated or garbled text. Keying: the only magenta-like pixels (1,742) are the real pink sine curve and the 'sin θ' label at x 483-773, y 658-801, so there is no fringe. There is no webcam bubble or face, and the rebuilt bottom-right corner of the gold box is seamless. The edge-colour pillarbox bars have no visible seam where the padding meets the shot (x≈221). One faint 1 px grey dither on the screen's right inner edge (x≈982) is invisible at normal size. Truth: the frame is the 1:08 explainer beat with both labels crossed out, which matches the body and storyboard. The one major issue is a one-parameter recomposite: the frame is cropped so tight that the gold box's top line merges into the top of the screen, and the descender of the 'y' in 'by' touches the bottom. At 360 px the headline, body and strip read fine, but the struck-out words are tiny.",
+  "defects": [
+   {
+    "severity": "major",
+    "kind": "composite crop",
+    "where": "video frame zone M1 (middle), top and bottom edges",
+    "detail": "The fit's focus box starts at shot y=24, exactly on the 3B1B box's gold top border. In the final the gold line sits flush with the top of the dark screen (y≈543) with zero black above it. At the bottom the crop ends at shot y=802, and the descender of the 'y' in 'drawn by hand' ends at y=801. In the final it touches the screen's bottom edge (text ends at y≈965, cream starts at y=966). The frame reads as clipped top and bottom, while the sides carry about 124 px of empty black each.",
+    "fix": "In runs/composite/02.json, set the s02 focus to the whole shot [0,0,1172,826] or add about 6% edge-colour padding above and below. The fit already pads the sides with the dark edge colour, so vertical padding is just as seamless. Target: at least 20 output px of black above the gold line and at least 20 px below the struck-out words."
+   },
+   {
+    "severity": "minor",
+    "kind": "composite framing/readability",
+    "where": "video frame zone M1",
+    "detail": "The zone is 2.09:1 but the shot is 1.42:1, so roughly 28% of the screen width is dead black padding. The real content, including the slide's punchline words 'drawn by hand' and 'AI video', is therefore small: the serif x-height is about 6-7 px at phone size and the words are barely legible.",
+    "fix": "Re-plate slide 2 with the zone at about 3:2 (prompt: 'a framed keying zone about 72% of the page width, aspect 3:2, centred') so the shot fills it with little or no pillarbox. Or recrop the source (crop_in_source) tighter on the box and the words so they render about 25% larger."
+   },
+   {
+    "severity": "minor",
+    "kind": "layout/margins",
+    "where": "headline line 2 'Code that draws.'",
+    "detail": "The orange line runs to x=1024, leaving 55 px (5.1%) on the right against about 67 px on the left. That is just over the 5% floor, under the prompt's 8%, and visibly heavier on the right than the body and frame below it.",
+    "fix": "Plate prompt: 'headline set no wider than 84% of the page width, left-aligned with the body'. Or scale the headline about 6% smaller so the period lands near x≈1000, in line with the frame's right edge (1003)."
+   },
+   {
+    "severity": "minor",
+    "kind": "spacing",
+    "where": "between the strip and the footer rule; footer",
+    "detail": "The vertical rhythm is uneven. The gaps are about 30 px (headline to body), about 40 px (body to frame) and about 45 px (frame to strip), but about 105 px of empty band sits between the strip (bottom y≈1162) and the rule (y≈1268). The footer 'CHASE AI' sits 42 px (3.1%) from the bottom edge, under the 5% floor.",
+    "fix": "Use the spare band. Enlarge the frame zone and move the strip down about 40 px, then lift the rule and footer about 30 px so the footer clears 5% (about 68 px) at the bottom."
+   }
+  ]
+ },
+ {
+  "n": 3,
+  "verdict": "minor",
+  "phone_readable": true,
+  "notes": "No zones on this slide. final/slide-03.png is plates/slide-03.v2.png (the edit that removed the 'No extra fees...' margin note) downscaled to 1080x1350. All 16 storyboard strings are present and verbatim, with the right counts: '$0 · not needed' appears twice as intended, and the ≠ in 'Free ≠ unlimited' renders correctly. There is no invented text, no duplicated line and no garbled glyph. The edited top-right area is clean: with contrast boosted it shows only paper grain, with no ghost of the removed note or its scribble. The headline grew slightly in the edit but stays inside the margins (x 68-972). No magenta pixels anywhere. Truth: the receipt matches F3. 'Voice-over: optional' carries no $ amount, so 'Total extra: $0' stays honest (ElevenLabs costs money, but it is optional), and the footnote sets the limit on 'free'. At 360 px wide the headline, total and footnote read easily. The receipt rows are the smallest text on the slide but still legible.",
+  "defects": [
+   {
+    "severity": "minor",
+    "kind": "edge-margin",
+    "where": "footer: 'CHASE AI' (glyph bottom at y≈1307)",
+    "detail": "The bottom margin is 43 px (3.2%), under the 5% threshold. The prompt asked for 9%. The same footer position is used on every slide (02-05 all end at y≈1305-1308) and comes from the locked cover, so this is a deck-wide convention, not a slide-3 regression.",
+    "fix": "Fix it deck-wide or not at all. Either accept it as locked chrome, or post-process every final: move the rule and footer up about 25 px (rule to y≈1243, text bottom to y≈1282, which is 5% or more). Do not fix slide 3 alone, or the footer will jump between slides."
+   },
+   {
+    "severity": "minor",
+    "kind": "readability",
+    "where": "receipt rows 1-5 (both columns)",
+    "detail": "Row text has a cap height of about 22 px (1.6% of slide height) and is set in a casual handwriting face, not the clean grotesk body used on slide 4's boxes (cap height about 28 px). At 360 px wide the x-height is about 4-5 px, legible but the weakest text on the slide. 'The 2 tools it runs on your computer' is the hardest row to read.",
+    "fix": "Optional polish if the plate is regenerated. Add to the slide-03 prompt: 'Receipt item rows in the clean regular grotesk, cap height at least 1/50 of the slide height (about 27 px at 1080 wide); shrink the empty band under \"Total extra: $0\" to make room.' The space between the total row and the zigzag edge (about 70 px) can absorb the larger rows."
+   },
+   {
+    "severity": "minor",
+    "kind": "spacing",
+    "where": "receipt right column, rows 3 and 5",
+    "detail": "Because of the 1° tilt, the value column drifts right (x 595→606 in the crop). The longest values, '$0 · free and open source' and 'the one you already have', end about 20-25 px from the receipt's right border, while the left column has about 45 px of padding. It looks slightly unbalanced and crowded on the right, but it is not broken.",
+    "fix": "Only if regenerating: 'right-align the value column with at least the same inner padding as the left column'. Or shorten row 3's value to '$0 · free, open source'. That is a copy change, so update storyboard.json to match."
+   }
+  ]
+ },
+ {
+  "n": 4,
+  "verdict": "fail",
+  "phone_readable": true,
+  "notes": "All 10 storyboard strings are present and verbatim, with no invented text outside the composited frame. '1 · ' through '4 · ' render as a large numeral plus a bullet dot, an acceptable stylisation of the middle dot. The pink box reads as blush, not magenta. The only magenta-like pixels on the slide are the real 'sin θ' curve inside the frame. Zone M1 is fully covered (leftover 0, fill 0.9997). The horizontal letterbox padding is flat (13,12,15) and matches the frame ground with no seam. The webcam bubble area of the source is scrubbed cleanly: no face, no ghost. The 'Both tools...' note has arrows pointing correctly at boxes 3 and 4. Headline and boxes read well at 360 px wide. The diagram's inner labels ('headless browser', 'frames = 216', the code) are about 5 px tall at phone size and illegible. They are decorative there, and the boxes carry the meaning. Root cause of the small, cropped diagram: the plate drew the zone at 3.33:1, not the 2:1 the prompt asked for. Cover-fit then cut 7.3% of the shot's height to fill it. Both majors can be fixed at the composite step without regenerating the plate.",
+  "defects": [
+   {
+    "severity": "major",
+    "kind": "cropping",
+    "where": "zone M1 (diagram panel): top edge at the code box and browser window; bottom edge at 'sound(t)'",
+    "detail": "The focus box [24,24,1794,614] cuts the shot to y 24..638. The green border of the code box and the title bar of the headless-browser window now sit flush on the panel's top edge (y 399-400), so both look sliced off. The bottoms of the '(' and ')' in 'sound(t)' are clipped by the panel's bottom edge (y≈671). At full size, and on IG pinch-zoom, this reads as a cut-off capture.",
+    "fix": "Re-run the composite with the whole shot as the focus: --shot M1=shots/s04-pipeline.png@0,0,1842,662, or set 'focus': [0,0,1842,662] in shots.spec.json. Cover-fit then pads left and right with the flat edge colour (already seamless) and loses no height (lost_h 0). For real breathing room, also re-extract the shot with about 20 px more ground above and below (crop_in_source [34,284,1842,702]), if the source ground there is flat dark. Or regenerate the plate zone at the shot's own aspect: 'aspect about 2.8:1'."
+   },
+   {
+    "severity": "major",
+    "kind": "truth/clarity",
+    "where": "diagram panel vs the 2x2 boxes",
+    "detail": "The storyboard evidence calls for the diagram to be 'numbered 1-4 to match the labels'. It has no numbers. The boxes also run in an order that contradicts the diagram's flow. The diagram runs code (box 1) → headless browser (box 3) → frames (box 2) → FFmpeg (box 4), but the boxes read 1→2→3→4 as a sequence. Nothing ties 'Playwright' to the frame's 'headless browser' label. A cold reader can work out the mapping, but the model slide's job is to make it explicit.",
+    "fix": "Composite-only option: render four small orange (#D9551F) numbered circle badges in HTML (about 34 px, cream numerals) and paste them onto the panel after the shot. Put 1 at the code box's top-left corner, 3 at the browser window's top-left, 2 at the frames stack's top-left, and 4 at the FFmpeg box's top-left. Keep them on the dark ground, not over the code text. Regen option: reorder the boxes to flow order (1 JavaScript · 2 Playwright · 3 Frame · 4 FFmpeg, renumbering the strings) and move the handwritten note so its arrows point at boxes 2 and 4. That is a copy change to storyboard.json."
+   },
+   {
+    "severity": "minor",
+    "kind": "keying-fringe",
+    "where": "zone M1 outer ring, 1-3 px outside the panel (top y≈397-398, bottom y≈672-675)",
+    "detail": "A faint hairline of magenta spill or halo runs along the panel. The top has a pinkish-grey row (175,168,176) plus a pure-white (255,255,255) 1 px line. The bottom has 2 px of pinkish white (255,250,255)/(254,246,253) against cream (253,253,243). It is barely visible at full size and invisible on a phone.",
+    "fix": "Re-composite with --dilate 3 (or 4), or add a despill pass on the ring just outside the dilated mask: pull pixels with r-g>5 and b-g>5 toward the sampled cream ground."
+   },
+   {
+    "severity": "minor",
+    "kind": "readability",
+    "where": "zone M1 diagram labels",
+    "detail": "The panel is 912x273, about 25% of the slide's height. At phone size the 'headless browser' and 'frames = 216' labels and the code are about 5 px tall and unreadable. Only the FFmpeg box and play button are recognisable, so the frame proves the pipeline only on zoom.",
+    "fix": "If the plate is regenerated, set the zone near the shot's aspect (2.8:1, i.e. about 912x326). The empty band between the 'Both tools...' note (y≈1185) and the footer rule (y≈1268) has room to absorb the extra height. Prompt wording: 'a wide framed keying zone across about 84% of the page width with an aspect of 2.8:1'."
+   },
+   {
+    "severity": "minor",
+    "kind": "edge-margin",
+    "where": "footer: 'CHASE AI' (glyph bottom at y≈1307)",
+    "detail": "The bottom margin is 3.2%, under 5%. This is the same deck-wide footer convention as slide 3, carried over from the locked cover.",
+    "fix": "Same as slide 3: move the rule and footer up about 25 px on every final, or accept it as locked chrome. Never fix one slide on its own."
+   }
+  ]
+ },
+ {
+  "n": 5,
+  "verdict": "minor",
+  "phone_readable": true,
+  "defects": [
+   {
+    "severity": "major",
+    "kind": "evidence-legibility / layout",
+    "where": "zones M1/M2 (before/after panels, y 652-979) + empty band y 1070-1265",
+    "detail": "The proof is too small to read in the feed. Each panel is a 2x2 crop of the 12-frame sheet (lost_w 0.635), so each frame is only about 195 px wide. At 360 px wide, the clipped 'si' labels and the full 'sin θ' labels are about 3 px tall. Only tiny orange squares (about 7 px) and white checkmarks tell the two panels apart, so you can't see that a label was cut off; you only get it from the text label. Meanwhile about 190 px of empty cream sits under the caption (y 1070-1265). The other gaps on the slide are 60-90 px, so the bottom looks unfinished.",
+    "fix": "Use the dead space for bigger frames. Regenerate the plate with two side-by-side portrait magenta zones (about 400x555 px, aspect about 0.72, running from y 650 to about 1205) and move the caption to about y 1220. Set the focus for both s05-before and s05-after to the right column only, [995,245,330,460], which holds t=8.5 and t=18. The orange flag box ends at x 1315 and the checkmarks fit too. Frames then render about 2x larger. Alternative: stack the panels full-width and focus on the bottom row [667,470,656,248] (t=15, t=18)."
+   },
+   {
+    "severity": "minor",
+    "kind": "margin",
+    "where": "top-right note, headline 'work', body line 1 'sheet:'",
+    "detail": "Right-edge ink sits at 48 px for the note (4.4%), 52 px for the headline (4.8%) and 51 px for the body (4.7%). All are under the 5% margin and lopsided against the 59-70 px left margin.",
+    "fix": "Add 'keep all text at least 64 px from every edge' to the plate prompt. Or pad the final about 16 px on each side with the flat cream ground (final pad mode instead of 'none') so the type pulls in from the right edge."
+   },
+   {
+    "severity": "minor",
+    "kind": "invented-mark",
+    "where": "under the top-right note 'This is the part that makes it click.'",
+    "detail": "The zigzag underline under the note looks like a stray 'Z' or '2' glyph, not a decorative stroke.",
+    "fix": "Prompt edit: 'no underline or squiggle under the handwritten note'. Or swap it for a small curved arrow pointing down at the panels."
+   }
+  ],
+  "notes": "Text matches the storyboard word for word, each string once: '05 / 10', 'THE LOOP', the note 'This is the part that makes it click.', the headline 'It checks its own work' (with 'its own work' in orange), the full body, 'Before: label cut off' (red X), 'After: fixed' (green check), 'Shown in the explainer Claude made about itself.' and 'CHASE AI'. Curly apostrophes in can’t/what’s are fine. No invented text outside the composited frames; the t= labels are inside the real shot. Keying is clean: no magenta fringe on either panel (the pink pixels in the ring scan are the sheet's own sine waves and grid), no webcam bubble, and both panels use the same crop, so they line up exactly. Truth is OK: Before shows t=8.5, 15 and 18 flagged with orange boxes and clipped 'si'/'sir' labels. After shows the same frames with full 'sin θ' labels and checkmarks; t=7 was never flagged, so it correctly has no check. The caption marks it as a depiction from the explainer, which matches the transcript ('Claude can't watch the video, but it can look at the frames'). At phone size the headline, body and panel labels read fine. The note and caption are small (about 8 px x-height) but legible."
+ },
+ {
+  "n": 6,
+  "verdict": "minor",
+  "phone_readable": true,
+  "defects": [
+   {
+    "severity": "major",
+    "kind": "crop / clipping",
+    "where": "zone M1: top edge (capture title) and bottom edge (scene 6 caption)",
+    "detail": "The zone (aspect 2.61) is wider than the shot (aspect 2.27, 1437x634), so cover-fit cut 28 px off the top of the shot and 36 px off the bottom (lost_h 0.101). The focus starts at y=28, but the title's ink starts at y=26. Result: the ascenders of 'A video is a function: storyboard' are shaved and the title sits flush on the panel's top edge, which looks cropped by mistake. '→ silence, then back to the start' also ends about 2 px from the bottom edge.",
+    "fix": "Set the s06-storyboard focus to the full shot, [0,0,1437,634], and use fit 'contain'. The side padding then fills with the card's flat #291F19, which is seamless. Or regenerate the plate with a zone aspect of about 2.27 (for example 898x396). There is room: the callout can move down about 50 px, and the gap above the footer rule is 96 px."
+   },
+   {
+    "severity": "minor",
+    "kind": "keying-fringe",
+    "where": "white matte just outside the composited card: top, bottom and right edges",
+    "detail": "A faint pink hairline runs on the matte (for example RGB 250,237,250 at x=991, y 858-887; about 2,000 tinted pixels along the top and bottom). It is invisible at feed size but measurable.",
+    "fix": "Raise dilate from 2 to 3-4 and add a despill on matte pixels within 3 px of the zone (set G to at least min(R,B))."
+   },
+   {
+    "severity": "minor",
+    "kind": "seam",
+    "where": "card right edge y≈885-1030, bottom edge x≈633-647",
+    "detail": "Where the webcam bubble was scrubbed (flat #291F19 fill, squared corner), the card's edge changes from the original anti-aliased profile to a 1 px darker line (#100803). There is also a 1-2 px notch on the bottom edge where the fill meets the original. Only visible when zoomed.",
+    "fix": "In shots, crop the card inset 4 px instead of 2 so the card's own border isn't in the shot and the plate matte draws one even edge. Or fill the scrub using the card's measured edge pixels."
+   },
+   {
+    "severity": "minor",
+    "kind": "callout-aim",
+    "where": "bottom-right callout arrow",
+    "detail": "The arrow for '7 scenes to approve before the full build' ends at about x 650 under the empty dark area to the right of scenes 6-7. It doesn't point at any scene.",
+    "fix": "Prompt edit: 'arrow curves up and ends under scenes 6-7 at the bottom-left of the storyboard panel'. Or move the callout under the left half of the panel."
+   }
+  ],
+  "notes": "Text matches the storyboard word for word, each string once: '06 / 10', 'PRO TIP', the headline 'Ask for a / storyboard first' (with 'storyboard first' in orange), the body 'A full render can take 20+ minutes. So ask for a storyboard first: one page with a key frame for every scene. Approve it before the long build starts.', the tab 'Storyboard: one key frame per scene', the callout '7 scenes to approve / before the full build' and 'CHASE AI'. No invented text outside the capture, and no garbled glyphs. Margins are fine (at least 6.2% on every band). No webcam bubble is visible, and the side letterbox padding matches the card colour. Truth is OK: the capture is the real 6:20 storyboard ('46.45s · 1920×1080 · 120 BPM · 7 beats. Thumbs up or down by panel number.') with exactly 7 numbered key frames, which backs '7 scenes to approve'. The transcript backs both the storyboard-first advice and 'it takes 20 minutes' (low ~20 min, high ~30 min), so '20+ minutes' is fair. At phone size the headline, body, tab and callout are readable. The storyboard's inner text can't be read, but the 7-thumbnail grid still shows what a storyboard is."
+ },
+ {
+  "n": 7,
+  "verdict": "minor",
+  "phone_readable": true,
+  "defects": [
+   {
+    "severity": "minor",
+    "kind": "keying-fringe",
+    "where": "Top edge of the prompt card, right of the PROMPT tab (final x≈235-985, y≈323-324)",
+    "detail": "A broken 2 px lavender/grey line runs along the card's top edge. Up close it looks like the tops of ghost text. Its source is plate row 336 (RGB ≈224,213,230), the plate's anti-aliased magenta edge, which the 2 px dilate missed in patches. The bottom, left and right edges are clean.",
+    "fix": "Re-run the slide 07 composite with M1 dilate 4 (it is 2 now), or place the card 3 plate-px higher (placed y 334, not 337). Alternatively, recolour any pixel within 4 px outside the zone where b-g>5 with the mat colour sampled at plate row 335 (≈255,255,253)."
+   },
+   {
+    "severity": "minor",
+    "kind": "edge-margin",
+    "where": "Headline 'Paste this into Claude Code'",
+    "detail": "The ink spans x=56 to 1028, so the right margin is 51 px (4.7%). That is under the 5% floor, and the headline sits slightly right of centre.",
+    "fix": "Add to the plate prompt: 'headline max width 960 px, centred, at least 60 px clear on both sides'. Or scale the headline down about 4% in the plate before compositing."
+   },
+   {
+    "severity": "minor",
+    "kind": "line-break",
+    "where": "Prompt card, paragraph 3",
+    "detail": "'re-render' breaks across two lines at its hyphen ('...fix what's wrong, re-' / 'render, and repeat.'). This is the one slide people retype from, so the break is a small snag.",
+    "fix": "In cards/prompt-card.html, wrap the word in <span style=\"white-space:nowrap\">re-render,</span>. Re-render cards/prompt-card-zone.png, then re-composite."
+   },
+   {
+    "severity": "minor",
+    "kind": "panel-seam",
+    "where": "Prompt card body vs the plate's inner mat (visible on the right and bottom edges)",
+    "detail": "The card background (251,247,238) is a little darker and warmer than the plate's mat (252,252,243 to 254,255,251). The card reads as a second inset rectangle with a whiter hairline around it, not as one paper panel.",
+    "fix": "Set the card body background in prompt-card.html to the sampled mat colour (about #FCFBF3), or render the card body transparent so the plate paper shows through."
+   },
+   {
+    "severity": "minor",
+    "kind": "stray-mark",
+    "where": "Under the handwritten note, centre (x≈505-635, y≈1160-1185)",
+    "detail": "The short decorative zigzag under 'slide 9 installs' is drawn like a scribbled 'Z'. At phone size it can read as a stray glyph rather than an underline.",
+    "fix": "Add to the plate prompt: 'no decorative squiggles under the handwritten note'. Or ask for a single straight underline under 'Step 2 on slide 9'."
+   }
+  ],
+  "notes": "All strings are present and verbatim: 07 / 10, THE PROMPT, the headline, PROMPT, all five prompt-card lines (reflowed into 3 paragraphs with identical words, straight apostrophe in what's), the + add line with curly quotes, the key line, the handwritten footer and CHASE AI. No invented text. The magenta scan of the whole slide is clean apart from the top-edge fringe. At 360 px the headline, key line and handwritten note read easily. The mono prompt text is about 9 px, small but legible (fine for a save-and-retype slide); a slightly bigger card font would help, since about 90 px on the right of the card is unused. Optional polish: the key line breaks inside a definition ('a drawing area / on a web page'); breaking after 'your subject ·' keeps each definition whole. Truth: the prompt matches the transcript's Level 2 prompt structure; the voice-MP3 line was trimmed, as logged."
+ },
+ {
+  "n": 8,
+  "verdict": "minor",
+  "phone_readable": true,
+  "defects": [
+   {
+    "severity": "minor",
+    "kind": "cut-off-text",
+    "where": "Zone 2 (row 2 reel panel), top-left and top-right corners",
+    "detail": "The bottom halves of the reel's on-screen overlay text ('04 — SPACE▌' at left, '● 00:00:08:36' at right) are clipped by the zone top. They show as grey glyph stubs on the navy. The crop starts at shot y=60, which cuts through those glyphs.",
+    "fix": "In the slide 08 composite, set M2 focus to [600,76,800,930] so the crop runs y 76 to 1006 and drops the overlay row completely. Or fill the top ~70 px of shots/s08-reel.png with the navy edge colour before compositing."
+   },
+   {
+    "severity": "minor",
+    "kind": "letterbox",
+    "where": "Zone 3 (row 3 reference-vs-remake panel)",
+    "detail": "Edge-colour padding (crop x -270 to 1725) adds black bars of about 77 px on each side. Each page is only about 150 px wide at 1080, about 50 px on a phone, so the style match is barely readable. This is the row that most needs to be legible.",
+    "fix": "Set M3 focus to [12,8,1159,620]: it keeps the chapter header, the emblem and the YET ... headline and drops the bottom timelines. The pages grow about 1.3x and the bars shrink to about 25 px. Better still, re-plate row 3 as two portrait zones and composite shots/s08-remake-ref.png and shots/s08-remake-ours.png, which already exist for this."
+   },
+   {
+    "severity": "minor",
+    "kind": "label-arrow",
+    "where": "Handwritten 'Claude Code's remake' arrow above zone 3",
+    "detail": "The arrow tip lands at x≈497, over the black bar to the right of the remake page (the page spans x≈337-487), not on the page itself. The 'Reference video' arrow does land on the left page.",
+    "fix": "The M3 refocus above should move the page under the arrow. Otherwise, regenerate the plate with 'arrow tips point at the horizontal centre of the left half and the right half of the bottom panel'."
+   },
+   {
+    "severity": "minor",
+    "kind": "edge-crop",
+    "where": "Zone 1 (row 1 explainer panel), left and right edges",
+    "detail": "Both yellow frame boxes sit flush against the zone's left and right edges. The focus box (24 to 1595) drops the source's 24 px dark margin (lost_w 3%), so the frames look clipped.",
+    "fix": "Set M1 focus to [0,0,1620,546] to keep the native dark margin. The scale cost is negligible."
+   },
+   {
+    "severity": "minor",
+    "kind": "attribution",
+    "where": "Zone 3, left page ('Reference video')",
+    "detail": "Left page is a third-party reference video; credit it in the caption.",
+    "fix": "Add a line to the post caption that credits the reference video in row 3."
+   }
+  ],
+  "notes": "Text: all strings are present and verbatim: 08 / 10, PROOF, 'Three real videos it made' ('it made' in orange), rows 1-3, 'Reference video', 'Claude Code's remake' (curly apostrophes, fine). No invented text outside the real frames. Keying is clean: no magenta on any zone border, and the only pink cast (about 254,248,254 on the white mats) is in the plate itself and imperceptible. No webcam bubble or face anywhere; the rebuilt right-label bracket in zone 1 and the bubble patch on the remake's right margin in zone 3 are seamless. Truth: row 1 is the 1:22 frame of the one-shot explainer, 'frame(6.99) = frame(6.99)' (transcript: 'this was a one-shot attempt'). Row 2 is the 5:00 frame of the low-effort reel from the '15-second motion graphics' prompt; its timecode 00:00:08:36 is consistent. Row 3 is correct: the left page is the reference video, the right page is Claude's history-of-electricity remake (its TODAY chapter on submarine cables), and both labels point to the right halves. Minor observation: row 1 repeats the circle-and-wave look already shown on slides 2 and 4, so the 'three videos' feel less varied; a different explainer beat would add variety. Phone readability at 360 px: headline and row text are fine, the handwritten labels are small (about 7 px) but legible, and the row 3 pages are tiny (see the letterbox defect)."
+ },
+ {
+  "n": 9,
+  "verdict": "fail",
+  "phone_readable": true,
+  "notes": "All 9 storyboard strings are present, spelled exactly as written, and each appears once: '09 / 10', 'START HERE', 'Start here: 3 steps' (with '3 steps' in orange), steps 1-3, the '/animate a 45-second history of the bicycle, cut paper' command, the 'Styles: ...' caption and 'CHASE AI'. The '·' separators come out as round bullets after the big numerals, which reads fine. Apostrophes are curly, which is fine. No text was invented outside the composited strip. The words inside the tiles ('1974', 'AI winter...', 'dawn', 'sketch it', 'your look / show it a video...') come from the real README styles.png. The truth check passes. The tile order matches the caption order (cut-paper, crosshatch, riso, sketchbook, math, pixel, isometric, custom 'your look'), checked against shots/s09-styles.png. The step 2 install claim is backed by dossier F6 and the styles list by F9. Keying is clean: there is no magenta fringe around zone M1, and the 71 pink-ish pixels are the pink shirt inside the riso tile. There is no webcam bubble or face. Phone check at 360 px: the headline and step 1/2 text read clearly. The command and caption only just read (see the minor defect). Run log: runs/composite/09.json warns that M1 'focus box needs more than the whole shot at this aspect; padded with its edge colour'. The plate prompt asked for a 1.6:1 zone, but the model drew it at 2.94:1.",
+  "defects": [
+   {
+    "severity": "major",
+    "kind": "keying/fill (letterbox)",
+    "where": "Zone M1 (evidence panel, y≈814-1124)",
+    "detail": "Zone M1 is 2.94:1 but the shot s09-styles-row-cream.png is 4.73:1. The compositor filled the gap above and below the tiles with the shot's edge colour, RGB(185,188,171), a grey-green that is not in the palette. That leaves two flat bands of about 58 px each, roughly 37% of the panel, while the tiles run flush to the left and right edges. It looks like an unfilled placeholder sitting inside the cream frame.",
+    "fix": "Re-run the composite for M1 with the letterbox pad set to the plate's paper colour (RGB 252,251,242 / #FCFBF2) instead of the edge colour. Better still, build the shot at 2.94:1: cream top and bottom margins, about 16 px cream side margins, tiles centred. Alternative: regenerate the plate with the zone described as 'a wide, short framed keying zone about 84% of the page width and about 15% of the page height (aspect about 4.7:1)', and give the freed ~110 px to a larger code box and caption."
+   },
+   {
+    "severity": "major",
+    "kind": "wrong emphasis / glyph style",
+    "where": "Step 1 box (green), line 2",
+    "detail": "Only 'Claude' is set in italics: '...a saved set of steps *Claude* Code follows.' The storyboard asks for no emphasis, and step 2 sets 'Claude Code' upright. A half-italic product name reads as a rendering glitch and puts stress on 'Claude' for no reason.",
+    "fix": "Patch in post: re-set 'Claude' in the same upright regular grotesk, using step 2's 'Claude Code' as the glyph source. Or run an edit pass: 'In step 1, set the words \"Claude Code\" in upright regular weight exactly like step 2; no italic anywhere on the slide.'"
+   },
+   {
+    "severity": "minor",
+    "kind": "phone readability",
+    "where": "Step 3 code box and the 'Styles:' caption line",
+    "detail": "The monospace command is about 22 px at 1080 width, roughly 7 px on a 360 px phone. The caption is about 24 px, roughly 8 px on phone. Both are below the prompt's own floor of 1/45 of the slide height (about 30 px). The command is the one line readers are meant to copy.",
+    "fix": "If the plate is regenerated, ask for the code box text at 30 px or more and let it wrap to two lines ('/animate a 45-second history' / 'of the bicycle, cut paper'). Set the caption at body size too. Shrinking zone M1 to about 4.7:1 frees the space."
+   },
+   {
+    "severity": "minor",
+    "kind": "evidence legibility",
+    "where": "Zone M1, tile 7 (isometric)",
+    "detail": "The isometric frame is almost entirely white with fine grey line art. At phone size it reads as an empty slot. Once the letterbox is changed to cream, it will blend into the paper even more.",
+    "fix": "In the shot builder, give every tile a 1-2 px ink hairline border, or crop the isometric tile tighter around the laptop drawing so the line art fills more of the tile."
+   },
+   {
+    "severity": "minor",
+    "kind": "layout (orphan)",
+    "where": "Step 1 box, line 3",
+    "detail": "Step 1 wraps so the last line is the single word 'follows.' That makes the box ragged and taller than it needs to be.",
+    "fix": "Ask the edit pass or text patch for balanced breaks: 'Comment ANIMATE. I'll send you my free / animate skill: a saved set of / steps Claude Code follows.'"
+   },
+   {
+    "severity": "minor",
+    "kind": "copy redundancy / consistency",
+    "where": "Top eyebrow 'START HERE'",
+    "detail": "The eyebrow repeats the headline 'Start here:' word for word. The storyboard intends this, but it wastes the eyebrow. The eyebrow and caption also render navy, while the prompt says 'small grey' and slide 10's eyebrow is slate grey, so two adjacent slides don't match.",
+    "fix": "Change the storyboard eyebrow to 'YOUR FIRST VIDEO' (or similar) and patch it in the same slate grey as slide 10's 'GET THE SKILL'."
+   },
+   {
+    "severity": "minor",
+    "kind": "edge margin",
+    "where": "Footer 'CHASE AI'",
+    "detail": "The footer's lowest ink is at y≈1306, a 3.2% bottom margin, which is under the 5% rule. This comes from the locked cover's convention and is the same on every slide (slide 5 measures 3.3%).",
+    "fix": "Either accept it as series style, or move the rule and footer up about 25 px on every slide together, never on one slide alone."
+   }
+  ]
+ },
+ {
+  "n": 10,
+  "verdict": "minor",
+  "phone_readable": true,
+  "notes": "All 5 strings are present, spelled exactly as written, and each appears once: '10 / 10', 'GET THE SKILL', 'Comment' plus 'ANIMATE' (orange on a yellow pill, inside the speech bubble), 'I'll send you my free animate skill + the install steps.' and 'CHASE AI'. There is no invented text, no duplicated line and no garbled glyph. The slide has no keying zones (runs/composite/10.json lists none), and a scan finds zero magenta pixels. The layout is balanced. The bubble sits slightly above the middle with about 6% side margins, and the pill stays clear of the bubble outline by about 30 px. The arrow curves from the body line up toward the bubble. At 360 px every line reads easily, so this is the more readable phone slide of the pair. The CTA matches slide 9 step 1 and the dossier deliverable (github.com/cth9191/animate).",
+  "defects": [
+   {
+    "severity": "minor",
+    "kind": "storyboard drift",
+    "where": "Whole background",
+    "detail": "The storyboard evidence says 'Big Comment ANIMATE over a dimmed version of the cover frame'. The plate is plain cream with no cover frame, and the plate prompt never asked for one either. The text-only CTA is arguably cleaner and easier to read, so this is a record mismatch, not a visual flaw.",
+    "fix": "Keep the text-only CTA and update the storyboard's slides[9].evidence.describe to 'text-only CTA, no evidence'. If you want the callback instead, composite a small, low-opacity cover-frame thumbnail into the empty band under the eyebrow (y≈150-280), never behind the headline."
+   },
+   {
+    "severity": "minor",
+    "kind": "edge margin",
+    "where": "Footer 'CHASE AI'",
+    "detail": "The footer's lowest ink is at y≈1305, a 3.3% bottom margin, under the 5% rule. This is the same series-wide convention as slide 9.",
+    "fix": "Accept it as series style, or move the footer and rule up about 25 px on every slide together."
+   }
+  ]
+ }
+]

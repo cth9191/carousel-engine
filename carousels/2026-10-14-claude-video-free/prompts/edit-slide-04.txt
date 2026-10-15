@@ -1,0 +1,8 @@
+Edit Image 1 (an Instagram carousel slide, portrait 4:5) and return the full edited slide.
+
+The only change: swap the TEXT of the two pastel boxes in the 2 x 2 grid so the numbers follow the pipeline order. The box colours and positions stay where they are.
+- The top-right box (currently "2 · Frame: one picture. 60 make one second.") must read: "2 · Playwright: a hidden copy of Chrome that draws each frame"
+- The bottom-left box (currently "3 · Playwright: ...") must read: "3 · Frame: one picture. 60 make one second."
+Use the same typography as now: the large bold numeral and dot, the bold term ("Playwright", "Frame"), then the regular definition.
+
+Keep everything else exactly as it is: the "04 / 10" tag and "HOW IT WORKS" eyebrow, the headline "A video is" / "60 pictures a second", the wide framed solid flat magenta #FF00FF rectangle at exactly the same position and size (pure uniform magenta, no texture), box 1 "1 · JavaScript: the code language web pages run on", box 4 "4 · FFmpeg: a free tool that stitches frames into an MP4", the handwritten note "Both tools are free and open source." with its two arrows, the bottom rule and the "CHASE AI" footer. Same fonts, sizes and colours. Do not add any new text or elements.

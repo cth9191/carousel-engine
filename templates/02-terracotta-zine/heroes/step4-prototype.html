@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<!-- Illustrative mock, not a real product screenshot: an optional reference composition for shared/render-heroes.mjs, not used by /carousel. A mock explains; it is never proof. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hero — step4 prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 1600px; height: 1000px;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  .stage {
+    width: 1600px; height: 1000px;
+    position: relative;
+    background:
+      radial-gradient(circle at 15% 85%, rgba(217,119,87,0.14), transparent 50%),
+      linear-gradient(155deg, #221510 0%, #160e0a 100%);
+    overflow: hidden;
+    display:flex;
+  }
+  /* left chat column */
+  .chatcol {
+    width: 540px; height: 1000px;
+    background: #ECE6DC;
+    border-right: 1px solid rgba(14,14,14,0.08);
+    padding: 70px 36px;
+    display:flex; flex-direction:column; gap: 22px;
+    position: relative;
+  }
+  .chat-h { display:flex; align-items:center; gap:12px; font-weight:800; font-size:22px; color:#3a322c; margin-bottom: 8px;}
+  .logo-mark{width:32px;height:32px;border-radius:9px;background:#D97757;color:#fff;font-weight:900;font-size:19px;display:inline-flex;align-items:center;justify-content:center;}
+  .msg { padding: 18px 20px; border-radius: 18px; font-size:20px; font-weight:600; line-height:1.45; max-width:90%;}
+  .msg.me { align-self:flex-end; background:#D97757; color:#fff; border-top-right-radius:6px; box-shadow:0 8px 22px rgba(217,119,87,0.35);}
+  .msg.me .refs { display:flex; gap:8px; margin-top:12px;}
+  .msg.me .refs i { width:54px; height:40px; border-radius:7px; display:block;}
+  .r1{background:linear-gradient(150deg,#6C8AE4,#3D5AC9);} .r2{background:linear-gradient(150deg,#2EC4A6,#159C82);}
+  .msg.bot { align-self:flex-start; background:#fff; color:#3a322c; box-shadow:0 4px 14px rgba(0,0,0,0.06); border-top-left-radius:6px;}
+  .think { align-self:flex-start; display:flex; align-items:center; gap:12px; font-family:'JetBrains Mono',monospace; font-size:16px; font-weight:700; color:#c4724f;}
+  .think .spin { width:18px;height:18px;border-radius:50%; border:3px solid rgba(217,119,87,0.3); border-top-color:#D97757;}
+  /* right preview */
+  .preview { flex:1; position:relative; padding: 70px 70px; display:flex; align-items:center; justify-content:center;}
+  .browser {
+    width: 100%; height: 820px;
+    background:#fff; border-radius:18px;
+    box-shadow:0 40px 90px rgba(0,0,0,0.5);
+    overflow:hidden; position:relative;
+  }
+  .btop { height:54px; background:#F1ECE3; border-bottom:1px solid rgba(14,14,14,0.07); display:flex; align-items:center; padding:0 18px; gap:9px;}
+  .dot{width:15px;height:15px;border-radius:50%;}.rd{background:#FF5F57;}.am{background:#FEBC2E;}.gr{background:#28C840;}
+  .burl { margin-left:16px; background:#fff; border-radius:8px; height:32px; flex:1; max-width:420px; box-shadow:inset 0 0 0 1px rgba(14,14,14,0.07); display:flex; align-items:center; padding:0 13px; font-family:'JetBrains Mono',monospace; font-size:14px; color:#9a8f82;}
+  /* shimmer progress */
+  .shimmer { position:absolute; top:54px; left:0; right:0; height:4px; overflow:hidden; z-index:8;}
+  .shimmer::before { content:''; position:absolute; top:0; left:0; height:100%; width:55%; background:linear-gradient(90deg,transparent,#D97757,transparent);}
+  /* rendered landing page */
+  .lp { padding: 0; }
+  .lpnav { display:flex; align-items:center; justify-content:space-between; padding:26px 40px; }
+  .lplogo { width:130px; height:20px; background:#0E0E0E; border-radius:5px;}
+  .lpnav .nl{display:flex; gap:20px;} .lpnav .nl i{width:66px;height:13px;background:#ddd5c8;border-radius:4px;display:block;}
+  .lpnav .cta{width:120px;height:40px;background:#D97757;border-radius:9px;}
+  .lphero { padding: 40px 40px 24px; }
+  .lph1 { width:78%; height:46px; background:#0E0E0E; border-radius:8px; margin-bottom:14px;}
+  .lph1.b { width:55%; background:#D97757;}
+  .lpsub{width:64%; height:15px; background:#d8cfc2; border-radius:4px; margin-bottom:10px;}
+  .lpsub.s{width:48%;}
+  .lpbtns{display:flex; gap:14px; margin-top:24px;}
+  .lpbtn{width:160px;height:50px;border-radius:11px;background:#D97757;}
+  .lpbtn.ghost{background:#fff;box-shadow:inset 0 0 0 2px #0E0E0E;width:140px;}
+  .lpcards{display:flex; gap:22px; padding: 20px 40px 40px;}
+  .lpc{flex:1;height:180px;border-radius:16px;background:linear-gradient(160deg,#F5EBE0,#e7ddcd);box-shadow:0 10px 24px rgba(0,0,0,0.06);position:relative;}
+  .lpc:nth-child(2){background:linear-gradient(160deg,#fbeae2,#f3d4c6);}
+  .lpc:nth-child(3){background:linear-gradient(160deg,#e6f0ea,#cfe3d6);}
+  .lpc::after{content:'';position:absolute;left:20px;right:20px;bottom:20px;height:12px;background:rgba(14,14,14,0.12);border-radius:4px;}
+  .lpc::before{content:'';position:absolute;left:20px;top:20px;width:48px;height:48px;border-radius:12px;background:#D97757;opacity:.85;}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="chatcol">
+    <div class="chat-h"><span class="logo-mark">✳</span>Claude Design</div>
+    <div class="msg me">build a landing page like these refs
+      <span class="refs"><i class="r1"></i><i class="r2"></i></span>
+    </div>
+    <div class="msg bot">On it. Generating a hero, sticky nav and a 3-up feature grid from your references.</div>
+    <div class="think"><span class="spin"></span> Generating prototype…</div>
+  </div>
+  <div class="preview">
+    <div class="browser">
+      <div class="btop">
+        <span class="dot rd"></span><span class="dot am"></span><span class="dot gr"></span>
+        <span class="burl">localhost:3000 / preview</span>
+      </div>
+      <div class="shimmer"></div>
+      <div class="lp">
+        <div class="lpnav"><div class="lplogo"></div><div class="nl"><i></i><i></i><i></i></div><div class="cta"></div></div>
+        <div class="lphero">
+          <div class="lph1"></div><div class="lph1 b"></div>
+          <div class="lpsub"></div><div class="lpsub s"></div>
+          <div class="lpbtns"><div class="lpbtn"></div><div class="lpbtn ghost"></div></div>
+        </div>
+        <div class="lpcards"><div class="lpc"></div><div class="lpc"></div><div class="lpc"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

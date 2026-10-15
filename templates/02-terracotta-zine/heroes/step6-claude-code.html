@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!-- Illustrative mock, not a real product screenshot: an optional reference composition for shared/render-heroes.mjs, not used by /carousel. A mock explains; it is never proof. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hero — step6 claude code</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 1600px; height: 1000px;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  .stage {
+    width: 1600px; height: 1000px;
+    position: relative;
+    background:
+      radial-gradient(circle at 85% 12%, rgba(217,119,87,0.18), transparent 50%),
+      linear-gradient(155deg, #1b110d 0%, #100a07 100%);
+    overflow: hidden;
+  }
+  .win {
+    position:absolute; left:90px; top:70px;
+    width:1420px; height:860px;
+    background:#0E0E0E; border-radius:20px;
+    box-shadow:0 40px 90px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05);
+    overflow:hidden;
+  }
+  .top{height:56px;background:#171717;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;padding:0 20px;gap:11px;position:relative;}
+  .dot{width:18px;height:18px;border-radius:50%;}.r{background:#FF5F57;}.a{background:#FEBC2E;}.g{background:#28C840;}
+  .ttl{margin-left:18px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:16px;color:#8a8276;}
+  .chip{position:absolute;right:22px;top:13px;display:flex;align-items:center;gap:8px;background:rgba(217,119,87,0.16);border:1px solid rgba(217,119,87,0.4);color:#E89A78;font-size:14px;font-weight:700;padding:6px 13px;border-radius:999px;font-family:'JetBrains Mono',monospace;}
+  .chip .mk{width:14px;height:14px;border-radius:4px;background:#D97757;}
+  .term{padding:30px 34px;font-family:'JetBrains Mono',monospace;font-size:20px;line-height:1.85;}
+  .ln{display:flex;gap:14px;}
+  .num{color:#3d3d3d;width:30px;text-align:right;user-select:none;flex-shrink:0;}
+  .dim{color:#7a7268;}
+  .prompt{color:#E89A78;}
+  .caret-line{color:#cfc6b8;}
+  .caret{display:inline-block;width:11px;height:24px;background:#D97757;vertical-align:-4px;margin-left:3px;}
+  .ok{color:#9BD17F;}
+  .orange{color:#D97757;}
+  .white{color:#e8e2d6;}
+  .grey{color:#6a6a6a;}
+  .banner{color:#D97757;font-weight:700;}
+  .box{margin:6px 0 18px;padding:14px 18px;border:1px solid rgba(217,119,87,0.3);border-radius:10px;background:rgba(217,119,87,0.06);color:#E89A78;display:inline-block;}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="win">
+    <div class="top">
+      <span class="dot r"></span><span class="dot a"></span><span class="dot g"></span>
+      <span class="ttl">claude-code — ~/projects/award-site</span>
+      <span class="chip"><span class="mk"></span>Sent from Claude Design</span>
+    </div>
+    <div class="term">
+      <div class="ln"><span class="banner">✳ Claude Code</span> <span class="dim">v2.1 · opus</span></div>
+      <div class="ln" style="height:14px"></div>
+      <div class="box">⎿ imported prototype: <span class="white">landing-page.html</span> + 6 components</div>
+      <div class="ln"><span class="prompt">&gt;</span> <span class="white">wire dashboard to Supabase + nightly refresh</span></div>
+      <div class="ln" style="height:10px"></div>
+      <div class="ln"><span class="ok">✓</span> <span class="white">connected</span> <span class="orange">Supabase</span> <span class="dim">· env keys detected</span></div>
+      <div class="ln"><span class="ok">✓</span> <span class="white">generated</span> <span class="grey">lib/db.ts</span> <span class="dim">· typed client</span></div>
+      <div class="ln"><span class="ok">✓</span> <span class="white">added</span> <span class="grey">cron/refresh.ts</span> <span class="dim">· runs 02:00 UTC</span></div>
+      <div class="ln"><span class="orange">●</span> <span class="white">seeding 1,204 rows…</span> <span class="dim">done</span></div>
+      <div class="ln" style="height:8px"></div>
+      <div class="ln"><span class="dim">3 files changed · </span><span class="ok">+182</span> <span class="orange">-14</span></div>
+      <div class="ln" style="height:10px"></div>
+      <div class="ln caret-line"><span class="prompt">&gt;</span> <span class="caret"></span></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

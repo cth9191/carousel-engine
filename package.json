@@ -1,0 +1,20 @@
+{
+  "name": "carousel-engine",
+  "version": "0.1.0",
+  "description": "Text-first Instagram carousel pipeline for Claude Code: story spines, hook ranking, a cold-reader gate, and headless Codex image workers with real captures composited in.",
+  "type": "module",
+  "scripts": {
+    "gallery": "node shared/build-gallery.mjs"
+  },
+  "keywords": ["claude-code", "codex", "instagram", "carousel", "skill", "playwright"],
+  "author": "Chase (github.com/cth9191)",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "playwright": "^1.59.1",
+    "sharp": "^0.35.5"
+  }
+}

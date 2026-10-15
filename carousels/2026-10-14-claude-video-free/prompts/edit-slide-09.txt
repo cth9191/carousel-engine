@@ -1,0 +1,8 @@
+Edit Image 1 (an Instagram carousel slide, portrait 4:5) and return the full edited slide.
+
+The only change is in step 1's green box: set its text in the same upright regular grotesk as step 2 (no italic anywhere, "Claude Code" upright exactly like in step 2) and break it into three balanced lines:
+"Comment ANIMATE. I'll send you my free"
+"animate skill: a saved set of"
+"steps Claude Code follows."
+
+Keep everything else exactly as it is: the "09 / 10" tag and "START HERE" eyebrow, the headline "Start here:" / "3 steps", the bold numerals 1, 2, 3, step 2 "Paste its link into Claude Code. It installs the free tools for you.", step 3 "Type:" with the dark navy code box "/animate a 45-second history of the bicycle, cut paper", the wide framed solid flat magenta #FF00FF rectangle at exactly the same position and size (pure uniform magenta, no texture), the caption "Styles: cut paper, crosshatch, riso, sketchbook, math, pixel, isometric, or your own look", the bottom rule and the "CHASE AI" footer. Same fonts, sizes and colours. Do not add any new text or elements.

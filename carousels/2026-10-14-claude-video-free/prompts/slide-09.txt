@@ -1,0 +1,33 @@
+Create slide 9 of 10 for an Instagram carousel. Portrait 4:5 composition, intended final delivery at 1080 x 1350.
+Design a slide that clearly teaches one lesson: three steps to your first video.
+
+References, in attachment order:
+Image 1: the LOCKED COVER of this carousel. Match its visual system exactly: the warm off-white cream paper ground with faint grain, the heavy tightly spaced black grotesk headline with Claude orange (#D9551F) on the key phrase, the clean regular grotesk body, the small neat handwritten marker notes in dark grey, thin wobbly hand-drawn ink arrows, the soft yellow highlighter pill (#FBE38E), the small square tag box top-left with the counter, and the thin rule with the footer "CHASE AI" centred at the bottom. Its magenta screen is only a placeholder; do not copy the video player or its content.
+Image 2: the S11 interior style exemplar. Use its layout vocabulary only, for diagrams: rounded pastel boxes with thin dark ink outlines (pastel green #DDEEDB, pastel blue #DCE8F7, pastel pink #F8E1E4, pastel lavender #E9E3F5), wobbly arrows, margin notes. Do NOT copy its words, frames, diagrams or icons.
+
+Framing: every element sits inside a uniform empty margin of at least 8% of the width on the left and right and 9% of the height at top and bottom. If content does not fit, make elements smaller; never push toward the edges. Readable at phone-feed size: body text no smaller than about 1/45 of the slide height; the footer as large as small body text. Generous whitespace, flat, crisp, print-like; no gradients, no 3D, no photo textures; no characters or mascots.
+
+At the top left, the small square tag box with "09 / 10" and, right beside it, a short spaced-out uppercase eyebrow label in small grey grotesk: "START HERE".
+Each keying zone described below is ONE solid flat magenta #FF00FF rectangle with square inner corners: pure uniform magenta edge to edge, perfectly flat and frontal, no gradient, no texture, no glow, no text, no UI and no drawing inside it, no tilt, sitting inside a thin dark ink frame with a small rounded outer corner. Every other element stands clear of it with a visible gap. Never put a label, note or arrow on top of a magenta zone.
+
+Composition, top to bottom:
+Below the tag, the headline on one line: "Start here:" in black and "3 steps" in Claude orange.
+Under it, three numbered steps stacked vertically, each in a rounded pastel box (green, blue, lavender) with a bold number. Step 3's box contains the word "Type:" followed by a dark navy rounded code box holding the command in a clean monospace, light text on dark.
+Under the steps, a wide framed keying zone about 84% of the page width with an aspect of 1.6:1 (it will hold real sample frames of the styles).
+Under the zone, one caption line in small grey regular grotesk, centred.
+
+At the bottom, the thin rule with the footer "CHASE AI" centred under it.
+
+Visible copy, verbatim, with intended occurrence counts:
+"09 / 10" (tag box, once)
+"START HERE" (eyebrow, once)
+"Start here:" (headline)
+"3 steps" (headline, orange)
+"1 · Comment ANIMATE. I'll send you my free animate skill: a saved set of steps Claude Code follows." (step 1)
+"2 · Paste its link into Claude Code. It installs the free tools for you." (step 2)
+"3 · Type:" (step 3)
+"/animate a 45-second history of the bicycle, cut paper" (code box, monospace)
+"Styles: cut paper, crosshatch, riso, sketchbook, math, pixel, isometric, or your own look" (caption under the zone)
+"CHASE AI" (footer, once)
+
+Keep layout instructions internal; do not render section names, zone names or reference labels. Every quoted string appears exactly as many times as specified, verbatim. No extra readable captions, invented UI text, duplicate lines, lorem ipsum, watermarks, handles or logos. No purple, violet, pink or magenta anywhere except the keying zones; pastel pink boxes must read as soft blush pink, never magenta.

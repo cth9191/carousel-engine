@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompt Card S11</title>
+<!--
+  Slide 7 prompt card, S11 sketchnote look. Render with:
+    node shared/render-card.mjs carousels/2026-10-14-claude-video-free/cards/prompt-card.html out.png --w W --h H --scale 2
+  The card fills the whole viewport at any size: the mono size comes from the viewport (vw/vh),
+  then a small fit pass (window.cardReady) corrects for the font that actually loaded and spends
+  spare height on leading. Lines may wrap (pre-wrap) so the fit pass can grow the font into the available height.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@800;900&family=JetBrains+Mono:wght@500;700&display=block" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FCFCF4; /* sampled from the slide-07 plate mat */
+    --ink: #1B1B1B;
+    --orange: #D9551F;
+    --highlight: #FBE38E;
+    --tab: #DCE8F7;
+    /* Longest line = 73 mono chars at 0.6em, plus 2 x 1.7em side padding = 47.2em wide.
+       Tab + 6 lines + gaps + padding = about 15.5em tall. Take whichever bound is tighter. */
+    --f: min(calc(100vw / 47.6), calc(100vh / 15.5));
+    --lh: 1.55;
+    --stroke: max(1.5px, calc(var(--f) * 0.11));
+  }
+  html, body { margin: 0; height: 100%; background: transparent; }
+  body { display: flex; }
+  .card {
+    box-sizing: border-box;
+    flex: 1;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--paper);
+    border: none; /* the Codex plate already draws the ink frame around the zone */
+    border-radius: 0;
+    font-size: var(--f);
+    color: var(--ink);
+  }
+  .tab {
+    align-self: flex-start;
+    padding: 0.62em 0.95em 0.56em 1.15em;
+    font: 900 0.7em/1 Inter, "Segoe UI", Arial, sans-serif;
+    letter-spacing: 0.24em;
+    background: var(--tab);
+    border-right: var(--stroke) solid var(--ink);
+    border-bottom: var(--stroke) solid var(--ink);
+    border-bottom-right-radius: 0.75em;
+  }
+  .body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: safe center;
+    padding: 0.7em 1.7em 1.1em;
+  }
+  .lines {
+    font-family: "JetBrains Mono", Consolas, "Cascadia Mono", "Courier New", monospace;
+    font-weight: 500;
+    line-height: var(--lh);
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+  }
+  .topic { color: var(--orange); font-weight: 700; }
+  .addon { margin-top: calc(var(--lh) * 0.55em); }
+  .prompt > div + div { margin-top: 0.45em; }
+  .addon { white-space: nowrap; }
+  .hl {
+    margin-left: -0.35em;
+    padding: 0.1em 0.35em;
+    border-radius: 0.3em;
+    background: var(--highlight);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="tab">PROMPT</div>
+    <div class="body" data-fit>
+      <div class="lines prompt" data-fit><div>Make a 30-second animated explainer of how <span class="topic">[TOPIC]</span> works, 16:9.</div><div>Build it in JavaScript on a canvas, with a soundtrack generated in code, and render it to an MP4 with Playwright and FFmpeg.</div><div>Before you call it done, use FFmpeg to pull a contact sheet, look at it, fix what's wrong, <span style="white-space:nowrap">re-render,</span> and repeat.</div></div>
+      <div class="lines addon" data-fit><span class="hl">+ add: “Storyboard it first and wait for my OK.”</span></div>
+    </div>
+  </div>
+<script>
+  // Fit pass: the CSS size assumes a 0.6em mono advance. Correct for the font that actually
+  // loaded (binary search for the largest size where nothing overflows), then use spare
+  // height for leading (up to 1.9). render-card.mjs awaits window.cardReady.
+  window.cardReady = (async () => {
+    await document.fonts.ready;
+    const root = document.documentElement;
+    const card = document.querySelector('.card');
+    const body = document.querySelector('.body');
+    const lines = [...document.querySelectorAll('.lines')];
+    const fits = () =>
+      lines.every(l => l.scrollWidth <= l.clientWidth + 0.5) &&
+      body.scrollHeight <= body.clientHeight + 0.5 &&
+      lines.every(l => l.getBoundingClientRect().bottom <= window.innerHeight - 2);
+    const setF = f => root.style.setProperty('--f', f + 'px');
+    const setLh = v => root.style.setProperty('--lh', String(v));
+    const cssF = parseFloat(getComputedStyle(card).fontSize);
+    let lo = cssF * 0.4, hi = cssF * 2.4;
+    setF(lo);
+    for (let i = 0; i < 24; i++) {
+      const mid = (lo + hi) / 2;
+      setF(mid);
+      if (fits()) lo = mid; else hi = mid;
+    }
+    setF(lo);
+    let lh = 1.55;
+    for (let v = 1.55; v <= 1.9001; v += 0.05) {
+      setLh(v);
+      if (fits()) lh = v; else break;
+    }
+    setLh(lh);
+    window.cardInfo = {
+      mono_px: +lo.toFixed(2),
+      css_estimate_px: +cssF.toFixed(2),
+      line_height: +lh.toFixed(2),
+      mono_font: [...document.fonts].some(f => f.family.replace(/"/g, '') === 'JetBrains Mono' && f.status === 'loaded')
+        ? 'JetBrains Mono' : 'fallback (Consolas)',
+    };
+  })();
+</script>
+</body>
+</html>

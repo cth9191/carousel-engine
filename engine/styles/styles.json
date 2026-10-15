@@ -1,0 +1,143 @@
+{
+  "version": "v0",
+  "updated": "2026-10-14",
+  "notes": [
+    "One entry per style id. Only styles with a prompt block (engine/styles/<id>-*.prompt.md) can go to Make, and all four here have one. Edit every field by hand.",
+    "exemplars are repo-relative paths to one cover and one interior, 4:5. shared/build-gallery.mjs draws them as the style's tile and fails if a file is missing.",
+    "No style has stats yet. When you post a deck, add \"stats\": { \"last_used\": \"YYYY-MM-DD\" } to its style so the cooldown works. uses, median_mult and best_mult are optional; node shared/build-gallery.mjs --sync fills them (with posts, interior_posts and drafts) from your own post log if you keep one. Without --sync the script never writes this file (see engine/styles/README.md).",
+    "cooldown_days: a style posted within this many days shows as cooling on the pick sheet, and the skill will not recommend it. Styles tend to decay with repetition. The shipped worked example (carousels/2026-10-14-claude-video-free) does not count toward cooldown.",
+    "{{BRAND}} in attributes and prompt blocks is the name in engine/brand.json. {{MONTH_YEAR}} (e.g. OCTOBER ©2026) comes from the deck folder's date. The skill fills both in when it writes prompts and when it copies an HTML template into a deck."
+  ],
+  "spines": {
+    "A": "Explainer (what -> why -> how -> use -> CTA)",
+    "B": "Head-to-head / launch test",
+    "C": "Listicle (N items)",
+    "D": "System build (named system in N steps)"
+  },
+  "styles": [
+    {
+      "id": "S01",
+      "name": "Terracotta Zine",
+      "one_line": "Terracotta texture, massive lowercase headline with a period, taped dark app windows.",
+      "status": "card-v1",
+      "production": "html-native",
+      "formats": {
+        "spines": [ "D", "A" ],
+        "notes": "System reveal, N-step build, levels. The workhorse for system builds."
+      },
+      "attributes": {
+        "ground": "Terracotta texture full-bleed (#C46B4F, templates/02-terracotta-zine/assets/bg-zine.png)",
+        "type_pairing": "Massive lowercase Inter Black ending in a period (lead word cream, the rest ink); black brush-stroke eyebrow; JetBrains Mono chrome",
+        "panel": "Taped dark app windows and cream-bordered screenshot stickers",
+        "character": "Optional: your own mascot, if you have one",
+        "ornament": "Mono header '{{MONTH_YEAR}} . {{BRAND}} . 02 / 09', page counter, 'SWIPE ->', tape accents",
+        "palette": "#C46B4F terracotta / #F5EBE0 cream / #0E0E0E ink"
+      },
+      "cooldown_days": 14,
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S01-cover.png",
+        "interior": "engine/styles/exemplars/S01-interior.png",
+        "interior_slide": 2,
+        "note": "Cover of a 'build your Claude OS in 3 steps' deck (personal labels blurred) and slide 2 of a '7 levels of Claude Code & web design' deck."
+      },
+      "requires": [
+        "Real terminal / HUD captures composited into the taped windows (no AI-drawn UI text)",
+        "templates/02-terracotta-zine/slides.html copied into the deck with {{BRAND}} and {{MONTH_YEAR}} filled in, plus assets/bg-zine.png copied to the deck's assets/ (slides.html loads assets/bg-zine.png)"
+      ],
+      "template": "templates/02-terracotta-zine"
+    },
+    {
+      "id": "S02",
+      "name": "Logo Equation",
+      "one_line": "Terracotta, giant white 'Tool A + Tool B', two big app-icon tiles joined by a plus.",
+      "status": "card-v1",
+      "production": "hybrid",
+      "formats": {
+        "spines": [ "A" ],
+        "notes": "Tool combo, integration, set-up tutorial. Runs as a hybrid: Codex paints the plate and short type; real logos go in through cyan zones, captures through magenta, exact text as HTML cards. There is no HTML template for it yet."
+      },
+      "attributes": {
+        "ground": "Flat terracotta",
+        "type_pairing": "Giant white heavy sans equation, thin rule, white italic subtitle; interiors use a centered title and italic body",
+        "panel": "Two big app-icon tiles joined by '+'; interiors carry one real UI panel, arrows between logos",
+        "character": "None",
+        "ornament": "Thin rule, round arrow button bottom-right",
+        "palette": "Terracotta / white / ink"
+      },
+      "cooldown_days": 14,
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S02-cover.jpg",
+        "interior": "engine/styles/exemplars/S02-interior.jpg",
+        "interior_slide": 3,
+        "note": "Cover and slide 3 of a Claude Code + NotebookLM tutorial deck."
+      },
+      "requires": [
+        "Real logos only (your logo folder, e.g. assets/logos/, or simple-icons), composited into cyan zones by shared/composite.py; never generated marks",
+        "One real UI capture per interior"
+      ],
+      "template": null
+    },
+    {
+      "id": "S03",
+      "name": "Newsprint Benchmark",
+      "one_line": "Warm newsprint, Didone italic, diagonal VS split with huge percentages, ruled tables, green verdict bar.",
+      "status": "card-v1",
+      "production": "image-native",
+      "formats": {
+        "spines": [ "B" ],
+        "notes": "Head-to-head, model launch test, receipts / contrarian."
+      },
+      "attributes": {
+        "ground": "Warm newsprint",
+        "type_pairing": "Didone italic + grotesque",
+        "panel": "Diagonal VS split hero with huge %, ruled benchmark tables, side-by-side result shots",
+        "character": "None",
+        "ornament": "VS medallion, rules, green verdict bar with check, mono chrome '{{BRAND}} . HEAD-TO-HEAD 01/09'",
+        "palette": "Newsprint cream / ink / subject accents (cobalt, orange) / verdict green"
+      },
+      "cooldown_days": 14,
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S03-cover.png",
+        "interior": "engine/styles/exemplars/S03-interior.png",
+        "interior_slide": 4,
+        "note": "Cover and slide 4 (a test slide) of a GPT 6 Astra vs Claude Fable 5.1 head-to-head."
+      },
+      "requires": [
+        "The design tokens live in the SYSTEM block of S03-newsprint-benchmark.prompt.md; attach the two exemplars as style references until the deck has a locked cover",
+        "Numbers and tables as HTML or verified text, never model-drawn"
+      ],
+      "template": null
+    },
+    {
+      "id": "S11",
+      "name": "Sketchnote Diagram Explainer",
+      "one_line": "Cream, heavy grotesk with a yellow highlighter pill, pastel flow-diagram boxes, hand-drawn arrows.",
+      "status": "card-v1",
+      "production": "image-native",
+      "formats": {
+        "spines": [ "A" ],
+        "notes": "What-is / how-it-works for cold viewers. Explains with a diagram, where most how-slides are a headline over a screenshot in a box."
+      },
+      "attributes": {
+        "ground": "Cream",
+        "type_pairing": "Heavy black grotesk with one key phrase in orange + yellow highlighter pill; handwritten margin notes",
+        "panel": "Pastel flow-diagram boxes with typed inputs/outputs, side-by-side comparison columns",
+        "character": "None by default; your own mascot, if you have one. Never a licensed character",
+        "ornament": "Hand-drawn arrows, margin notes, numbered section tags, '{{BRAND}}' footer under a thin rule",
+        "palette": "Cream / ink / orange accent / pastel green-blue-pink-lavender boxes / highlighter yellow"
+      },
+      "cooldown_days": 14,
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S11-cover.png",
+        "interior": "engine/styles/exemplars/S11-interior.png",
+        "interior_slide": 4,
+        "note": "Cover and slide 4 of this repo's worked example, carousels/2026-10-14-claude-video-free."
+      },
+      "requires": [
+        "Codex paints the diagrams, boxes, arrows and margin notes from the SYSTEM block; real captures go into magenta zones, and exact text (prompts, commands) into HTML cards from shared/render-card.mjs",
+        "Never borrow licensed characters; use your own mascot, if you have one, or none"
+      ],
+      "template": null
+    }
+  ]
+}

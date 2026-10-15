@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<!-- Illustrative mock, not a real product screenshot: an optional reference composition for shared/render-heroes.mjs, not used by /carousel. A mock explains; it is never proof. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hero — step5 tweaks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 1600px; height: 1000px;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  .stage {
+    width: 1600px; height: 1000px;
+    position: relative;
+    background:
+      radial-gradient(circle at 75% 80%, rgba(217,119,87,0.13), transparent 50%),
+      linear-gradient(155deg, #211410 0%, #160e0a 100%);
+    overflow: hidden;
+  }
+  .win {
+    position:absolute; left:80px; top:70px;
+    width:1440px; height:860px;
+    background:#EDE7DD; border-radius:20px;
+    box-shadow:0 40px 90px rgba(0,0,0,0.5);
+    overflow:hidden;
+  }
+  .top{height:58px;background:#E2DBCF;border-bottom:1px solid rgba(14,14,14,0.08);display:flex;align-items:center;padding:0 20px;gap:11px;}
+  .dot{width:18px;height:18px;border-radius:50%;}.r{background:#FF5F57;}.a{background:#FEBC2E;}.g{background:#28C840;}
+  .ttl{margin-left:18px;font-weight:700;font-size:18px;color:#5a5048;display:flex;align-items:center;gap:11px;}
+  .logo-mark{width:24px;height:24px;border-radius:7px;background:#D97757;color:#fff;font-weight:900;font-size:15px;display:inline-flex;align-items:center;justify-content:center;}
+  /* layers strip */
+  .layers{position:absolute;left:0;top:58px;bottom:0;width:230px;background:#E7E0D5;border-right:1px solid rgba(14,14,14,0.07);padding:22px 16px;}
+  .lh{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#9a8f82;margin:0 6px 14px;}
+  .layer{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:9px;font-size:16px;font-weight:600;color:#4a423b;}
+  .layer.sel{background:#fff;color:#0E0E0E;box-shadow:0 3px 10px rgba(0,0,0,0.06);}
+  .layer .sq{width:16px;height:16px;border-radius:4px;background:#c9bfb0;}
+  .layer.sel .sq{background:#D97757;}
+  /* canvas */
+  .canvas{position:absolute;left:230px;right:0;top:58px;bottom:0;background:#D9D1C4;
+    background-image:linear-gradient(rgba(14,14,14,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(14,14,14,0.04) 1px,transparent 1px);
+    background-size:40px 40px;
+    display:flex;align-items:center;justify-content:center;}
+  .frame{width:640px;height:560px;background:#fff;border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,0.2);position:relative;padding:46px;}
+  .fh1{width:80%;height:40px;background:#0E0E0E;border-radius:7px;margin-bottom:14px;}
+  .fh2{width:58%;height:40px;border-radius:7px;margin-bottom:26px;position:relative;
+    background:#D97757;}
+  /* selection box on h2 */
+  .selbox{position:absolute;left:34px;top:108px;width:calc(58% - 0px);max-width:360px;height:54px;border:2px solid #D97757;border-radius:4px;}
+  .handle{position:absolute;width:13px;height:13px;background:#fff;border:2px solid #D97757;border-radius:3px;}
+  .h-tl{left:-7px;top:-7px;}.h-tr{right:-7px;top:-7px;}.h-bl{left:-7px;bottom:-7px;}.h-br{right:-7px;bottom:-7px;}
+  .fsub{width:70%;height:14px;background:#d8cfc2;border-radius:4px;margin-bottom:10px;}
+  .fsub.s{width:52%;}
+  .fbtn{width:160px;height:48px;background:#D97757;border-radius:10px;margin-top:26px;}
+  /* properties panel floating */
+  .props{position:absolute;right:60px;top:150px;width:300px;background:#fff;border-radius:16px;box-shadow:0 26px 60px rgba(0,0,0,0.3);padding:22px;z-index:9;}
+  .ph{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#9a8f82;margin-bottom:16px;}
+  .prow{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .plab{font-size:15px;font-weight:700;color:#5a5048;}
+  .pval{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#0E0E0E;background:#F1ECE3;padding:6px 11px;border-radius:7px;}
+  .style-row{display:flex;gap:8px;margin-bottom:18px;}
+  .sbtn{width:42px;height:42px;border-radius:9px;background:#F1ECE3;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#5a5048;box-shadow:inset 0 0 0 1px rgba(14,14,14,0.06);}
+  .sbtn.on{background:#0E0E0E;color:#fff;}
+  .swatch-row{display:flex;align-items:center;gap:10px;}
+  .swatch{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#D97757,#F2C94C);box-shadow:0 4px 12px rgba(217,119,87,0.4);}
+  .grad{flex:1;height:12px;border-radius:999px;background:linear-gradient(90deg,#D97757,#F2C94C);}
+  /* markup comment pin */
+  .pin{position:absolute;left:560px;top:430px;z-index:11;}
+  .pindot{width:40px;height:40px;border-radius:50% 50% 50% 4px;background:#D97757;box-shadow:0 10px 24px rgba(217,119,87,0.5);transform:rotate(0deg);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:18px;}
+  .bubble{position:absolute;left:50px;top:-6px;background:#0E0E0E;color:#F5EBE0;font-weight:700;font-size:17px;padding:13px 17px;border-radius:13px;white-space:nowrap;box-shadow:0 14px 34px rgba(0,0,0,0.4);}
+  .bubble b{color:#FF8A6B;}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="win">
+    <div class="top">
+      <span class="dot r"></span><span class="dot a"></span><span class="dot g"></span>
+      <span class="ttl"><span class="logo-mark">✳</span>Claude Design — Editor</span>
+    </div>
+    <div class="layers">
+      <div class="lh">Layers</div>
+      <div class="layer"><span class="sq"></span>Nav bar</div>
+      <div class="layer"><span class="sq"></span>Headline</div>
+      <div class="layer sel"><span class="sq"></span>Subhead</div>
+      <div class="layer"><span class="sq"></span>Body copy</div>
+      <div class="layer"><span class="sq"></span>CTA button</div>
+      <div class="layer"><span class="sq"></span>Feature grid</div>
+    </div>
+    <div class="canvas">
+      <div class="frame">
+        <div class="fh1"></div>
+        <div class="fh2"></div>
+        <div class="selbox">
+          <span class="handle h-tl"></span><span class="handle h-tr"></span>
+          <span class="handle h-bl"></span><span class="handle h-br"></span>
+        </div>
+        <div class="fsub"></div>
+        <div class="fsub s"></div>
+        <div class="fbtn"></div>
+        <div class="pin">
+          <div class="pindot">1</div>
+          <div class="bubble">no em-dashes <b>✕</b></div>
+        </div>
+      </div>
+      <div class="props">
+        <div class="ph">Properties</div>
+        <div class="prow"><span class="plab">Font</span><span class="pval">Inter</span></div>
+        <div class="prow"><span class="plab">Size</span><span class="pval">40 px</span></div>
+        <div class="style-row">
+          <span class="sbtn on">B</span>
+          <span class="sbtn" style="font-style:italic">I</span>
+          <span class="sbtn" style="text-decoration:underline">U</span>
+        </div>
+        <div class="prow"><span class="plab">Color</span></div>
+        <div class="swatch-row"><span class="swatch"></span><span class="grad"></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<!-- Illustrative mock, not a real product screenshot: an optional reference composition for shared/render-heroes.mjs, not used by /carousel. A mock explains; it is never proof. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hero — intro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 1600px; height: 1000px;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  .stage {
+    width: 1600px; height: 1000px;
+    position: relative;
+    background:
+      radial-gradient(circle at 80% 12%, rgba(217,119,87,0.16), transparent 50%),
+      radial-gradient(circle at 12% 88%, rgba(217,119,87,0.10), transparent 55%),
+      linear-gradient(150deg, #20140f 0%, #160d09 100%);
+    overflow: hidden;
+  }
+  /* App window */
+  .win {
+    position: absolute;
+    left: 90px; top: 70px;
+    width: 1420px; height: 860px;
+    background: #F7F4EF;
+    border-radius: 22px;
+    box-shadow: 0 40px 90px rgba(0,0,0,0.5), 0 8px 24px rgba(0,0,0,0.35);
+    overflow: hidden;
+    display: flex;
+  }
+  .topbar {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 60px;
+    background: #ECE6DC;
+    border-bottom: 1px solid rgba(14,14,14,0.08);
+    display: flex; align-items: center;
+    padding: 0 22px;
+    gap: 11px;
+    z-index: 5;
+  }
+  .dot { width: 18px; height: 18px; border-radius: 50%; }
+  .r { background: #FF5F57; } .a { background: #FEBC2E; } .g { background: #28C840; }
+  .wintitle {
+    margin-left: 22px;
+    font-weight: 700; font-size: 19px; color: #5a5048;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .logo-mark {
+    width: 26px; height: 26px; border-radius: 7px;
+    background: #D97757;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 900; font-size: 17px;
+  }
+  /* Sidebar */
+  .side {
+    width: 250px; margin-top: 60px;
+    background: #EFE9DF;
+    border-right: 1px solid rgba(14,14,14,0.07);
+    padding: 26px 18px;
+    display: flex; flex-direction: column; gap: 11px;
+  }
+  .side-h { font-size: 13px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #9a8f82; margin: 4px 6px 10px; }
+  .chip {
+    display: flex; align-items: center; gap: 14px;
+    padding: 13px 15px; border-radius: 12px;
+    font-weight: 700; font-size: 18px; color: #3a322c;
+    background: transparent;
+  }
+  .chip.active { background: #fff; box-shadow: 0 4px 14px rgba(0,0,0,0.07); color: #0E0E0E; }
+  .chip .ic { width: 30px; height: 30px; border-radius: 8px; background: #D9CFC2; flex-shrink: 0; display:flex;align-items:center;justify-content:center; }
+  .chip.active .ic { background: #D97757; }
+  .ic span { display:block; }
+  /* Main canvas */
+  .main { flex: 1; margin-top: 60px; position: relative; padding: 40px 46px; background: #F7F4EF; }
+  .canvas-art {
+    position: relative;
+    height: 100%;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: inset 0 0 0 1px rgba(14,14,14,0.06);
+    overflow: hidden;
+  }
+  /* fake design artifact: a landing page */
+  .art-nav { display: flex; align-items: center; justify-content: space-between; padding: 26px 34px; border-bottom: 1px solid rgba(14,14,14,0.06); }
+  .art-logo { width: 120px; height: 18px; background: #0E0E0E; border-radius: 5px; }
+  .art-navlinks { display: flex; gap: 22px; }
+  .art-navlinks i { display:block; width: 64px; height: 12px; background: #ddd5c8; border-radius: 4px; }
+  .art-hero { padding: 50px 34px 30px; }
+  .art-h1 { width: 70%; height: 40px; background: #0E0E0E; border-radius: 7px; margin-bottom: 16px; }
+  .art-h1.two { width: 52%; background: #D97757; }
+  .art-sub { width: 60%; height: 14px; background: #d8cfc2; border-radius: 4px; margin-bottom: 11px; }
+  .art-sub.s { width: 44%; }
+  .art-btns { display:flex; gap:14px; margin-top: 26px; }
+  .art-btn { width: 150px; height: 46px; border-radius: 10px; background: #D97757; }
+  .art-btn.ghost { background: #fff; box-shadow: inset 0 0 0 2px #0E0E0E; width: 130px; }
+  .art-cards { display:flex; gap: 20px; padding: 16px 34px 34px; }
+  .art-card { flex:1; height: 150px; border-radius: 14px; background: linear-gradient(160deg,#F5EBE0,#e7ddcd); box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
+  .art-card:nth-child(2){ background: linear-gradient(160deg,#fbeae2,#f3d4c6);}
+  /* numbered callouts */
+  .callout {
+    position: absolute;
+    display: flex; align-items: center; gap: 9px;
+    z-index: 9;
+  }
+  .badge {
+    background: #D97757; color: #fff;
+    font-weight: 900; font-size: 14px; letter-spacing: .08em;
+    padding: 6px 13px; border-radius: 999px;
+    box-shadow: 0 8px 22px rgba(217,119,87,0.5);
+  }
+  .clabel {
+    background: #0E0E0E; color: #F5EBE0;
+    font-weight: 700; font-size: 16px;
+    padding: 9px 15px; border-radius: 11px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+    white-space: nowrap;
+  }
+  .co1 { top: 150px; left: 600px; }
+  .co2 { top: 96px; right: 60px; flex-direction: row-reverse; }
+  .co3 { top: 600px; left: 300px; }
+  /* connector dots */
+  .pin { position:absolute; width: 16px; height:16px; border-radius:50%; background:#D97757; box-shadow:0 0 0 5px rgba(217,119,87,0.25); z-index:8;}
+  .pin1{ top:138px; left:570px;} .pin2{ top:70px; right:175px;} .pin3{ top:584px; left:270px;}
+  /* MCP connectors icon top right of main */
+  .mcp { position:absolute; top:24px; right:30px; display:flex; gap:9px; z-index:7;}
+  .mcp .knot { width:34px;height:34px;border-radius:9px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(14,14,14,0.07); display:flex;align-items:center;justify-content:center;}
+  .mcp .knot b { width:14px;height:14px;border-radius:50%; border:3px solid #D97757;}
+  /* usage meter */
+  .meter { position:absolute; top:26px; right:120px; width:180px; z-index:7;}
+  .meter .track { height:9px; border-radius:999px; background:#e2d9cb; overflow:hidden;}
+  .meter .fill { height:100%; width:62%; border-radius:999px; background:linear-gradient(90deg,#D97757,#e89e7f);}
+  .meter .lab { font-size:12px; font-weight:700; color:#9a8f82; margin-top:6px; font-family:'JetBrains Mono',monospace;}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="win">
+    <div class="topbar">
+      <span class="dot r"></span><span class="dot a"></span><span class="dot g"></span>
+      <span class="wintitle"><span class="logo-mark"></span>Design tool</span>
+    </div>
+    <div class="side">
+      <div class="side-h">Templates</div>
+      <div class="chip active"><span class="ic"></span>Prototype</div>
+      <div class="chip"><span class="ic"></span>Slides</div>
+      <div class="chip"><span class="ic"></span>Doc</div>
+      <div class="chip"><span class="ic"></span>Wireframe</div>
+      <div class="chip"><span class="ic"></span>Video</div>
+    </div>
+    <div class="main">
+      <div class="meter">
+        <div class="track"><div class="fill"></div></div>
+        <div class="lab">USAGE</div>
+      </div>
+      <div class="mcp">
+        <div class="knot"><b></b></div>
+        <div class="knot"><b></b></div>
+      </div>
+      <div class="canvas-art">
+        <div class="art-nav">
+          <div class="art-logo"></div>
+          <div class="art-navlinks"><i></i><i></i><i></i><i></i></div>
+        </div>
+        <div class="art-hero">
+          <div class="art-h1"></div>
+          <div class="art-h1 two"></div>
+          <div class="art-sub"></div>
+          <div class="art-sub s"></div>
+          <div class="art-btns"><div class="art-btn"></div><div class="art-btn ghost"></div></div>
+        </div>
+        <div class="art-cards"><div class="art-card"></div><div class="art-card"></div><div class="art-card"></div></div>
+      </div>
+      <div class="pin pin1"></div>
+      <div class="callout co1"><span class="badge">1</span><span class="clabel">Edit on the canvas</span></div>
+      <div class="pin pin2"></div>
+      <div class="callout co2"><span class="badge">2</span><span class="clabel">Connect your tools</span></div>
+      <div class="pin pin3"></div>
+      <div class="callout co3"><span class="badge">3</span><span class="clabel">Reusable blocks</span></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

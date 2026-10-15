@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Template 02 — Terracotta Zine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared/tweak-panel.css">
+<style>
+  :root {
+    --cream: #F5EBE0;
+    --ink: #0E0E0E;
+    --terracotta: #D97757;
+    --shadow:
+      0 6px 12px rgba(14, 14, 14, 0.18),
+      0 14px 28px rgba(14, 14, 14, 0.20),
+      0 32px 60px rgba(14, 14, 14, 0.24);
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: #1a1a1a;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .stage {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .slide-wrap {
+    width: 1080px;
+    height: 1350px;
+    transform-origin: center;
+  }
+
+  .slide {
+    --accent: var(--ink);
+    --head-size: 92px;
+    --body-size: 32px;
+    --body-top: 560px;
+    --eyebrow-size: 20px;
+    --dash-bottom: 130px;
+    --dash-width: 880px;
+    --dash-tilt: -1.5deg;
+
+    width: 1080px;
+    height: 1350px;
+    position: relative;
+    overflow: hidden;
+    background: #C46B4F;
+    color: var(--cream);
+  }
+
+  /* Bg image for body slides */
+  .slide .bg-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  /* Cover slide variant */
+  .slide.is-cover .bg-img,
+  .slide.is-cover .meta,
+  .slide.is-cover .head,
+  .slide.is-cover .body-copy,
+  .slide.is-cover .hero,
+  .slide.is-cover .footer-page,
+  .slide.is-cover .footer-swipe { display: none !important; }
+  .slide .cover-img {
+    display: none;
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 1;
+  }
+  .slide.is-cover .cover-img { display: block; }
+
+  /* Top meta strip */
+  .meta {
+    position: absolute; top: 56px; left: 80px; right: 80px; z-index: 5;
+    font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 500;
+    color: var(--cream); opacity: .65; letter-spacing: .18em;
+    display: flex; gap: 14px;
+  }
+  .meta .dot { color: var(--ink); opacity: .7; }
+
+  /* Eyebrow brush badge */
+  .head { position: absolute; top: 140px; left: 80px; right: 80px; z-index: 5; }
+  .brush {
+    display: inline-block;
+    background: var(--ink);
+    padding: 4px 18px 6px;
+    border-radius: 4px;
+    transform: rotate(-1.2deg);
+    margin-bottom: 18px;
+    position: relative;
+  }
+  .brush::before, .brush::after {
+    content: ''; position: absolute; height: 4px;
+    background: var(--ink); border-radius: 50%;
+  }
+  .brush::before { left: -14px; top: 60%; width: 12px; transform: rotate(-8deg); }
+  .brush::after  { right: -16px; top: 30%; width: 16px; transform: rotate(6deg); }
+  .eyebrow {
+    font-family: 'Inter', sans-serif; font-weight: 800;
+    font-size: var(--eyebrow-size);
+    color: var(--cream); letter-spacing: .04em;
+  }
+
+  .h1 {
+    font-family: 'Inter', sans-serif; font-weight: 900;
+    font-size: var(--head-size);
+    color: var(--cream); line-height: .92; letter-spacing: -.045em;
+    text-transform: lowercase;
+    text-shadow: 0 4px 0 rgba(14, 14, 14, .18);
+  }
+  .h1 .accent { color: var(--accent); }
+
+  /* Body copy */
+  .body-copy {
+    position: absolute; top: var(--body-top); left: 84px; right: 84px; z-index: 5;
+    font-family: 'Inter', sans-serif; font-weight: 600;
+    font-size: var(--body-size);
+    color: var(--cream); line-height: 1.32; letter-spacing: -.014em;
+    max-width: 920px;
+  }
+  .body-copy strong { color: var(--accent); font-weight: 800; }
+
+  /* Hero (image sticker) area */
+  .hero {
+    position: absolute;
+    left: 50%; bottom: var(--dash-bottom);
+    transform: translateX(-50%) rotate(var(--dash-tilt));
+    width: var(--dash-width);
+    z-index: 4;
+    filter: drop-shadow(0 16px 22px rgba(14, 14, 14, .45));
+  }
+  .hero img {
+    display: block; width: 100%; height: auto;
+    border-radius: var(--radius);
+    border: 4px solid var(--cream);
+  }
+  .tape {
+    position: absolute;
+    width: 96px; height: 28px;
+    background: rgba(245, 235, 224, .55);
+    z-index: 6;
+  }
+  .tape.tl { left: -14px; top: -14px; transform: rotate(-22deg); }
+  .tape.br { right: -18px; bottom: -12px; transform: rotate(18deg); }
+
+  /* Footer pagination */
+  .footer-page {
+    position: absolute; bottom: 38px; left: 80px; z-index: 6;
+    font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 18px;
+    color: var(--cream); opacity: .55; letter-spacing: .18em;
+  }
+  .footer-swipe {
+    position: absolute; bottom: 38px; right: 80px; z-index: 6;
+    font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 18px;
+    color: var(--ink); letter-spacing: .18em;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .footer-swipe svg { width: 1em; height: 1em; }
+
+  /* === UI chrome (hidden on export) === */
+  .ui {
+    position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+    background: rgba(20, 20, 20, .92); color: white;
+    padding: 8px 12px; border-radius: 999px;
+    display: flex; gap: 12px; align-items: center;
+    font-size: 13px; z-index: 100;
+  }
+  .ui button {
+    background: #2a2a2a; color: white; border: none;
+    padding: 6px 12px; border-radius: 99px; cursor: pointer; font-size: 13px;
+  }
+  .ui button:hover { background: #3a3a3a; }
+  .ui .label { font-family: 'JetBrains Mono', monospace; min-width: 200px; text-align: center; }
+  .ui .num { color: var(--terracotta); font-weight: 700; }
+  .arrow-btn { width: 32px; height: 32px; padding: 0 !important; }
+
+  /* Tweak panel CSS = shared/tweak-panel.css */
+  :fullscreen .ui { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="slide-wrap" id="slideWrap">
+    <div class="slide" id="slide">
+      <img class="cover-img" id="coverImg" alt="">
+      <img class="bg-img" id="bgImg" src="assets/bg-zine.png" alt="">
+
+      <div class="meta">
+        <!-- The month stamp and brand placeholders below are replaced by the /carousel skill when it copies this template into a deck (month from the deck folder date, brand from engine/brand.json). -->
+        <span id="metaDate">{{MONTH_YEAR}}</span><span class="dot">·</span>
+        <span id="metaBrand">{{BRAND}}</span><span class="dot">·</span>
+        <span id="metaPage">01 / 09</span>
+      </div>
+
+      <div class="head">
+        <div class="brush"><span class="eyebrow" id="eyebrow"></span></div>
+        <div class="h1" id="headline"></div>
+      </div>
+
+      <div class="body-copy" id="bodyCopy"></div>
+
+      <div class="hero" id="hero">
+        <span class="tape tl"></span>
+        <span class="tape br"></span>
+        <img id="heroImg" alt="">
+      </div>
+
+      <div class="footer-page" id="footerPage">01 / 09</div>
+      <div class="footer-swipe">
+        SWIPE
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ui">
+  <button class="arrow-btn" id="prev">←</button>
+  <span class="label"><span class="num" id="num">1/9</span> &nbsp; <span id="name">Cover</span></span>
+  <button class="arrow-btn" id="next">→</button>
+  <button id="fs">Fullscreen (F)</button>
+</div>
+
+<button class="tw-toggle" id="twToggle">⚙ Tweaks</button>
+
+<div class="tw-panel" id="twPanel">
+  <h3>Tweaks <button class="close" id="twClose">×</button></h3>
+
+  <div class="tw-section">
+    <div class="section-title">GLOBAL</div>
+    <div class="tw-row">
+      <span class="lbl">Accent color</span>
+      <input type="color" id="twAccent">
+    </div>
+  </div>
+
+  <div class="tw-section">
+    <div class="section-title">PER-SLIDE: <span class="name" id="vSlideName">—</span></div>
+    <div class="tw-row">
+      <span class="lbl">Eyebrow text</span>
+      <input type="text" id="twEyebrow">
+    </div>
+    <div class="tw-row">
+      <span class="lbl">Headline (HTML; use &lt;br&gt;, &lt;span class="accent"&gt;)</span>
+      <textarea id="twHeadline" rows="3"></textarea>
+    </div>
+    <div class="tw-row">
+      <span class="lbl">Body copy (HTML; use &lt;strong&gt;)</span>
+      <textarea id="twBody" rows="3"></textarea>
+    </div>
+    <div class="tw-row">
+      <span class="lbl">Headline size <span class="val" id="vHeadSize"></span></span>
+      <input type="range" id="twHeadSize" min="60" max="180" step="1">
+    </div>
+    <div class="tw-row">
+      <span class="lbl">Body size <span class="val" id="vBodySize"></span></span>
+      <input type="range" id="twBodySize" min="20" max="64" step="1">
+    </div>
+    <div class="tw-row">
+      <span class="lbl">Body top position <span class="val" id="vBodyTop"></span></span>
+      <input type="range" id="twBodyTop" min="200" max="900" step="2">
+    </div>
+    <div class="tw-row">
+      <span class="lbl">Hero image src</span>
+      <input type="text" id="twHeroImg">
+    </div>
+    <div class="tw-row">
+      <span class="lbl">Hero bottom <span class="val" id="vDashBottom"></span></span>
+      <input type="range" id="twDashBottom" min="40" max="500" step="2">
+    </div>
+    <div class="tw-row">
+      <span class="lbl">Hero width <span class="val" id="vDashWidth"></span></span>
+      <input type="range" id="twDashWidth" min="400" max="1000" step="4">
+    </div>
+    <div class="tw-row">
+      <span class="lbl">Hero tilt <span class="val" id="vDashTilt"></span></span>
+      <input type="range" id="twDashTilt" min="-12" max="12" step="0.5">
+    </div>
+  </div>
+
+  <button class="tw-reset" id="twReset">Reset slide to defaults</button>
+  <button class="tw-reset" id="twExport" style="background:#0E0E0E;color:white;margin-top:6px;">Export tweaks (copy JSON)</button>
+  <pre id="twExportOut" style="display:none;margin-top:10px;padding:10px;background:#f5f5f5;border-radius:6px;font-size:10px;white-space:pre-wrap;word-break:break-all;max-height:240px;overflow:auto;"></pre>
+</div>
+
+<script>
+  // One entry per slide. This is a neutral 9-slide sample (system build: cover, what, why, parts,
+  // 3 steps, payoff, CTA); in a deck, fill it from storyboard.json strings[].
+  // - cover: true + coverImg: the composited cover PNG, relative to the deck folder
+  //   (e.g. 'final/slide-01.png'). While coverImg is empty the cover renders as a typographic
+  //   slide from its own fields, so the template previews without a cover file.
+  // - heroImg: a real capture or a rendered card PNG, relative to the deck folder. Empty, or
+  //   noHero: true, hides the hero. assets/hero-placeholder.png only marks where a capture goes.
+  // - defaults: the bake reads only these, never the browser's localStorage tweaks.
+  const slides = [
+    {
+      name: 'Cover',
+      cover: true,
+      coverImg: '',
+      eyebrow: 'IN 3 STEPS',
+      headlineHTML: 'a daily brief<br>that <span class="accent">writes<br>itself</span>.',
+      body: '',
+      heroImg: 'assets/hero-placeholder.png',
+      defaults: { headSize: 124, bodySize: 43, bodyTop: 560, dashBottom: 120, dashWidth: 660, dashTilt: -3 },
+    },
+    {
+      name: 'What',
+      eyebrow: 'WHAT IT IS',
+      headlineHTML: 'one page,<br><span class="accent">every morning</span>.',
+      body: 'Too many tabs to skim before work? The fix is a <strong>daily brief</strong>: one short page with what changed overnight in the sources you already follow.',
+      heroImg: 'assets/hero-placeholder.png',
+      defaults: { headSize: 96, bodySize: 43, bodyTop: 420, dashBottom: 110, dashWidth: 640, dashTilt: -1.5 },
+    },
+    {
+      name: 'Why',
+      eyebrow: 'WHY IT MATTERS',
+      headlineHTML: 'stop <span class="accent">checking<br>ten tabs</span>.',
+      body: 'Old way: open every source, skim, forget half of it. New way: <strong>the news comes to you</strong>, sorted, at the same time every day.',
+      heroImg: 'assets/hero-placeholder.png',
+      defaults: { headSize: 96, bodySize: 43, bodyTop: 420, dashBottom: 110, dashWidth: 640, dashTilt: 2 },
+    },
+    {
+      name: 'Parts',
+      eyebrow: 'THE PARTS',
+      headlineHTML: 'three parts,<br><span class="accent">one loop</span>.',
+      body: '<strong>Sources</strong>: where the news comes from.<br><strong>Prompt</strong>: the rules for what to keep.<br><strong>Schedule</strong>: when it runs.',
+      heroImg: 'assets/hero-placeholder.png',
+      defaults: { headSize: 96, bodySize: 43, bodyTop: 420, dashBottom: 110, dashWidth: 600, dashTilt: -2.5 },
+    },
+    {
+      name: 'Step 1',
+      eyebrow: 'STEP 1 / SOURCES',
+      headlineHTML: 'pick <span class="accent">five sources</span>.',
+      body: 'List the feeds, newsletters and pages you already check. <strong>Five is enough</strong> to start; add more once the brief earns its place.',
+      heroImg: 'assets/hero-placeholder.png',
+      defaults: { headSize: 96, bodySize: 43, bodyTop: 340, dashBottom: 110, dashWidth: 700, dashTilt: -1.5 },
+    },
+    {
+      name: 'Step 2',
+      eyebrow: 'STEP 2 / PROMPT',
+      headlineHTML: 'write the<br><span class="accent">prompt once</span>.',
+      body: 'Tell the model what to keep and what to skip: <strong>one line per item</strong>, newest first. Save it as a file so every run follows the same rules.',
+      heroImg: 'assets/hero-placeholder.png',
+      defaults: { headSize: 96, bodySize: 43, bodyTop: 420, dashBottom: 110, dashWidth: 640, dashTilt: 1.5 },
+    },
+    {
+      name: 'Step 3',
+      eyebrow: 'STEP 3 / SCHEDULE',
+      headlineHTML: 'put it on<br>a <span class="accent">timer</span>.',
+      body: 'Run the prompt <strong>every weekday at 7 a.m.</strong> and send the result where you already read: email, chat or your notes.',
+      heroImg: 'assets/hero-placeholder.png',
+      defaults: { headSize: 96, bodySize: 43, bodyTop: 420, dashBottom: 110, dashWidth: 640, dashTilt: -1.5 },
+    },
+    {
+      name: 'Payoff',
+      eyebrow: 'THE PAYOFF',
+      headlineHTML: 'your morning,<br><span class="accent">already read</span>.',
+      body: 'One page with your coffee. The brief flags <strong>what is worth your time</strong> and links the rest.',
+      heroImg: 'assets/hero-placeholder.png',
+      defaults: { headSize: 96, bodySize: 43, bodyTop: 420, dashBottom: 110, dashWidth: 660, dashTilt: 2 },
+    },
+    {
+      name: 'CTA',
+      eyebrow: 'WANT THE SETUP?',
+      headlineHTML: 'one word<br>in the<br><span class="accent">comments</span>.',
+      body: 'Comment <strong>KEYWORD</strong> and I\'ll send you <strong>the full setup</strong>.',
+      heroImg: '',
+      noHero: true,
+      defaults: { headSize: 150, bodySize: 52, bodyTop: 760, dashBottom: 130, dashWidth: 880, dashTilt: -1.5 },
+    },
+  ];
+
+  const TOTAL = slides.length;
+  let i = 0;
+
+  // An image cover (coverImg set) is a finished PNG: no fields, no tweaks.
+  const isImageCover = (s) => !!(s.cover && s.coverImg);
+
+  // Tweak storage, namespaced by the page's path so each deck keeps its own tweaks.
+  const NS = location.pathname;
+  const G_KEY = `${NS}::global-v1`;
+  const sKey = (name) => `${NS}::slide-${name}-v1`;
+
+  const GLOBAL_DEFAULTS = { accent: '#0E0E0E' };
+
+  function loadGlobal() {
+    try { return { ...GLOBAL_DEFAULTS, ...(JSON.parse(localStorage.getItem(G_KEY) || '{}')) }; }
+    catch { return { ...GLOBAL_DEFAULTS }; }
+  }
+  function saveGlobal(g) { try { localStorage.setItem(G_KEY, JSON.stringify(g)); } catch {} }
+  function loadSlide(name) {
+    try { return JSON.parse(localStorage.getItem(sKey(name)) || '{}'); }
+    catch { return {}; }
+  }
+  function saveSlide(name, s) { try { localStorage.setItem(sKey(name), JSON.stringify(s)); } catch {} }
+
+  function effectiveSlide(idx) {
+    const base = slides[idx];
+    const def = base.defaults || {};
+    const override = loadSlide(base.name);
+    return {
+      eyebrow: override.eyebrow ?? base.eyebrow,
+      headlineHTML: override.headlineHTML ?? base.headlineHTML,
+      body: override.body ?? base.body,
+      heroImg: override.heroImg ?? base.heroImg,
+      headSize: override.headSize ?? def.headSize,
+      bodySize: override.bodySize ?? def.bodySize,
+      bodyTop: override.bodyTop ?? def.bodyTop,
+      dashBottom: override.dashBottom ?? def.dashBottom,
+      dashWidth: override.dashWidth ?? def.dashWidth,
+      dashTilt: override.dashTilt ?? def.dashTilt,
+    };
+  }
+
+  // DOM
+  const slideEl = document.getElementById('slide');
+  const coverImg = document.getElementById('coverImg');
+  const bgImg = document.getElementById('bgImg');
+  const eyebrowEl = document.getElementById('eyebrow');
+  const headlineEl = document.getElementById('headline');
+  const bodyEl = document.getElementById('bodyCopy');
+  const heroImg = document.getElementById('heroImg');
+  const heroEl = document.getElementById('hero');
+  const metaPage = document.getElementById('metaPage');
+  const footerPage = document.getElementById('footerPage');
+  const numEl = document.getElementById('num');
+  const nameEl = document.getElementById('name');
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function render(idx) {
+    const s = slides[idx];
+    const g = loadGlobal();
+    const imageCover = isImageCover(s);
+
+    slideEl.classList.toggle('is-cover', imageCover);
+
+    if (imageCover) {
+      coverImg.src = s.coverImg;
+      numEl.textContent = `${idx + 1}/${TOTAL}`;
+      nameEl.textContent = s.name;
+      syncTweakUI();
+      return;
+    }
+    coverImg.removeAttribute('src');
+
+    const eff = effectiveSlide(idx);
+    eyebrowEl.textContent = eff.eyebrow || '';
+    headlineEl.innerHTML = eff.headlineHTML || '';
+    bodyEl.innerHTML = eff.body || '';
+    const showHero = !s.noHero && !!eff.heroImg;
+    heroEl.style.display = showHero ? 'block' : 'none';
+    if (showHero) heroImg.src = eff.heroImg;
+    else heroImg.removeAttribute('src');
+
+    slideEl.style.setProperty('--accent', g.accent);
+    slideEl.style.setProperty('--head-size', eff.headSize + 'px');
+    slideEl.style.setProperty('--body-size', eff.bodySize + 'px');
+    slideEl.style.setProperty('--body-top', eff.bodyTop + 'px');
+    slideEl.style.setProperty('--dash-bottom', eff.dashBottom + 'px');
+    slideEl.style.setProperty('--dash-width', eff.dashWidth + 'px');
+    slideEl.style.setProperty('--dash-tilt', eff.dashTilt + 'deg');
+
+    metaPage.textContent = `${pad(idx + 1)} / ${pad(TOTAL)}`;
+    footerPage.textContent = `${pad(idx + 1)} / ${pad(TOTAL)}`;
+    numEl.textContent = `${idx + 1}/${TOTAL}`;
+    nameEl.textContent = s.name;
+
+    syncTweakUI();
+  }
+
+  // Nav
+  document.getElementById('prev').addEventListener('click', () => { i = (i - 1 + TOTAL) % TOTAL; render(i); });
+  document.getElementById('next').addEventListener('click', () => { i = (i + 1) % TOTAL; render(i); });
+  document.addEventListener('keydown', (e) => {
+    if (e.target.matches('input, textarea')) return;
+    if (e.key === 'ArrowLeft')  { i = (i - 1 + TOTAL) % TOTAL; render(i); }
+    if (e.key === 'ArrowRight') { i = (i + 1) % TOTAL; render(i); }
+    if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+  });
+
+  window.goSlide = (idx) => { i = idx; render(idx); };
+  window.totalSlides = () => TOTAL;
+
+  document.getElementById('fs').addEventListener('click', () => {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  });
+
+  function fit() {
+    const wrap = document.getElementById('slideWrap');
+    const margin = 80;
+    const sx = (window.innerWidth - margin) / 1080;
+    const sy = (window.innerHeight - margin) / 1350;
+    wrap.style.transform = `scale(${Math.min(sx, sy)})`;
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  // ===== Tweak panel =====
+  const twPanel = document.getElementById('twPanel');
+  document.getElementById('twToggle').addEventListener('click', () => twPanel.classList.toggle('open'));
+  document.getElementById('twClose').addEventListener('click', () => twPanel.classList.remove('open'));
+
+  const ctrls = {
+    accent: document.getElementById('twAccent'),
+    headSize: document.getElementById('twHeadSize'),
+    bodySize: document.getElementById('twBodySize'),
+    eyebrow: document.getElementById('twEyebrow'),
+    headline: document.getElementById('twHeadline'),
+    body: document.getElementById('twBody'),
+    bodyTop: document.getElementById('twBodyTop'),
+    heroImg: document.getElementById('twHeroImg'),
+    dashBottom: document.getElementById('twDashBottom'),
+    dashWidth: document.getElementById('twDashWidth'),
+    dashTilt: document.getElementById('twDashTilt'),
+  };
+  const vals = {
+    headSize: document.getElementById('vHeadSize'),
+    bodySize: document.getElementById('vBodySize'),
+    bodyTop: document.getElementById('vBodyTop'),
+    dashBottom: document.getElementById('vDashBottom'),
+    dashWidth: document.getElementById('vDashWidth'),
+    dashTilt: document.getElementById('vDashTilt'),
+    slideName: document.getElementById('vSlideName'),
+  };
+
+  function syncTweakUI() {
+    const g = loadGlobal();
+    const s = slides[i];
+    ctrls.accent.value = g.accent;
+    vals.slideName.textContent = s.name;
+
+    if (isImageCover(s)) {
+      ['headSize','bodySize','eyebrow','headline','body','bodyTop','heroImg','dashBottom','dashWidth','dashTilt'].forEach(k => ctrls[k].disabled = true);
+      return;
+    }
+    ['headSize','bodySize','eyebrow','headline','body','bodyTop','heroImg','dashBottom','dashWidth','dashTilt'].forEach(k => ctrls[k].disabled = false);
+
+    const eff = effectiveSlide(i);
+    ctrls.headSize.value = eff.headSize; vals.headSize.textContent = eff.headSize;
+    ctrls.bodySize.value = eff.bodySize; vals.bodySize.textContent = eff.bodySize;
+    ctrls.eyebrow.value = eff.eyebrow;
+    ctrls.headline.value = eff.headlineHTML;
+    ctrls.body.value = eff.body;
+    ctrls.bodyTop.value = eff.bodyTop; vals.bodyTop.textContent = eff.bodyTop + 'px';
+    ctrls.heroImg.value = eff.heroImg;
+    ctrls.dashBottom.value = eff.dashBottom; vals.dashBottom.textContent = eff.dashBottom + 'px';
+    ctrls.dashWidth.value = eff.dashWidth; vals.dashWidth.textContent = eff.dashWidth + 'px';
+    ctrls.dashTilt.value = eff.dashTilt; vals.dashTilt.textContent = eff.dashTilt + '°';
+  }
+
+  // Global handlers
+  ctrls.accent.addEventListener('input', () => {
+    const g = loadGlobal(); g.accent = ctrls.accent.value; saveGlobal(g); render(i);
+  });
+  ctrls.headSize.addEventListener('input', () => updatePerSlide('headSize', +ctrls.headSize.value));
+  ctrls.bodySize.addEventListener('input', () => updatePerSlide('bodySize', +ctrls.bodySize.value));
+  ctrls.eyebrow.addEventListener('input', () => updatePerSlide('eyebrow', ctrls.eyebrow.value));
+  ctrls.headline.addEventListener('input', () => updatePerSlide('headlineHTML', ctrls.headline.value));
+  ctrls.body.addEventListener('input', () => updatePerSlide('body', ctrls.body.value));
+  ctrls.bodyTop.addEventListener('input', () => updatePerSlide('bodyTop', +ctrls.bodyTop.value));
+  ctrls.heroImg.addEventListener('input', () => updatePerSlide('heroImg', ctrls.heroImg.value));
+  ctrls.dashBottom.addEventListener('input', () => updatePerSlide('dashBottom', +ctrls.dashBottom.value));
+  ctrls.dashWidth.addEventListener('input', () => updatePerSlide('dashWidth', +ctrls.dashWidth.value));
+  ctrls.dashTilt.addEventListener('input', () => updatePerSlide('dashTilt', +ctrls.dashTilt.value));
+
+  function updatePerSlide(key, val) {
+    const s = slides[i];
+    if (isImageCover(s)) return;
+    const cur = loadSlide(s.name);
+    cur[key] = val;
+    saveSlide(s.name, cur);
+    render(i);
+  }
+
+  document.getElementById('twReset').addEventListener('click', () => {
+    const s = slides[i];
+    if (isImageCover(s)) return;
+    try { localStorage.removeItem(sKey(s.name)); } catch {}
+    render(i);
+  });
+
+  document.getElementById('twExport').addEventListener('click', async () => {
+    const out = { global: loadGlobal(), perSlide: {} };
+    slides.forEach(s => {
+      if (isImageCover(s)) return;
+      const o = loadSlide(s.name);
+      if (Object.keys(o).length) out.perSlide[s.name] = o;
+    });
+    const text = JSON.stringify(out, null, 2);
+    // Show the JSON first: the clipboard call can reject or wait on a permission prompt.
+    const box = document.getElementById('twExportOut');
+    box.textContent = text;
+    box.style.display = 'block';
+    try { await navigator.clipboard.writeText(text); } catch {}
+  });
+
+  // Initial render — after all consts/handlers wired
+  render(0);
+</script>
+</body>
+</html>

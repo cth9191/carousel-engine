@@ -1,0 +1,835 @@
+{
+  "topic": "Claude Code makes videos with code (for free)",
+  "spine": "A",
+  "style": "S11",
+  "hook": {
+    "main": "Claude Code now makes videos.",
+    "kicker": "(for free) · No video editor. No AI video credits. Runs on your Claude plan.",
+    "visual_promise": "The CLAUDE-wordmark frame from the low-effort, one-prompt reel (video 5:05) inside a video player",
+    "formula": "F10",
+    "score": {
+      "R1": 2,
+      "R2": 2,
+      "R3": 2,
+      "R4": 1,
+      "R5": 2,
+      "R6": 2,
+      "total": 11,
+      "note": "Judge panel picked this hook 2 of 3 (outcome draft); '(for free)' is bounded by the kicker. R4=1: evergreen, no news peg."
+    }
+  },
+  "alt_hooks": [
+    {
+      "main": "My Claude Code makes videos now",
+      "kicker": "(for free) · here's the exact prompt",
+      "formula": "F10",
+      "note": "all three writers produced it independently; best A/B backup"
+    },
+    {
+      "main": "Claude can't watch videos. It makes yours.",
+      "kicker": "(one prompt · $0 in new tools)",
+      "formula": "F11",
+      "note": "accuracy judge's pick; best B-test"
+    },
+    {
+      "main": "Claude Code + 2 free tools = your own explainer video",
+      "kicker": "$0 in video software",
+      "formula": "F12",
+      "note": "enemy draft"
+    }
+  ],
+  "keyword": "ANIMATE",
+  "deliverable": {
+    "name": "animate skill (github.com/cth9191/animate)",
+    "exists": true,
+    "path_or_url": "https://github.com/cth9191/animate"
+  },
+  "intent": {
+    "what": "Claude Code, Claude's coding app, makes real MP4 videos by writing code that draws every frame; it is not an AI video generator.",
+    "why": "You can make your own animated videos without paying for any video tools.",
+    "first_step": "Comment ANIMATE to get the free animate skill, paste its link into Claude Code to install it, then ask it for a video."
+  },
+  "glossary": [
+    {
+      "term": "Claude Code",
+      "defined_on": 1,
+      "definition": "Claude's coding app"
+    },
+    {
+      "term": "MP4",
+      "defined_on": 2,
+      "definition": "a normal video file"
+    },
+    {
+      "term": "JavaScript",
+      "defined_on": 4,
+      "definition": "the code language web pages run on"
+    },
+    {
+      "term": "frame",
+      "defined_on": 4,
+      "definition": "one picture; 60 make one second"
+    },
+    {
+      "term": "Playwright",
+      "defined_on": 4,
+      "definition": "a hidden copy of Chrome that draws each frame"
+    },
+    {
+      "term": "FFmpeg",
+      "defined_on": 4,
+      "definition": "a free tool that stitches frames into an MP4"
+    },
+    {
+      "term": "contact sheet",
+      "defined_on": 5,
+      "definition": "one image with many frames in a grid"
+    },
+    {
+      "term": "storyboard",
+      "defined_on": 6,
+      "definition": "one page with a key frame for every scene"
+    },
+    {
+      "term": "canvas",
+      "defined_on": 7,
+      "definition": "a drawing area on a web page"
+    },
+    {
+      "term": "skill",
+      "defined_on": 9,
+      "definition": "a saved set of steps Claude Code follows"
+    }
+  ],
+  "slides": [
+    {
+      "n": 1,
+      "role": "cover",
+      "lesson": "Claude Code can make real videos, and it costs nothing extra.",
+      "headline": "Claude Code now makes videos.",
+      "strings": [
+        {
+          "text": "CHASE AI",
+          "place": "chrome",
+          "count": 1
+        },
+        {
+          "text": "01 / 10",
+          "place": "counter",
+          "count": 1
+        },
+        {
+          "text": "Claude Code now makes videos.",
+          "place": "headline",
+          "count": 1
+        },
+        {
+          "text": "(for free)",
+          "place": "headline-2",
+          "count": 1
+        },
+        {
+          "text": "No video editor. No AI video credits. Runs on your Claude plan.",
+          "place": "kicker",
+          "count": 1
+        },
+        {
+          "text": "made by Claude Code, Claude's coding app · one prompt",
+          "place": "player-bar",
+          "count": 1
+        }
+      ],
+      "evidence": {
+        "kind": "prove",
+        "describe": "A still from a finished video Claude Code made from one short prompt: the word CLAUDE in white letters orbiting an orange ring on black, inside a video player with a play button",
+        "source": "video 5:05 (Level 1, the low-effort run, ~20 min; reel spans 4:55-5:05), hi-res frame pulled from the source video (not included); webcam bubble to scrub. F2, F8"
+      }
+    },
+    {
+      "n": 2,
+      "role": "what",
+      "lesson": "It is not AI video; Claude writes code that draws every frame.",
+      "headline": "Not AI video. Code that draws.",
+      "strings": [
+        {
+          "text": "CHASE AI",
+          "place": "chrome",
+          "count": 1
+        },
+        {
+          "text": "02 / 10",
+          "place": "counter",
+          "count": 1
+        },
+        {
+          "text": "WHAT IT IS",
+          "place": "eyebrow",
+          "count": 1
+        },
+        {
+          "text": "Not AI video. Code that draws.",
+          "place": "headline",
+          "count": 1
+        },
+        {
+          "text": "AI video tools guess every pixel. Claude Code writes code that draws each picture, then joins the pictures into an MP4 video.",
+          "place": "body",
+          "count": 1
+        },
+        {
+          "text": "drawn by hand",
+          "place": "capture (struck through)",
+          "count": 1
+        },
+        {
+          "text": "AI video",
+          "place": "capture (struck through)",
+          "count": 1
+        },
+        {
+          "text": "You describe it → Claude codes every picture → checks them → you get an MP4",
+          "place": "strip",
+          "count": 1
+        }
+      ],
+      "evidence": {
+        "kind": "prove",
+        "describe": "A frame from a video Claude Code made: a circle-and-wave animation, with the words 'drawn by hand' and 'AI video' crossed out underneath",
+        "source": "video 1:08 (one-shot explainer beat 'not drawn, not AI video'), draft frame from the source video (not included); F2, F4"
+      }
+    },
+    {
+      "n": 3,
+      "role": "why",
+      "lesson": "The only cost is the Claude plan you already have.",
+      "headline": "The only bill: your Claude plan",
+      "strings": [
+        {
+          "text": "CHASE AI",
+          "place": "chrome",
+          "count": 1
+        },
+        {
+          "text": "03 / 10",
+          "place": "counter",
+          "count": 1
+        },
+        {
+          "text": "WHAT IT COSTS",
+          "place": "eyebrow",
+          "count": 1
+        },
+        {
+          "text": "The only bill: your Claude plan",
+          "place": "headline",
+          "count": 1
+        },
+        {
+          "text": "Video editing software | $0 · not needed",
+          "place": "receipt",
+          "count": 1
+        },
+        {
+          "text": "AI video generator credits | $0 · not needed",
+          "place": "receipt",
+          "count": 1
+        },
+        {
+          "text": "The 2 tools it runs on your computer | $0 · free and open source",
+          "place": "receipt",
+          "count": 1
+        },
+        {
+          "text": "Voice-over | optional",
+          "place": "receipt",
+          "count": 1
+        },
+        {
+          "text": "Your Claude plan | the one you already have",
+          "place": "receipt",
+          "count": 1
+        },
+        {
+          "text": "Total extra: $0",
+          "place": "receipt-total",
+          "count": 1
+        },
+        {
+          "text": "Free ≠ unlimited: videos count toward your Claude usage limits.",
+          "place": "footnote",
+          "count": 1
+        }
+      ],
+      "evidence": {
+        "kind": "prove",
+        "describe": "A receipt: video software $0, AI video credits $0, the 2 tools $0, voice-over optional, your Claude plan, total extra $0",
+        "source": "F3: video ~3:00 'I'm not paying for any outside tools to do this'; outro 'We just pay for it with usage'; Playwright Apache-2.0, FFmpeg LGPL/GPL"
+      }
+    },
+    {
+      "n": 4,
+      "role": "model",
+      "lesson": "A video is 60 pictures a second; code draws them and two free tools turn them into an MP4.",
+      "headline": "A video is 60 pictures a second",
+      "strings": [
+        {
+          "text": "CHASE AI",
+          "place": "chrome",
+          "count": 1
+        },
+        {
+          "text": "04 / 10",
+          "place": "counter",
+          "count": 1
+        },
+        {
+          "text": "HOW IT WORKS",
+          "place": "eyebrow",
+          "count": 1
+        },
+        {
+          "text": "A video is 60 pictures a second",
+          "place": "headline",
+          "count": 1
+        },
+        {
+          "text": "1 · JavaScript: the code language web pages run on",
+          "place": "part-label",
+          "count": 1
+        },
+        {
+          "text": "2 · Playwright: a hidden copy of Chrome that draws each frame",
+          "place": "part-label",
+          "count": 1
+        },
+        {
+          "text": "3 · Frame: one picture. 60 make one second.",
+          "place": "part-label",
+          "count": 1
+        },
+        {
+          "text": "4 · FFmpeg: a free tool that stitches frames into an MP4",
+          "place": "part-label",
+          "count": 1
+        },
+        {
+          "text": "Playwright and FFmpeg are both free and open source.",
+          "place": "caption",
+          "count": 1
+        }
+      ],
+      "evidence": {
+        "kind": "explain",
+        "describe": "Diagram from the explainer Claude made about itself: a box of code, a browser drawing a circle-and-wave picture, a stack of frames, FFmpeg, a video play button; numbered 1-4 to match the labels",
+        "source": "video 1:32 (clean pipeline beat of the one-shot explainer), draft frame from the source video (not included); F5"
+      }
+    },
+    {
+      "n": 5,
+      "role": "how",
+      "lesson": "Claude checks a contact sheet of its own frames, fixes the code and re-renders.",
+      "headline": "It checks its own work",
+      "strings": [
+        {
+          "text": "CHASE AI",
+          "place": "chrome",
+          "count": 1
+        },
+        {
+          "text": "05 / 10",
+          "place": "counter",
+          "count": 1
+        },
+        {
+          "text": "THE LOOP",
+          "place": "eyebrow",
+          "count": 1
+        },
+        {
+          "text": "It checks its own work",
+          "place": "headline",
+          "count": 1
+        },
+        {
+          "text": "This is the part that makes it click.",
+          "place": "rehook",
+          "count": 1
+        },
+        {
+          "text": "Claude can't watch a video. So it pulls a contact sheet: one image with many frames in a grid. It spots what's wrong, fixes the code, re-renders and repeats.",
+          "place": "body",
+          "count": 1
+        },
+        {
+          "text": "Before: label cut off",
+          "place": "panel-label",
+          "count": 1
+        },
+        {
+          "text": "After: fixed",
+          "place": "panel-label",
+          "count": 1
+        },
+        {
+          "text": "Shown in the explainer Claude made about itself.",
+          "place": "caption",
+          "count": 1
+        }
+      ],
+      "evidence": {
+        "kind": "explain",
+        "describe": "Two contact sheets side by side from Claude's own explainer: before, frames flagged where a label is cut off; after, the same frames with checkmarks",
+        "source": "video 1:39 + 1:41 (explainer beat 'look, find, fix'), draft frames from the source video (not included; re-extract at 1920); a depiction of the loop Claude runs (F5, F7), labelled as such, not a live capture"
+      }
+    },
+    {
+      "n": 6,
+      "role": "how",
+      "lesson": "Approve a storyboard before the long render.",
+      "headline": "Ask for a storyboard first",
+      "strings": [
+        {
+          "text": "CHASE AI",
+          "place": "chrome",
+          "count": 1
+        },
+        {
+          "text": "06 / 10",
+          "place": "counter",
+          "count": 1
+        },
+        {
+          "text": "PRO TIP",
+          "place": "eyebrow",
+          "count": 1
+        },
+        {
+          "text": "Ask for a storyboard first",
+          "place": "headline",
+          "count": 1
+        },
+        {
+          "text": "A full render can take 20+ minutes. So ask for a storyboard first: one page with a key frame for every scene. Approve it before the long build starts.",
+          "place": "body",
+          "count": 1
+        },
+        {
+          "text": "Storyboard: one key frame per scene",
+          "place": "panel-label",
+          "count": 1
+        },
+        {
+          "text": "7 scenes to approve before the full build",
+          "place": "callout",
+          "count": 1
+        }
+      ],
+      "evidence": {
+        "kind": "prove",
+        "describe": "A real storyboard page: 7 numbered key frames of the planned video, each with its timing and sound, and a note to give each panel a thumbs up or down",
+        "source": "video 6:22, hi-res frame pulled from the source video (not included); F7"
+      }
+    },
+    {
+      "n": 7,
+      "role": "peak",
+      "lesson": "The exact prompt to paste into Claude Code.",
+      "headline": "Paste this into Claude Code",
+      "strings": [
+        {
+          "text": "CHASE AI",
+          "place": "chrome",
+          "count": 1
+        },
+        {
+          "text": "07 / 10",
+          "place": "counter",
+          "count": 1
+        },
+        {
+          "text": "THE PROMPT",
+          "place": "eyebrow",
+          "count": 1
+        },
+        {
+          "text": "Paste this into Claude Code",
+          "place": "headline",
+          "count": 1
+        },
+        {
+          "text": "PROMPT",
+          "place": "card-label",
+          "count": 1
+        },
+        {
+          "text": "Make a 30-second animated explainer of how [TOPIC] works, 16:9.",
+          "place": "prompt-card",
+          "count": 1
+        },
+        {
+          "text": "Build it in JavaScript on a canvas, with a soundtrack generated in code,",
+          "place": "prompt-card",
+          "count": 1
+        },
+        {
+          "text": "and render it to an MP4 with Playwright and FFmpeg.",
+          "place": "prompt-card",
+          "count": 1
+        },
+        {
+          "text": "Before you call it done, use FFmpeg to pull a contact sheet,",
+          "place": "prompt-card",
+          "count": 1
+        },
+        {
+          "text": "look at it, fix what's wrong, re-render, and repeat.",
+          "place": "prompt-card",
+          "count": 1
+        },
+        {
+          "text": "+ add: “Storyboard it first and wait for my OK.”",
+          "place": "prompt-addon",
+          "count": 1
+        },
+        {
+          "text": "[TOPIC] = your subject · canvas = a drawing area on a web page · 16:9 = widescreen",
+          "place": "key",
+          "count": 1
+        },
+        {
+          "text": "First time? Step 2 on slide 9 installs the free tools for you.",
+          "place": "footer",
+          "count": 1
+        }
+      ],
+      "evidence": {
+        "kind": "prove",
+        "describe": "The prompt as a clean text card with one key line under it",
+        "source": "video 8:56, hi-res frame pulled from the source video, not included (on screen: 'prompt → paste into Claude Code'); optional voice-over line trimmed; storyboard add-on from the Level 1 advice (F7)"
+      }
+    },
+    {
+      "n": 8,
+      "role": "use",
+      "lesson": "Real videos it already made.",
+      "headline": "Three real videos it made",
+      "strings": [
+        {
+          "text": "CHASE AI",
+          "place": "chrome",
+          "count": 1
+        },
+        {
+          "text": "08 / 10",
+          "place": "counter",
+          "count": 1
+        },
+        {
+          "text": "PROOF",
+          "place": "eyebrow",
+          "count": 1
+        },
+        {
+          "text": "Three real videos it made",
+          "place": "headline",
+          "count": 1
+        },
+        {
+          "text": "1 · An explainer of how it all works, made in one attempt",
+          "place": "row",
+          "count": 1
+        },
+        {
+          "text": "2 · A 15-second motion-graphics reel from one short prompt",
+          "place": "row",
+          "count": 1
+        },
+        {
+          "text": "3 · A history video in a reference video's style, new subject",
+          "place": "row",
+          "count": 1
+        },
+        {
+          "text": "Reference video",
+          "place": "panel-label",
+          "count": 1
+        },
+        {
+          "text": "Claude Code's remake",
+          "place": "panel-label",
+          "count": 1
+        }
+      ],
+      "evidence": {
+        "kind": "prove",
+        "describe": "Three real frames: a dark circle-and-wave explainer, a frame from the motion reel, and a side-by-side of an old-paper history video and Claude's remake in the same style",
+        "source": "video 1:22, 4:58 (low-effort reel) and 10:52, hi-res frames pulled from the source video (not included); F4, F8"
+      }
+    },
+    {
+      "n": 9,
+      "role": "start",
+      "lesson": "Three steps to your first video.",
+      "headline": "Start here: 3 steps",
+      "strings": [
+        {
+          "text": "CHASE AI",
+          "place": "chrome",
+          "count": 1
+        },
+        {
+          "text": "09 / 10",
+          "place": "counter",
+          "count": 1
+        },
+        {
+          "text": "START HERE",
+          "place": "eyebrow",
+          "count": 1
+        },
+        {
+          "text": "Start here: 3 steps",
+          "place": "headline",
+          "count": 1
+        },
+        {
+          "text": "1 · Comment ANIMATE. I'll send you my free animate skill: a saved set of steps Claude Code follows.",
+          "place": "step",
+          "count": 1
+        },
+        {
+          "text": "2 · Paste its link into Claude Code. It installs the free tools for you.",
+          "place": "step",
+          "count": 1
+        },
+        {
+          "text": "3 · Type:",
+          "place": "step",
+          "count": 1
+        },
+        {
+          "text": "/animate a 45-second history of the bicycle, cut paper",
+          "place": "command-card",
+          "count": 1
+        },
+        {
+          "text": "Styles: cut paper, crosshatch, riso, sketchbook, math, pixel, isometric, or your own look",
+          "place": "style-strip",
+          "count": 1
+        }
+      ],
+      "evidence": {
+        "kind": "prove",
+        "describe": "A command card with the /animate line above a strip of 7 small sample frames, one per style",
+        "source": "README 'Use' (video 13:12); styles grid (video 12:05, and docs/styles.png in the animate repo); F6, F9"
+      }
+    },
+    {
+      "n": 10,
+      "role": "cta",
+      "lesson": "One action: comment the keyword.",
+      "headline": "Comment ANIMATE",
+      "strings": [
+        {
+          "text": "CHASE AI",
+          "place": "chrome",
+          "count": 1
+        },
+        {
+          "text": "10 / 10",
+          "place": "counter",
+          "count": 1
+        },
+        {
+          "text": "GET THE SKILL",
+          "place": "eyebrow",
+          "count": 1
+        },
+        {
+          "text": "Comment ANIMATE",
+          "place": "headline",
+          "count": 1
+        },
+        {
+          "text": "I'll send you my free animate skill + the install steps.",
+          "place": "body",
+          "count": 1
+        }
+      ],
+      "evidence": {
+        "kind": "none",
+        "describe": "Text-only CTA: big Comment ANIMATE in a hand-drawn speech bubble, no evidence",
+        "source": "deliverable https://github.com/cth9191/animate (F10)"
+      }
+    }
+  ],
+  "gates": {
+    "G1": {
+      "pass": true,
+      "note": "Names the outcome (videos). '(for free)' is bounded on the cover by the kicker and paid off on slide 3's receipt. No count, no superlative, not a bare announcement."
+    },
+    "G2": {
+      "pass": true,
+      "note": "Slide 2 defines the whole thing ('Claude Code writes code that draws each picture, then joins them into an MP4'). Tools stay unnamed until slide 4."
+    },
+    "G3": {
+      "pass": true,
+      "note": "One new term per slide except the logged deviations (slide 4 vocabulary, slide 7 key line). No new terms on 8-10 except 'skill' on 9, defined inline."
+    },
+    "G4": {
+      "pass": true,
+      "note": "Headlines 2-7 words. Prose bodies <= 43 words; structured rows (receipt, labels, prompt, steps) run longer by design."
+    },
+    "G5": {
+      "pass": true,
+      "note": "Claude Code now makes videos, for free. It's not AI video, it's code that draws, and the only bill is your Claude plan. Because a video is 60 pictures a second, and it checks its own work. So ask for a storyboard first, then paste this prompt. Here are three real videos it made. Start here in 3 steps: comment ANIMATE."
+    },
+    "G6": {
+      "pass": true,
+      "note": "Ordered by viewer questions (what, cost, how, prompt, proof, start), not the video's level 1-4 order. The effort-level tangent moved to the caption."
+    },
+    "G7": {
+      "pass": true,
+      "note": "ANIMATE matches on slide 9, slide 10 and the caption. The deliverable exists (github.com/cth9191/animate, 691 stars). WARNING: ANIMATE must be wired in the comment-to-DM automation before posting."
+    },
+    "G8": {
+      "pass": true,
+      "note": "what yes · why yes · first_step partial · no blocking terms"
+    }
+  },
+  "cold_reader": {
+    "pass": true,
+    "ran_at": "2026-10-14T21:23:21.325Z",
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "medium",
+    "codex_version": "codex-cli 0.162.1",
+    "codex_bin": "codex (npm global, on PATH)",
+    "flags": "exec --ignore-user-config -m gpt-6.1-sol -c model_reasoning_effort=\"medium\" -c service_tier=\"priority\" -c web_search=\"disabled\" --disable apps --disable image_generation -s read-only --skip-git-repo-check --ephemeral --json",
+    "wall_ms": {
+      "reader": 16719,
+      "judge": 10202,
+      "total": 26923
+    },
+    "usage": {
+      "reader": {
+        "input_tokens": 20463,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 578,
+        "reasoning_output_tokens": 213
+      },
+      "judge": {
+        "input_tokens": 20877,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 328,
+        "reasoning_output_tokens": 63
+      }
+    },
+    "notes": [],
+    "reader": {
+      "what": "Claude Code, Claude’s coding app, can turn a written request into an animated video by writing code that draws its pictures.",
+      "what_confidence": "clear",
+      "what_understood_on_slide": 1,
+      "why": "It lets me make animated explainers without buying video editing software or video generation credits, using my Claude plan.",
+      "why_confidence": "clear",
+      "first_step": "Comment ANIMATE to receive the free animate skill and installation steps.",
+      "first_step_confidence": "clear",
+      "undefined_terms": [
+        {
+          "term": "MP4",
+          "slide": 2,
+          "guess": "Guess: a type of video file.",
+          "impact": "minor"
+        },
+        {
+          "term": "riso",
+          "slide": 9,
+          "guess": "Guess: a visual style represented by one of the sample pictures, but I cannot tell what distinguishes it.",
+          "impact": "minor"
+        },
+        {
+          "term": "isometric",
+          "slide": 9,
+          "guess": "Guess: a style that makes drawings look three-dimensional from an angled view.",
+          "impact": "minor"
+        }
+      ],
+      "confusing_slides": [
+        {
+          "slide": 7,
+          "issue": "It tells me to paste a prompt now, but says installation comes on slide 9; I am unsure whether I should install the tools before trying this prompt."
+        }
+      ],
+      "summary": "Use Claude Code to make and check code-drawn animated videos with free tools; comment ANIMATE to get the saved instructions and setup steps."
+    },
+    "judge": {
+      "what_match": {
+        "match": "yes",
+        "reason": "The reader understood on slide 1 that Claude Code makes animated videos by writing drawing code, matching the mechanism clarified by slide 2’s “Not AI video. Code that draws.”"
+      },
+      "why_match": {
+        "match": "yes",
+        "reason": "The reader recovered the benefit of making animated videos without paying for video software or generation credits, as stated on slide 3."
+      },
+      "first_step_match": {
+        "match": "partial",
+        "reason": "The reader recovered slide 10’s “Comment ANIMATE” instruction but omitted slide 9’s next actions: paste the skill link into Claude Code to install it, then request a video."
+      },
+      "undefined_terms_blocking": [],
+      "verdict": "pass",
+      "fix_hints": [
+        "Slide 10: repeat the complete sequence: “Comment ANIMATE → paste the link into Claude Code to install → ask for your video.”",
+        "Slide 7: replace “Paste this into Claude Code” with “After installing on slide 9, paste this into Claude Code” to clarify the order."
+      ]
+    },
+    "reader_input": "--- SLIDE 1 of 10 ---\nHeadline: Claude Code now makes videos.\nText:\n- CHASE AI\n- (for free)\n- No video editor. No AI video credits. Runs on your Claude plan.\n- made by Claude Code, Claude's coding app · one prompt\n[A still from a finished video Claude Code made from one short prompt: the word CLAUDE in white letters orbiting an orange ring on black, inside a video player with a play button]\n\n--- SLIDE 2 of 10 ---\nHeadline: Not AI video. Code that draws.\nText:\n- WHAT IT IS\n- AI video tools guess every pixel. Claude Code writes code that draws each picture, then joins the pictures into an MP4 video.\n- drawn by hand\n- AI video\n- You describe it → Claude codes every picture → checks them → you get an MP4\n[A frame from a video Claude Code made: a circle-and-wave animation, with the words 'drawn by hand' and 'AI video' crossed out underneath]\n\n--- SLIDE 3 of 10 ---\nHeadline: The only bill: your Claude plan\nText:\n- WHAT IT COSTS\n- Video editing software | $0 · not needed\n- AI video generator credits | $0 · not needed\n- The 2 tools it runs on your computer | $0 · free and open source\n- Voice-over | optional\n- Your Claude plan | the one you already have\n- Total extra: $0\n- Free ≠ unlimited: videos count toward your Claude usage limits.\n[A receipt: video software $0, AI video credits $0, the 2 tools $0, voice-over optional, your Claude plan, total extra $0]\n\n--- SLIDE 4 of 10 ---\nHeadline: A video is 60 pictures a second\nText:\n- HOW IT WORKS\n- 1 · JavaScript: the code language web pages run on\n- 2 · Playwright: a hidden copy of Chrome that draws each frame\n- 3 · Frame: one picture. 60 make one second.\n- 4 · FFmpeg: a free tool that stitches frames into an MP4\n- Playwright and FFmpeg are both free and open source.\n[Diagram from the explainer Claude made about itself: a box of code, a browser drawing a circle-and-wave picture, a stack of frames, FFmpeg, a video play button; numbered 1-4 to match the labels]\n\n--- SLIDE 5 of 10 ---\nHeadline: It checks its own work\nText:\n- THE LOOP\n- This is the part that makes it click.\n- Claude can't watch a video. So it pulls a contact sheet: one image with many frames in a grid. It spots what's wrong, fixes the code, re-renders and repeats.\n- Before: label cut off\n- After: fixed\n- Shown in the explainer Claude made about itself.\n[Two contact sheets side by side from Claude's own explainer: before, frames flagged where a label is cut off; after, the same frames with checkmarks]\n\n--- SLIDE 6 of 10 ---\nHeadline: Ask for a storyboard first\nText:\n- PRO TIP\n- A full render can take 20+ minutes. So ask for a storyboard first: one page with a key frame for every scene. Approve it before the long build starts.\n- Storyboard: one key frame per scene\n- 7 scenes to approve before the full build\n[A real storyboard page: 7 numbered key frames of the planned video, each with its timing and sound, and a note to give each panel a thumbs up or down]\n\n--- SLIDE 7 of 10 ---\nHeadline: Paste this into Claude Code\nText:\n- THE PROMPT\n- PROMPT\n- Make a 30-second animated explainer of how [TOPIC] works, 16:9.\n- Build it in JavaScript on a canvas, with a soundtrack generated in code,\n- and render it to an MP4 with Playwright and FFmpeg.\n- Before you call it done, use FFmpeg to pull a contact sheet,\n- look at it, fix what's wrong, re-render, and repeat.\n- + add: “Storyboard it first and wait for my OK.”\n- [TOPIC] = your subject · canvas = a drawing area on a web page · 16:9 = widescreen\n- First time? Step 2 on slide 9 installs the free tools for you.\n[The prompt as a clean text card with one key line under it]\n\n--- SLIDE 8 of 10 ---\nHeadline: Three real videos it made\nText:\n- PROOF\n- 1 · An explainer of how it all works, made in one attempt\n- 2 · A 15-second motion-graphics reel from one short prompt\n- 3 · A history video in a reference video's style, new subject\n- Reference video\n- Claude Code's remake\n[Three real frames: a dark circle-and-wave explainer, a frame from the motion reel, and a side-by-side of an old-paper history video and Claude's remake in the same style]\n\n--- SLIDE 9 of 10 ---\nHeadline: Start here: 3 steps\nText:\n- START HERE\n- 1 · Comment ANIMATE. I'll send you my free animate skill: a saved set of steps Claude Code follows.\n- 2 · Paste its link into Claude Code. It installs the free tools for you.\n- 3 · Type:\n- /animate a 45-second history of the bicycle, cut paper\n- Styles: cut paper, crosshatch, riso, sketchbook, math, pixel, isometric, or your own look\n[A command card with the /animate line above a strip of 7 small sample frames, one per style]\n\n--- SLIDE 10 of 10 ---\nHeadline: Comment ANIMATE\nText:\n- GET THE SKILL\n- I'll send you my free animate skill + the install steps.\n[Text-only CTA: big Comment ANIMATE in a hand-drawn speech bubble, no evidence]"
+  },
+  "deviations": [
+    "Slide 4 introduces 4 terms: the model role is the vocabulary slide.",
+    "Slide 7's key line defines 3 small terms inline under the verbatim prompt.",
+    "Slide 3 mentions 'the 2 tools' before slide 4 names them.",
+    "Cover keeps '(for free)' visible, bounded by the kicker. The judges split; this keeps the wording of the YouTube title and meets the accuracy bound.",
+    "S11 eyebrow labels added per slide (style vocabulary); prompt-card text on slide 7 is HTML-rendered and composited, not model-drawn.",
+    "QA v1 fixes: slide 4 boxes renumbered to follow the pipeline (JS, Playwright, Frame, FFmpeg) and the note names both tools; slide 5 panels zoom to one frame (t=8.5) before/after; slide 10 is text-only."
+  ],
+  "caption": "Claude Code can make real videos now, and it costs nothing extra.\n\nIt's not an AI video generator. Claude writes code that draws every frame (60 a second), a hidden copy of Chrome called Playwright draws them, and FFmpeg stitches them into an MP4. Then it pulls a contact sheet of its own frames, fixes what's wrong and re-renders.\n\nWhat free means: no video software, no AI video credits. Playwright and FFmpeg are free and open source. It runs on the Claude plan you already pay for, so it does count toward your usage limits. Voice-over is optional.\n\nTwo tips from my tests:\n1. Ask for a storyboard first. A full render can take 20+ minutes, so approve the key frames before it builds.\n2. Effort isn't the problem, your prompt is. Even low effort made a solid 15-second reel in about 20 minutes.\n\nThe full walkthrough, from one prompt to the skill, is on my YouTube: \"Claude Now Does Video (FOR FREE) Thanks To JavaScript\".\n\nRow 3 on slide 8 compares a reference video another creator made with Opus 5.5 + Remotion against Claude Code's JavaScript remake.\n\nSave this for your next explainer.\n\nComment ANIMATE and I'll send you my free animate skill + the install steps.",
+  "sources": [
+    {
+      "kind": "youtube",
+      "url": "https://www.youtube.com/watch?v=rscb1DgJtNg",
+      "title": "Claude Now Does Video (FOR FREE) Thanks To JavaScript",
+      "published": "2026-10-06",
+      "note": "Published 2026-10-06; strong early views. Source video description links to the skill (fixed before posting). Hook on the broad outcome, not the craft."
+    },
+    {
+      "kind": "transcript",
+      "note": "YouTube captions pulled with yt-dlp; kept in the author's private research folder, not included"
+    },
+    {
+      "kind": "frames",
+      "note": "frame sheets, hi-res stills and draft frames pulled from the source video; not included"
+    },
+    {
+      "kind": "repo",
+      "url": "https://github.com/cth9191/animate",
+      "note": "public, MIT, 691 stars / 104 forks on 2026-10-14 (not used on slides); README install + Use + styles"
+    },
+    {
+      "kind": "dossier",
+      "path": "carousels/2026-10-14-claude-video-free/dossier.md",
+      "facts_used": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7",
+        "F8",
+        "F9",
+        "F10"
+      ]
+    }
+  ]
+}

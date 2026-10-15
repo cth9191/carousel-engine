@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cold reader answer (gate G8, call 1)",
+  "description": "What a context-free reader recovered from the slide text alone. Prompt: engine/cold-reader-prompt.md (READER). Strict structured-output shape: every property required, no extras.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["what", "what_confidence", "what_understood_on_slide", "why", "why_confidence", "first_step", "first_step_confidence", "undefined_terms", "confusing_slides", "summary"],
+  "properties": {
+    "what": { "type": "string", "description": "What this thing is, one plain sentence" },
+    "what_confidence": { "type": "string", "enum": ["clear", "guessed", "unknown"] },
+    "what_understood_on_slide": { "type": ["integer", "null"], "description": "First slide where the reader understood what it is; null if never" },
+    "why": { "type": "string", "description": "Why care, one sentence" },
+    "why_confidence": { "type": "string", "enum": ["clear", "guessed", "unknown"] },
+    "first_step": { "type": "string", "description": "The concrete first action the slides tell the reader to take" },
+    "first_step_confidence": { "type": "string", "enum": ["clear", "guessed", "unknown"] },
+    "undefined_terms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["term", "slide", "guess", "impact"],
+        "properties": {
+          "term": { "type": "string" },
+          "slide": { "type": "integer", "description": "First slide the term appears on" },
+          "guess": { "type": "string", "description": "Reader's guess at the meaning, or \"no idea\"" },
+          "impact": { "type": "string", "enum": ["blocking", "minor"] }
+        }
+      }
+    },
+    "confusing_slides": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["slide", "issue"],
+        "properties": {
+          "slide": { "type": "integer" },
+          "issue": { "type": "string" }
+        }
+      }
+    },
+    "summary": { "type": "string", "description": "The whole carousel in one line" }
+  }
+}

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<!-- Illustrative mock, not a real product screenshot: an optional reference composition for shared/render-heroes.mjs, not used by /carousel. A mock explains; it is never proof. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hero — step1 inspiration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 1600px; height: 1000px;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  .stage {
+    width: 1600px; height: 1000px;
+    position: relative;
+    background:
+      radial-gradient(circle at 50% -10%, rgba(217,119,87,0.14), transparent 45%),
+      linear-gradient(160deg, #241712 0%, #18100c 100%);
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    gap: 46px;
+  }
+  .card {
+    width: 440px; height: 760px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 36px 80px rgba(0,0,0,0.5), 0 6px 18px rgba(0,0,0,0.3);
+    overflow: hidden;
+    position: relative;
+    transform: rotate(var(--r,0deg));
+  }
+  .card.mid { transform: translateY(-26px); width: 470px; height: 800px; z-index: 3; }
+  /* browser tab chrome */
+  .chrome { height: 86px; background: #F1ECE3; border-bottom:1px solid rgba(14,14,14,0.07); padding: 14px 18px 0; }
+  .dots { display:flex; gap:9px; margin-bottom: 13px; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; }
+  .r{background:#FF5F57;}.a{background:#FEBC2E;}.g{background:#28C840;}
+  .urlbar { display:flex; align-items:center; gap:10px; background:#fff; border-radius:9px; height: 38px; padding: 0 14px; box-shadow: inset 0 0 0 1px rgba(14,14,14,0.07);}
+  .lock { width: 11px; height: 11px; border-radius:3px; background:#28C840;}
+  .url { font-family:'JetBrains Mono',monospace; font-size: 16px; font-weight:700; color:#3a322c;}
+  .url b { color: #D97757; }
+  .body { padding: 22px; height: calc(100% - 86px); background: #fff; }
+  .gtitle { font-weight:900; font-size: 26px; color:#0E0E0E; margin-bottom: 4px;}
+  .gsub { font-size: 14px; color:#9a8f82; font-weight:600; margin-bottom:18px;}
+  .masonry { display:grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .tile { border-radius: 12px; box-shadow: 0 6px 16px rgba(0,0,0,0.08); position:relative; overflow:hidden;}
+  .tile.tall { grid-row: span 2; }
+  .t1{height:130px;background:linear-gradient(150deg,#6C8AE4,#3D5AC9);}
+  .t2{height:130px;background:linear-gradient(150deg,#F2A35E,#E07B3E);}
+  .t3{height:274px;background:linear-gradient(150deg,#2EC4A6,#159C82);}
+  .t4{height:130px;background:linear-gradient(150deg,#E16178,#C23A57);}
+  .t5{height:130px;background:linear-gradient(150deg,#9B6CE4,#6C3DC9);}
+  .t6{height:130px;background:linear-gradient(150deg,#F2D45E,#E0B43E);}
+  .t7{height:130px;background:linear-gradient(150deg,#5EC9F2,#3E9BE0);}
+  .award { position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.55); color:#fff; font-size:11px; font-weight:800; padding:4px 9px; border-radius:999px; letter-spacing:.05em;}
+  .heart { position:absolute; bottom:10px; right:10px; width:30px;height:30px;border-radius:50%; background:rgba(255,255,255,0.92); display:flex;align-items:center;justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.2);}
+  .heart svg{ width:16px;height:16px; fill:#D97757;}
+  /* cursor */
+  .cursor { position:absolute; z-index:20; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4)); }
+  .cursor svg { width: 38px; height: 38px; }
+  .savepop { position:absolute; z-index:21; background:#0E0E0E; color:#fff; font-weight:700; font-size:15px; padding:8px 13px; border-radius:9px; display:flex; align-items:center; gap:7px;}
+  .savepop svg{width:14px;height:14px;fill:#D97757;}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="card" style="--r:-2.5deg">
+    <div class="chrome">
+      <div class="dots"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span></div>
+      <div class="urlbar"><span class="lock"></span><span class="url"><b>awwwards</b>.com</span></div>
+    </div>
+    <div class="body">
+      <div class="gtitle">Awwwards</div>
+      <div class="gsub">Sites of the Day</div>
+      <div class="masonry">
+        <div class="tile t1"><span class="award">SOTD</span></div>
+        <div class="tile t3 tall"><span class="award">HONORS</span></div>
+        <div class="tile t2"></div>
+        <div class="tile t4"></div>
+        <div class="tile t5"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mid" style="--r:0deg">
+    <div class="chrome">
+      <div class="dots"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span></div>
+      <div class="urlbar"><span class="lock"></span><span class="url"><b>dribbble</b>.com</span></div>
+    </div>
+    <div class="body">
+      <div class="gtitle">Dribbble</div>
+      <div class="gsub">Popular this week</div>
+      <div class="masonry">
+        <div class="tile t6"></div>
+        <div class="tile t7"></div>
+        <div class="tile t3 tall"><span class="heart"><svg viewBox="0 0 24 24"><path d="M12 21s-8-5.3-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.7-8 11-8 11z"/></svg></span></div>
+        <div class="tile t1"></div>
+        <div class="tile t4"></div>
+      </div>
+    </div>
+    <div class="cursor" style="bottom:188px; right:46px;">
+      <svg viewBox="0 0 24 24"><path d="M3 2l7 18 2.5-7L20 10z" fill="#fff" stroke="#0E0E0E" stroke-width="1.4"/></svg>
+    </div>
+    <div class="savepop" style="bottom:230px; right:30px;"><svg viewBox="0 0 24 24"><path d="M12 21s-8-5.3-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.7-8 11-8 11z"/></svg>Saved</div>
+  </div>
+
+  <div class="card" style="--r:2.5deg">
+    <div class="chrome">
+      <div class="dots"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span></div>
+      <div class="urlbar"><span class="lock"></span><span class="url"><b>pinterest</b>.com</span></div>
+    </div>
+    <div class="body">
+      <div class="gtitle">Pinterest</div>
+      <div class="gsub">UI inspiration board</div>
+      <div class="masonry">
+        <div class="tile t3 tall"></div>
+        <div class="tile t5"></div>
+        <div class="tile t2"></div>
+        <div class="tile t7"></div>
+        <div class="tile t6"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

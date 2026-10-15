@@ -1,0 +1,72 @@
+{
+  "id": "02-terracotta-zine",
+  "name": "Terracotta Zine",
+  "version": "1.1.0",
+  "used_by": "style S01 (engine/styles/S01-terracotta-zine.prompt.md): interiors bake from this template, Codex paints only the cover plate",
+  "vibe": "Magazine collage / sticker layout / process explainer with terracotta texture bg",
+  "when_to_use": [
+    "Step-by-step explainers and system builds (3-step systems, frameworks)",
+    "Process tutorials with discrete stages",
+    "Concept-then-example pairs",
+    "Text-heavier decks where a dense data-card layout would crowd the copy"
+  ],
+  "brand": {
+    "terracotta_bg": "#C46B4F",
+    "ink": "#0E0E0E",
+    "cream": "#F5EBE0",
+    "accent_default": "#0E0E0E",
+    "headline_font": "Inter Black (lowercase, massive)",
+    "mono_font": "JetBrains Mono"
+  },
+  "placeholders": {
+    "{{BRAND}}": "meta strip; replaced with brand from engine/brand.json when the template is copied into a deck",
+    "{{MONTH_YEAR}}": "meta strip; replaced with the deck folder date's month and year, e.g. OCTOBER ©2026"
+  },
+  "assets": {
+    "copy_to": "carousels/<id>/assets/",
+    "files": ["assets/bg-zine.png", "assets/hero-placeholder.png"],
+    "note": "hero-placeholder.png marks where a capture goes; replace every use before the bake"
+  },
+  "structure": {
+    "total_slides": "variable (cover + N body + CTA); the sample is 9",
+    "slot_types": {
+      "cover": {
+        "type": "codex-plate + composite",
+        "render": "static-image",
+        "source": "Codex cover plate from the SYSTEM and COVER blocks in engine/styles/S01-terracotta-zine.prompt.md; captures and logos composited into its key-color zones with shared/composite.py, never painted",
+        "aspect_native": "4:5 (1080x1350)",
+        "field": "coverImg on slides[0], e.g. final/slide-01.png; empty renders a typographic preview"
+      },
+      "body": {
+        "type": "html-layered",
+        "fields": ["eyebrow", "headlineHTML", "body", "heroImg"],
+        "bg": "assets/bg-zine.png (terracotta texture, full-bleed)",
+        "headline_treatment": "lowercase massive Inter Black with accent-color phrase, 7 words or fewer",
+        "eyebrow_treatment": "white text inside black brush-stroke badge, slight rotation",
+        "hero_treatment": "real capture or rendered card as sticker: cream border + drop shadow + tape accents + slight tilt; empty heroImg hides it"
+      },
+      "cta": {
+        "type": "no-hero text-only",
+        "flag": "noHero: true on slide config",
+        "headline": "big stacked line pointing at the comments",
+        "body": "Comment KEYWORD and I'll send you {the deliverable}. One action; save/follow/share asks go in the caption"
+      }
+    }
+  },
+  "tweaks": {
+    "global": ["accent"],
+    "per_slide": ["eyebrow", "headlineHTML", "body", "bodyTop", "heroImg", "headSize", "bodySize", "dashBottom", "dashWidth", "dashTilt"],
+    "engine": "localStorage keys namespaced by the page path (<path>::global-v1, <path>::slide-<name>-v1) + Export JSON button, synced by hand into slides[] defaults before the bake"
+  },
+  "heroes": "optional illustrative HTML mocks in heroes/, /carousel renders only a deck's own heroes/ folder, never these samples",
+  "export": {
+    "command": "node shared/export.mjs --carousel <id>",
+    "viewport": "1080x1350",
+    "scale": 2,
+    "out_resolution": "1080x1350",
+    "out_resolution_native": "2160x2700 with --native",
+    "format": "PNG",
+    "out_files": "carousels/<id>/exports/slide-NN-YYYY-MM-DD.png",
+    "platform_native_aspect": "4:5 (IG carousel)"
+  }
+}

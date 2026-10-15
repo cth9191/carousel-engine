@@ -1,0 +1,90 @@
+{
+ "plate": "plates/slide-04.v3.png",
+ "plate_size": [
+  1122,
+  1402
+ ],
+ "size": [
+  1080,
+  1350
+ ],
+ "final": {
+  "mode": "none",
+  "axis": null,
+  "px": 0,
+  "crop": [
+   0,
+   0,
+   1122,
+   1402
+  ],
+  "pad": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "scale": 0.9625668449197861
+ },
+ "zones": [
+  {
+   "id": "M1",
+   "key": "magenta",
+   "bbox": [
+    88,
+    415,
+    947,
+    283
+   ],
+   "aspect": 3.3463,
+   "fill": 0.9999,
+   "area": 267974,
+   "holes_filled": 0,
+   "holes_kept": 0,
+   "out_bbox": [
+    85,
+    399,
+    912,
+    272
+   ],
+   "asset": {
+    "type": "shot",
+    "path": "shots/s04-pipeline.png"
+   },
+   "dilate": 3,
+   "edge": "matte",
+   "fit": {
+    "mode": "cover",
+    "shot_size": [
+     1842,
+     662
+    ],
+    "focus": [
+     0.0,
+     0.0,
+     1842.0,
+     662.0
+    ],
+    "crop": [
+     -186.6,
+     0.0,
+     2215.2,
+     662.0
+    ],
+    "scale": 0.4275,
+    "lost_w": 0.0,
+    "lost_h": 0.0,
+    "letterbox": true
+   },
+   "leftover_px": 0,
+   "leftover": null
+  }
+ ],
+ "small_components": [],
+ "out": "final/slide-04.png",
+ "warnings": [
+  "M1: focus box needs more than the whole shot at this aspect; padded with its edge colour"
+ ],
+ "failures": [],
+ "status": "ok"
+}

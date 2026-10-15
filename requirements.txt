@@ -1,0 +1,4 @@
+# shared/composite.py and shared/shots.py
+Pillow>=10.1
+numpy>=1.26
+scipy>=1.11

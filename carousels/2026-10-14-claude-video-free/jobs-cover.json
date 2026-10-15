@@ -1,0 +1,12 @@
+{
+ "_note": "Refs resolve relative to `deck`. The original run used two third-party style references (refs/, not included); these point at the S11 exemplars instead. cover-b won and became final/cover-anchor.png.",
+ "deck": "carousels/2026-10-14-claude-video-free",
+ "model": "gpt-6.1-sol",
+ "effort": "high",
+ "tier": "priority",
+ "concurrency": 2,
+ "jobs": [
+  { "id": "cover-a", "prompt_file": "prompts/cover-a.txt", "refs": ["../../engine/styles/exemplars/S11-interior.png", "../../engine/styles/exemplars/S11-cover.png"], "out": "plates/cover-a.png" },
+  { "id": "cover-b", "prompt_file": "prompts/cover-b.txt", "refs": ["../../engine/styles/exemplars/S11-interior.png", "../../engine/styles/exemplars/S11-cover.png"], "out": "plates/cover-b.png" }
+ ]
+}

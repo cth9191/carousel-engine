@@ -1,0 +1,5 @@
+Edit Image 1 (an Instagram carousel slide, portrait 4:5) and return the full edited slide.
+
+The only change is the small handwritten note under the 2 x 2 grid of pastel boxes: replace its text with "Playwright and FFmpeg are both free and open source." in the same handwritten marker script, centred under the grid, on one line, and remove both of its little curved arrows. Fill where the arrows were with the plain cream background.
+
+Keep everything else exactly as it is: the "04 / 10" tag and "HOW IT WORKS" eyebrow, the headline "A video is" / "60 pictures a second", the wide framed solid flat magenta #FF00FF rectangle at exactly the same position and size (pure uniform magenta, no texture), all four boxes with their exact text ("1 · JavaScript: the code language web pages run on", "2 · Playwright: a hidden copy of Chrome that draws each frame", "3 · Frame: one picture. 60 make one second.", "4 · FFmpeg: a free tool that stitches frames into an MP4"), the bottom rule and the "CHASE AI" footer. Same fonts, sizes and colours. Do not add any new text or elements.

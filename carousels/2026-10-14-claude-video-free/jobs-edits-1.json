@@ -1,0 +1,26 @@
+{
+ "_note": "refs are first-pass plates not included in the repo; generate them with jobs-interiors.json first",
+ "deck": "carousels/2026-10-14-claude-video-free",
+ "model": "gpt-6.1-sol",
+ "effort": "high",
+ "tier": "priority",
+ "concurrency": 2,
+ "jobs": [
+  {
+   "id": "edit-slide-03",
+   "prompt_file": "prompts/edit-slide-03.txt",
+   "refs": [
+    "plates/slide-03.png"
+   ],
+   "out": "plates/slide-03.png"
+  },
+  {
+   "id": "edit-slide-08",
+   "prompt_file": "prompts/edit-slide-08.txt",
+   "refs": [
+    "plates/slide-08.png"
+   ],
+   "out": "plates/slide-08.png"
+  }
+ ]
+}

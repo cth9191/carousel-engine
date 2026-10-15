@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "carousel-engine/engine/storyboard.schema.json",
+  "title": "Carousel storyboard",
+  "description": "Every visible string of a carousel, written and gated before any image exists. Lives at carousels/<YYYY-MM-DD-slug>/storyboard.json. See engine/spines.md.",
+  "type": "object",
+  "required": ["topic", "spine", "hook", "keyword", "deliverable", "intent", "slides", "gates"],
+  "properties": {
+    "topic": { "type": "string" },
+    "spine": { "enum": ["A", "B", "C", "D"] },
+    "style": { "type": ["string", "null"], "description": "Style card id from engine/styles (e.g. S03); null until the user picks" },
+    "hook": {
+      "type": "object",
+      "required": ["main", "formula", "score"],
+      "properties": {
+        "main": { "type": "string", "description": "Big type on the cover" },
+        "kicker": { "type": "string" },
+        "visual_promise": { "type": "string", "description": "What the cover image shows" },
+        "formula": { "type": "string", "description": "engine/hooks.md formula id, e.g. F7" },
+        "score": { "type": "object", "description": "R1..R6 rubric scores (0-2) and total" }
+      }
+    },
+    "alt_hooks": { "type": "array", "items": { "type": "object" } },
+    "keyword": { "type": "string", "description": "CTA comment keyword, identical on slide, caption and comment-to-DM automation" },
+    "deliverable": {
+      "type": "object",
+      "required": ["name", "exists"],
+      "properties": { "name": { "type": "string" }, "exists": { "type": "boolean" }, "path_or_url": { "type": "string" } }
+    },
+    "intent": {
+      "type": "object",
+      "description": "What a cold reader must be able to recover from the slide text alone (gate G8)",
+      "required": ["what", "why", "first_step"],
+      "properties": { "what": { "type": "string" }, "why": { "type": "string" }, "first_step": { "type": "string" } }
+    },
+    "glossary": {
+      "type": "array",
+      "description": "Every term a cold viewer may not know, with the slide where it is defined (gate G3)",
+      "items": { "type": "object", "required": ["term", "defined_on", "definition"],
+        "properties": { "term": { "type": "string" }, "defined_on": { "type": "integer" }, "definition": { "type": "string" } } }
+    },
+    "slides": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["n", "role", "headline", "strings"],
+        "properties": {
+          "n": { "type": "integer" },
+          "role": { "type": "string", "description": "Spine role: cover what why model how peak use start cta paper context test verdict item combo parts step day" },
+          "lesson": { "type": "string", "description": "The one idea this slide teaches" },
+          "headline": { "type": "string" },
+          "strings": {
+            "type": "array",
+            "description": "Every visible string on the slide, verbatim, with placement and intended occurrence count",
+            "items": { "type": "object", "required": ["text", "place"],
+              "properties": {
+                "text": { "type": "string" },
+                "place": { "type": "string", "description": "Where the string sits on the slide. Three values are reserved: \"headline\" (every line of the headline), \"counter\" (the NN / TT page counter) and \"chrome\" (the brand header or footer). They are handled specially: the cold reader prints the slide's headline field once and skips headline and counter strings, and shows a chrome string only on the first slide where it appears; the brief card leaves all three out of its \"everything else on the slide\" column. Any other value is free-form (eyebrow, body, caption, panel-label, ...)." },
+                "count": { "type": "integer", "default": 1 }
+              } }
+          },
+          "evidence": {
+            "type": "object",
+            "properties": {
+              "kind": { "enum": ["prove", "explain", "none"] },
+              "describe": { "type": "string", "description": "One-line panel caption; also fed to the cold reader" },
+              "source": { "type": "string", "description": "verified-facts id, capture path, video timestamp, or URL" }
+            }
+          },
+          "production": { "enum": ["image", "html", null], "description": "Set at Make time from the style card" },
+          "shots": { "type": "array", "items": { "type": "object", "properties": { "path": { "type": "string" }, "focus_box": { "type": "array", "items": { "type": "number" } } } } },
+          "logos": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "description": "G1..G8 results from engine/spines.md: {G1: {pass: bool, note: str}, ...}"
+    },
+    "cold_reader": { "type": ["object", "null"], "description": "Raw output of shared/cold-reader.mjs" },
+    "deviations": { "type": "array", "items": { "type": "string" } },
+    "caption": { "type": "string" },
+    "sources": { "type": "array", "items": { "type": "object" } }
+  }
+}

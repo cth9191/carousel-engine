@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cold reader judge (gate G8, call 2)",
+  "description": "Compares the cold reader's answers to storyboard.intent {what, why, first_step}. Prompt: engine/cold-reader-prompt.md (JUDGE). Pass rule: no match is 'no', at most one is 'partial', undefined_terms_blocking is empty. shared/cold-reader.mjs re-checks the rule.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["what_match", "why_match", "first_step_match", "undefined_terms_blocking", "verdict", "fix_hints"],
+  "$defs": {
+    "match": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["match", "reason"],
+      "properties": {
+        "match": { "type": "string", "enum": ["yes", "partial", "no"] },
+        "reason": { "type": "string" }
+      }
+    }
+  },
+  "properties": {
+    "what_match": { "$ref": "#/$defs/match" },
+    "why_match": { "$ref": "#/$defs/match" },
+    "first_step_match": { "$ref": "#/$defs/match" },
+    "undefined_terms_blocking": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["term", "slide", "reason"],
+        "properties": {
+          "term": { "type": "string" },
+          "slide": { "type": "integer" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "verdict": { "type": "string", "enum": ["pass", "fail"] },
+    "fix_hints": { "type": "array", "items": { "type": "string" } }
+  }
+}

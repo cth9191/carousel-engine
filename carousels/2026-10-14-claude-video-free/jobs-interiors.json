@@ -1,0 +1,91 @@
+{
+ "_note": "Refs resolve relative to `deck`. Ref 1 is the locked cover plate (cover-b), which the cover step copied to final/cover-anchor.png; the locked cover plate is included at final/cover-anchor.png, so these jobs run without jobs-cover.json. Ref 2 was a third-party style reference in the original run (refs/, not included) and points at the S11 interior exemplar here.",
+ "deck": "carousels/2026-10-14-claude-video-free",
+ "model": "gpt-6.1-sol",
+ "effort": "high",
+ "tier": "priority",
+ "concurrency": 4,
+ "jobs": [
+  {
+   "id": "slide-02",
+   "prompt_file": "prompts/slide-02.txt",
+   "refs": [
+    "final/cover-anchor.png",
+    "../../engine/styles/exemplars/S11-interior.png"
+   ],
+   "out": "plates/slide-02.png"
+  },
+  {
+   "id": "slide-03",
+   "prompt_file": "prompts/slide-03.txt",
+   "refs": [
+    "final/cover-anchor.png",
+    "../../engine/styles/exemplars/S11-interior.png"
+   ],
+   "out": "plates/slide-03.png"
+  },
+  {
+   "id": "slide-04",
+   "prompt_file": "prompts/slide-04.txt",
+   "refs": [
+    "final/cover-anchor.png",
+    "../../engine/styles/exemplars/S11-interior.png"
+   ],
+   "out": "plates/slide-04.png"
+  },
+  {
+   "id": "slide-05",
+   "prompt_file": "prompts/slide-05.txt",
+   "refs": [
+    "final/cover-anchor.png",
+    "../../engine/styles/exemplars/S11-interior.png"
+   ],
+   "out": "plates/slide-05.png"
+  },
+  {
+   "id": "slide-06",
+   "prompt_file": "prompts/slide-06.txt",
+   "refs": [
+    "final/cover-anchor.png",
+    "../../engine/styles/exemplars/S11-interior.png"
+   ],
+   "out": "plates/slide-06.png"
+  },
+  {
+   "id": "slide-07",
+   "prompt_file": "prompts/slide-07.txt",
+   "refs": [
+    "final/cover-anchor.png",
+    "../../engine/styles/exemplars/S11-interior.png"
+   ],
+   "out": "plates/slide-07.png"
+  },
+  {
+   "id": "slide-08",
+   "prompt_file": "prompts/slide-08.txt",
+   "refs": [
+    "final/cover-anchor.png",
+    "../../engine/styles/exemplars/S11-interior.png"
+   ],
+   "out": "plates/slide-08.png"
+  },
+  {
+   "id": "slide-09",
+   "prompt_file": "prompts/slide-09.txt",
+   "refs": [
+    "final/cover-anchor.png",
+    "../../engine/styles/exemplars/S11-interior.png"
+   ],
+   "out": "plates/slide-09.png"
+  },
+  {
+   "id": "slide-10",
+   "prompt_file": "prompts/slide-10.txt",
+   "refs": [
+    "final/cover-anchor.png",
+    "../../engine/styles/exemplars/S11-interior.png"
+   ],
+   "out": "plates/slide-10.png"
+  }
+ ]
+}

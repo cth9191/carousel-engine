@@ -1,0 +1,597 @@
+{
+  "_note": "Kept as a worked example; paths are relative to the repo root. The source video is not included: to rebuild these shots, download a 1920x1080 copy of youtube.com/watch?v=rscb1DgJtNg (Chase's own public video) to the `video` path; the deck README has the yt-dlp command. `bubble_prior` is where the author's webcam bubble sits in that video. The s09 tiles read docs/styles.png from the public animate repo: clone github.com/cth9191/animate next to this repo (../animate). The built PNGs (shots/*.png) are not included either.",
+  "video": "research/2026-10-14-claude-video-source/rscb1DgJtNg.mp4",
+  "out_dir": "carousels/2026-10-14-claude-video-free/shots",
+  "bubble_prior": [
+    1697,
+    834,
+    201
+  ],
+  "shots": [
+    {
+      "slide": 1,
+      "name": "s01-claude-wordmark",
+      "t": "5:05.15",
+      "crop": [
+        62,
+        46,
+        1792,
+        1008
+      ],
+      "bubble": "scrub",
+      "fill": "mirror_x",
+      "mirror_x": 958.5,
+      "pad": 8,
+      "pad_max": 36,
+      "focus": [
+        470,
+        100,
+        870,
+        690
+      ],
+      "note": "Low-effort one-prompt reel, mid-orbit: all six letters C-L-A-U-D-E legible on the orange ring. Exact 16:9 crop of the reel's picture area (letterbox bars removed), centred on the ring. Bubble area rebuilt by mirroring the symmetric tick ring about the ring's centre line (seamless clone); HUD timecode top right is part of the reel."
+    },
+    {
+      "slide": 1,
+      "name": "s01-claude-wordmark-settled",
+      "t": "5:05.90",
+      "crop": [
+        62,
+        46,
+        1792,
+        1008
+      ],
+      "bubble": "scrub",
+      "fill": "mirror_x",
+      "mirror_x": 958.5,
+      "pad": 8,
+      "pad_max": 36,
+      "focus": [
+        478,
+        94,
+        860,
+        760
+      ],
+      "note": "ALT for the cover or slide 10: same reel 0.75 s later, letters settled, with 'MOTION DESIGN · SHOWREEL 2026' and the small line 'every frame of this was written in code'. Same 16:9 crop."
+    },
+    {
+      "slide": 2,
+      "name": "s02-not-ai-video",
+      "t": "1:08.85",
+      "crop": [
+        374,
+        114,
+        1172,
+        826
+      ],
+      "bubble": "scrub",
+      "fill": "mirror_x",
+      "mirror_x": 959.5,
+      "pad": 8,
+      "focus": [
+        24,
+        24,
+        1124,
+        778
+      ],
+      "note": "Both 'drawn by hand' and 'AI video' fully struck through, wave still drawn (next frame starts the transition). The bubble hid the box's bottom-right corner: rebuilt from the mirror-symmetric bottom-left corner. Blue pi-creature fragment next to the bubble is outside the crop."
+    },
+    {
+      "slide": 4,
+      "name": "s04-pipeline",
+      "t": "1:32.40",
+      "crop": [
+        34,
+        304,
+        1842,
+        662
+      ],
+      "bubble": "scrub",
+      "fill": "flat",
+      "pad": 8,
+      "protect": 40,
+      "focus": [
+        24,
+        24,
+        1794,
+        614
+      ],
+      "note": "Full row: code box -> headless browser -> frames = 216 -> FFmpeg -> play button, plus the sound(t) wave with its arrow up into FFmpeg. Only flat dark background was under the bubble (flat fill with the sampled ground); the arrow runs 2-5 px outside the bubble edge, so content pixels in the pad band are kept ('protect')."
+    },
+    {
+      "slide": 5,
+      "name": "s05-before",
+      "t": "1:39.00",
+      "crop": [
+        84,
+        124,
+        1800,
+        718
+      ],
+      "bubble": "scrub",
+      "fill": "laplace",
+      "pad": 8,
+      "focus": [
+        24,
+        24,
+        1753,
+        669
+      ],
+      "note": "BEFORE: 12-frame contact sheet, 5 frames flagged with orange boxes (t=8.5, 10, 12, 15, 18), 'label cut off' note, code line shows 590 underlined. Same crop as s05-after. Only flat dark background was under the bubble."
+    },
+    {
+      "slide": 5,
+      "name": "s05-after",
+      "t": "1:41.00",
+      "crop": [
+        84,
+        124,
+        1800,
+        718
+      ],
+      "bubble": "scrub",
+      "fill": "laplace",
+      "pad": 8,
+      "focus": [
+        24,
+        24,
+        1753,
+        669
+      ],
+      "note": "AFTER: same sheet, labels back inside the frames, checkmarks under the 5 fixed frames, code now reads 520. Same crop as s05-before."
+    },
+    {
+      "slide": 6,
+      "name": "s06-storyboard",
+      "t": "6:20.00",
+      "crop": [
+        242,
+        217,
+        1437,
+        634
+      ],
+      "bubble": "scrub",
+      "fill": "flat",
+      "color": [
+        41,
+        31,
+        25
+      ],
+      "pad": 8,
+      "square_corners": {
+        "rect": [
+          240,
+          215,
+          1680,
+          852
+        ],
+        "r": 19,
+        "color": [
+          41,
+          31,
+          25
+        ]
+      },
+      "focus": [
+        20,
+        28,
+        1397,
+        570
+      ],
+      "note": "The storyboard card 'A video is a function: storyboard' with all 7 panels, timings and sound notes. The zoomed-in moments (6:23, 6:50-6:53) are an editor zoom of the same recording and cut off panels 4-7, so the full card at native size is the sharpest complete view. Crop is the card inset 2 px; the bubble only covered the card's empty bottom-right (flat #291F19), corners squared in the same colour."
+    },
+    {
+      "slide": 8,
+      "name": "s08-explainer",
+      "t": "1:22.00",
+      "crop": [
+        150,
+        174,
+        1620,
+        546
+      ],
+      "bubble": "scrub",
+      "fill": "shift",
+      "shift": [
+        -866,
+        0
+      ],
+      "pad": 8,
+      "pad_max": 24,
+      "focus": [
+        24,
+        24,
+        1571,
+        502
+      ],
+      "note": "One-shot explainer beat 'same t, same picture': frame(6.99) = frame(6.99), two circle-and-wave panels. The bubble hid the bottom of the right label's closing bracket: rebuilt from the identical left label, 866 px to the left (measured by matching the two labels). Crop stops above the pi creature peeking from behind the bubble."
+    },
+    {
+      "slide": 8,
+      "name": "s08-reel",
+      "t": "5:00.10",
+      "crop": [
+        62,
+        46,
+        1792,
+        1008
+      ],
+      "bubble": "scrub",
+      "fill": "mirror_x",
+      "mirror_x": 960,
+      "pad": 8,
+      "pad_max": 36,
+      "focus": [
+        600,
+        60,
+        800,
+        930
+      ],
+      "note": "Low-effort reel, '04 - SPACE' / DIMENSION beat: neon knot + wireframe icosahedron over a perspective grid floor. Same 16:9 crop as the cover shot. Bubble covered only floor grid and navy background; rebuilt by mirroring the symmetric floor."
+    },
+    {
+      "slide": 8,
+      "name": "s08-remake",
+      "t": "10:58.40",
+      "crop": [
+        368,
+        54,
+        1184,
+        856
+      ],
+      "bubble": "scrub",
+      "fill": "shift",
+      "shift": [
+        -620,
+        0
+      ],
+      "pad": 3,
+      "focus": [
+        12,
+        8,
+        1159,
+        838
+      ],
+      "note": "LEFT = a third-party reference video (blurred in the public copy); RIGHT = Claude Code's JavaScript remake on a new subject. 10:58.40 instead of 10:52: the cleanest moment where both pages are fully drawn (see s08-remake-1052). The on-screen labels at the frame top are cut off; the plate supplies the panel labels. The bubble covered a ~50 px sliver of the right page's right margin: rebuilt from the matching margin 620 px to the left, seamless-blended. Player controls below are cropped out."
+    },
+    {
+      "slide": 8,
+      "name": "s08-remake-ref",
+      "t": "10:58.40",
+      "crop": [
+        368,
+        54,
+        564,
+        856
+      ],
+      "bubble": "cropped",
+      "pad": 8,
+      "focus": [
+        12,
+        8,
+        540,
+        838
+      ],
+      "note": "Left page alone (the reference video), for a plate with two separate portrait zones."
+    },
+    {
+      "slide": 8,
+      "name": "s08-remake-ours",
+      "t": "10:58.40",
+      "crop": [
+        988,
+        54,
+        564,
+        856
+      ],
+      "bubble": "scrub",
+      "fill": "shift",
+      "shift": [
+        -620,
+        0
+      ],
+      "pad": 3,
+      "focus": [
+        12,
+        8,
+        540,
+        838
+      ],
+      "note": "Right page alone (Claude Code's remake), same scrub as s08-remake."
+    },
+    {
+      "slide": 8,
+      "name": "s08-remake-1052",
+      "t": "10:52.00",
+      "crop": [
+        368,
+        54,
+        1184,
+        856
+      ],
+      "bubble": "scrub",
+      "fill": "shift",
+      "shift": [
+        -620,
+        0
+      ],
+      "pad": 3,
+      "focus": [
+        12,
+        8,
+        1159,
+        838
+      ],
+      "note": "ALT at the storyboard's 10:52: the left page's headline is still fading in (mid-animation). No clean moment exists within +-1 s of 10:52 because the left headline animates in slowly. Same crop and scrub as s08-remake."
+    },
+    {
+      "slide": 9,
+      "name": "s09-styles",
+      "image": "../animate/docs/styles.png",
+      "bubble": "none",
+      "focus": [
+        16,
+        16,
+        1168,
+        1104
+      ],
+      "note": "README styles grid from the animate skill repo, untouched: 2 rows x 4 tiles (9:16), each with its numbered name below. No bubble."
+    },
+    {
+      "slide": 9,
+      "name": "s09-styles-row",
+      "image": "../animate/docs/styles.png",
+      "tiles": [
+        [
+          24,
+          24,
+          270,
+          480
+        ],
+        [
+          318,
+          24,
+          270,
+          480
+        ],
+        [
+          612,
+          24,
+          270,
+          480
+        ],
+        [
+          906,
+          24,
+          270,
+          480
+        ],
+        [
+          24,
+          580,
+          270,
+          480
+        ],
+        [
+          318,
+          580,
+          270,
+          480
+        ],
+        [
+          612,
+          580,
+          270,
+          480
+        ],
+        [
+          906,
+          580,
+          270,
+          480
+        ]
+      ],
+      "layout": "row",
+      "gap": 16,
+      "margin": 16,
+      "bg": [
+        30,
+        27,
+        25
+      ],
+      "note": "The 8 tiles (cut-paper, crosshatch, riso, sketchbook, math, pixel, isometric, 'your look') in one row, names dropped (the plate's style-strip text names them). Dark ground = the source image's own background."
+    },
+    {
+      "slide": 9,
+      "name": "s09-styles-grid",
+      "image": "../animate/docs/styles.png",
+      "tiles": [
+        [
+          24,
+          24,
+          270,
+          480
+        ],
+        [
+          318,
+          24,
+          270,
+          480
+        ],
+        [
+          612,
+          24,
+          270,
+          480
+        ],
+        [
+          906,
+          24,
+          270,
+          480
+        ],
+        [
+          24,
+          580,
+          270,
+          480
+        ],
+        [
+          318,
+          580,
+          270,
+          480
+        ],
+        [
+          612,
+          580,
+          270,
+          480
+        ],
+        [
+          906,
+          580,
+          270,
+          480
+        ]
+      ],
+      "layout": "grid:2x4",
+      "gap": 16,
+      "margin": 16,
+      "bg": [
+        30,
+        27,
+        25
+      ],
+      "note": "Same 8 tiles, 2 rows x 4 columns, names dropped, tight 16 px gutters."
+    },
+    {
+      "slide": 9,
+      "name": "s09-styles-row-cream",
+      "image": "../animate/docs/styles.png",
+      "tiles": [
+        [
+          24,
+          24,
+          270,
+          480
+        ],
+        [
+          318,
+          24,
+          270,
+          480
+        ],
+        [
+          612,
+          24,
+          270,
+          480
+        ],
+        [
+          906,
+          24,
+          270,
+          480
+        ],
+        [
+          24,
+          580,
+          270,
+          480
+        ],
+        [
+          318,
+          580,
+          270,
+          480
+        ],
+        [
+          612,
+          580,
+          270,
+          480
+        ],
+        [
+          906,
+          580,
+          270,
+          480
+        ]
+      ],
+      "layout": "row",
+      "gap": 16,
+      "margin": 0,
+      "bg": [
+        251,
+        247,
+        238
+      ],
+      "note": "Row variant on S11 cream (#FBF7EE) gutters with no outer margin, so the tiles sit straight on the plate's paper."
+    },
+    {
+      "slide": 9,
+      "name": "s09-styles-grid-cream",
+      "image": "../animate/docs/styles.png",
+      "tiles": [
+        [
+          24,
+          24,
+          270,
+          480
+        ],
+        [
+          318,
+          24,
+          270,
+          480
+        ],
+        [
+          612,
+          24,
+          270,
+          480
+        ],
+        [
+          906,
+          24,
+          270,
+          480
+        ],
+        [
+          24,
+          580,
+          270,
+          480
+        ],
+        [
+          318,
+          580,
+          270,
+          480
+        ],
+        [
+          612,
+          580,
+          270,
+          480
+        ],
+        [
+          906,
+          580,
+          270,
+          480
+        ]
+      ],
+      "layout": "grid:2x4",
+      "gap": 16,
+      "margin": 0,
+      "bg": [
+        251,
+        247,
+        238
+      ],
+      "note": "2x4 grid variant on S11 cream gutters, no outer margin."
+    }
+  ]
+}

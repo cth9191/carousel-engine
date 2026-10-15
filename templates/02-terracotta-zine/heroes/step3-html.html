@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<!-- Illustrative mock, not a real product screenshot: an optional reference composition for shared/render-heroes.mjs, not used by /carousel. A mock explains; it is never proof. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hero — step3 html</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 1600px; height: 1000px;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  .stage {
+    width: 1600px; height: 1000px;
+    position: relative;
+    background:
+      radial-gradient(circle at 85% 15%, rgba(217,119,87,0.16), transparent 50%),
+      linear-gradient(155deg, #1c120d 0%, #120b08 100%);
+    overflow: hidden;
+  }
+  .win {
+    position:absolute; left: 90px; top: 70px;
+    width: 1420px; height: 860px;
+    background: #0E0E0E;
+    border-radius: 20px;
+    box-shadow: 0 40px 90px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05);
+    overflow:hidden;
+  }
+  .top { height: 58px; background:#181818; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; align-items:center; padding:0 20px; gap:11px;}
+  .dot{width:18px;height:18px;border-radius:50%;}.r{background:#FF5F57;}.a{background:#FEBC2E;}.g{background:#28C840;}
+  .vtitle{margin-left:18px; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:16px; color:#8a8276;}
+  .vtitle b{color:#cfc6b8;}
+  .keycap { position:absolute; right: 26px; top: 14px; display:flex; gap:8px; z-index:9;}
+  .key { font-family:'JetBrains Mono',monospace; font-weight:700; font-size:16px; color:#F5EBE0; background:#2a2a2a; padding:7px 13px; border-radius:9px; box-shadow:0 3px 0 #000, inset 0 1px 0 rgba(255,255,255,0.12);}
+  .key.plus{ background:transparent; box-shadow:none; color:#8a8276; padding:7px 2px;}
+  /* code area */
+  .code { padding: 28px 30px 28px 0; font-family:'JetBrains Mono', monospace; font-size: 21px; line-height: 1.95; }
+  .ln { display:flex; }
+  .gutter { width: 76px; text-align:right; padding-right: 22px; color:#4a4a4a; user-select:none; flex-shrink:0;}
+  .src { white-space:pre; }
+  .tag { color:#D97757; }
+  .attr { color:#8a8276; }
+  .str { color:#9BD17F; }
+  .txt { color:#cfc6b8; }
+  .punc { color:#6a6a6a; }
+  .sel { background: rgba(217,119,87,0.16); border-radius:4px; }
+  .selrow { background: rgba(217,119,87,0.10); }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="win">
+    <div class="top">
+      <span class="dot r"></span><span class="dot a"></span><span class="dot g"></span>
+      <span class="vtitle">view-source:<b>https://award-site.com</b></span>
+      <div class="keycap"><span class="key">Ctrl</span><span class="key plus">+</span><span class="key">U</span></div>
+    </div>
+    <div class="code">
+      <div class="ln"><span class="gutter">12</span><span class="src"><span class="punc">&lt;</span><span class="tag">section</span> <span class="attr">class</span><span class="punc">=</span><span class="str">"hero"</span><span class="punc">&gt;</span></span></div>
+      <div class="ln"><span class="gutter">13</span><span class="src">  <span class="punc">&lt;</span><span class="tag">nav</span> <span class="attr">class</span><span class="punc">=</span><span class="str">"top-bar glass"</span><span class="punc">&gt;</span></span></div>
+      <div class="ln selrow"><span class="gutter">14</span><span class="src">    <span class="punc">&lt;</span><span class="tag">a</span> <span class="attr">href</span><span class="punc">=</span><span class="str">"/"</span> <span class="attr">class</span><span class="punc">=</span><span class="str">"logo"</span><span class="punc">&gt;</span><span class="sel txt">Studio</span><span class="punc">&lt;/</span><span class="tag">a</span><span class="punc">&gt;</span></span></div>
+      <div class="ln selrow"><span class="gutter">15</span><span class="src">    <span class="punc">&lt;</span><span class="tag">ul</span> <span class="attr">class</span><span class="punc">=</span><span class="str">"links"</span><span class="punc">&gt;</span></span></div>
+      <div class="ln selrow"><span class="gutter">16</span><span class="src">      <span class="punc">&lt;</span><span class="tag">li</span><span class="punc">&gt;</span><span class="sel txt">Work</span><span class="punc">&lt;/</span><span class="tag">li</span><span class="punc">&gt;</span> <span class="punc">&lt;</span><span class="tag">li</span><span class="punc">&gt;</span><span class="sel txt">About</span><span class="punc">&lt;/</span><span class="tag">li</span><span class="punc">&gt;</span></span></div>
+      <div class="ln"><span class="gutter">17</span><span class="src">    <span class="punc">&lt;/</span><span class="tag">ul</span><span class="punc">&gt;</span></span></div>
+      <div class="ln"><span class="gutter">18</span><span class="src">  <span class="punc">&lt;/</span><span class="tag">nav</span><span class="punc">&gt;</span></span></div>
+      <div class="ln"><span class="gutter">19</span><span class="src">  <span class="punc">&lt;</span><span class="tag">h1</span> <span class="attr">class</span><span class="punc">=</span><span class="str">"display"</span><span class="punc">&gt;</span><span class="txt">We craft</span></span></div>
+      <div class="ln"><span class="gutter">20</span><span class="src">     <span class="txt">award-winning interfaces</span><span class="punc">&lt;/</span><span class="tag">h1</span><span class="punc">&gt;</span></span></div>
+      <div class="ln"><span class="gutter">21</span><span class="src">  <span class="punc">&lt;</span><span class="tag">button</span> <span class="attr">data-cta</span><span class="punc">=</span><span class="str">"primary"</span><span class="punc">&gt;</span><span class="txt">Start</span><span class="punc">&lt;/</span><span class="tag">button</span><span class="punc">&gt;</span></span></div>
+      <div class="ln"><span class="gutter">22</span><span class="src"><span class="punc">&lt;/</span><span class="tag">section</span><span class="punc">&gt;</span></span></div>
+      <div class="ln"><span class="gutter">23</span><span class="src"><span class="punc">&lt;</span><span class="tag">style</span><span class="punc">&gt;</span> <span class="attr">.hero</span> <span class="punc">{</span> <span class="attr">background</span><span class="punc">:</span> <span class="str">radial-gradient(...)</span> <span class="punc">}</span></span></div>
+      <div class="ln"><span class="gutter">24</span><span class="src">         <span class="attr">.display</span> <span class="punc">{</span> <span class="attr">font</span><span class="punc">:</span> <span class="str">900 88px Inter</span> <span class="punc">}</span></span></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

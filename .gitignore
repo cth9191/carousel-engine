@@ -1,0 +1,17 @@
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+
+# research/ is local: intake sources (transcripts, frames and videos of other people's work) and
+# your optional post log live here
+research/
+*.mp4
+*.webm
+*.info.json
+
+# per-deck Codex logs: runs.jsonl holds local paths and Codex session ids, runs/logs/ the raw
+# events. Boards, composite reports and QA notes in runs/ are worth keeping.
+carousels/*/runs/runs.jsonl
+carousels/*/runs/logs/

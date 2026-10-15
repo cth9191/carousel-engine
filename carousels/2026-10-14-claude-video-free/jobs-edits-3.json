@@ -1,0 +1,18 @@
+{
+ "_note": "refs are first-pass plates not included in the repo; generate them with jobs-interiors.json first. This job also needs plates/slide-04.v2.png, which jobs-edits-2.json writes.",
+ "deck": "carousels/2026-10-14-claude-video-free",
+ "model": "gpt-6.1-sol",
+ "effort": "high",
+ "tier": "priority",
+ "concurrency": 1,
+ "jobs": [
+  {
+   "id": "edit-slide-04b",
+   "prompt_file": "prompts/edit-slide-04b.txt",
+   "refs": [
+    "plates/slide-04.v2.png"
+   ],
+   "out": "plates/slide-04.png"
+  }
+ ]
+}

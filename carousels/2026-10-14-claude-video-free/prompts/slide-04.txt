@@ -1,0 +1,33 @@
+Create slide 4 of 10 for an Instagram carousel. Portrait 4:5 composition, intended final delivery at 1080 x 1350.
+Design a slide that clearly teaches one lesson: a video is 60 pictures a second; code draws them, and two free tools turn them into an MP4.
+
+References, in attachment order:
+Image 1: the LOCKED COVER of this carousel. Match its visual system exactly: the warm off-white cream paper ground with faint grain, the heavy tightly spaced black grotesk headline with Claude orange (#D9551F) on the key phrase, the clean regular grotesk body, the small neat handwritten marker notes in dark grey, thin wobbly hand-drawn ink arrows, the soft yellow highlighter pill (#FBE38E), the small square tag box top-left with the counter, and the thin rule with the footer "CHASE AI" centred at the bottom. Its magenta screen is only a placeholder; do not copy the video player or its content.
+Image 2: the S11 interior style exemplar. Use its layout vocabulary only, for diagrams: rounded pastel boxes with thin dark ink outlines (pastel green #DDEEDB, pastel blue #DCE8F7, pastel pink #F8E1E4, pastel lavender #E9E3F5), wobbly arrows, margin notes. Do NOT copy its words, frames, diagrams or icons.
+
+Framing: every element sits inside a uniform empty margin of at least 8% of the width on the left and right and 9% of the height at top and bottom. If content does not fit, make elements smaller; never push toward the edges. Readable at phone-feed size: body text no smaller than about 1/45 of the slide height; the footer as large as small body text. Generous whitespace, flat, crisp, print-like; no gradients, no 3D, no photo textures; no characters or mascots.
+
+At the top left, the small square tag box with "04 / 10" and, right beside it, a short spaced-out uppercase eyebrow label in small grey grotesk: "HOW IT WORKS".
+Each keying zone described below is ONE solid flat magenta #FF00FF rectangle with square inner corners: pure uniform magenta edge to edge, perfectly flat and frontal, no gradient, no texture, no glow, no text, no UI and no drawing inside it, no tilt, sitting inside a thin dark ink frame with a small rounded outer corner. Every other element stands clear of it with a visible gap. Never put a label, note or arrow on top of a magenta zone.
+
+Composition, top to bottom:
+Below the tag, the headline on one or two lines: "A video is" in black and "60 pictures a second" in Claude orange.
+Under it, a wide framed keying zone across about 84% of the page width with an aspect of 2:1 (it will hold a real diagram Claude drew of its own pipeline).
+Below the zone, four rounded pastel boxes in a 2 x 2 grid (green, blue, pink, lavender), each with a bold number and a one-line definition.
+Under the grid, a short handwritten marker note with a small wobbly arrow pointing up at boxes 3 and 4.
+
+At the bottom, the thin rule with the footer "CHASE AI" centred under it.
+
+Visible copy, verbatim, with intended occurrence counts:
+"04 / 10" (tag box, once)
+"HOW IT WORKS" (eyebrow, once)
+"A video is" (headline)
+"60 pictures a second" (headline, orange)
+"1 · JavaScript: the code language web pages run on" (box 1)
+"2 · Frame: one picture. 60 make one second." (box 2)
+"3 · Playwright: a hidden copy of Chrome that draws each frame" (box 3)
+"4 · FFmpeg: a free tool that stitches frames into an MP4" (box 4)
+"Both tools are free and open source." (handwritten note)
+"CHASE AI" (footer, once)
+
+Keep layout instructions internal; do not render section names, zone names or reference labels. Every quoted string appears exactly as many times as specified, verbatim. No extra readable captions, invented UI text, duplicate lines, lorem ipsum, watermarks, handles or logos. No purple, violet, pink or magenta anywhere except the keying zones; pastel pink boxes must read as soft blush pink, never magenta.

@@ -1,0 +1,37 @@
+Create slide 3 of 10 for an Instagram carousel. Portrait 4:5 composition, intended final delivery at 1080 x 1350.
+Design a slide that clearly teaches one lesson: the only cost is the Claude plan you already have.
+
+References, in attachment order:
+Image 1: the LOCKED COVER of this carousel. Match its visual system exactly: the warm off-white cream paper ground with faint grain, the heavy tightly spaced black grotesk headline with Claude orange (#D9551F) on the key phrase, the clean regular grotesk body, the small neat handwritten marker notes in dark grey, thin wobbly hand-drawn ink arrows, the soft yellow highlighter pill (#FBE38E), the small square tag box top-left with the counter, and the thin rule with the footer "CHASE AI" centred at the bottom. Its magenta screen is only a placeholder; do not copy the video player or its content.
+Image 2: the S11 interior style exemplar. Use its layout vocabulary only, for diagrams: rounded pastel boxes with thin dark ink outlines (pastel green #DDEEDB, pastel blue #DCE8F7, pastel pink #F8E1E4, pastel lavender #E9E3F5), wobbly arrows, margin notes. Do NOT copy its words, frames, diagrams or icons.
+
+Framing: every element sits inside a uniform empty margin of at least 8% of the width on the left and right and 9% of the height at top and bottom. If content does not fit, make elements smaller; never push toward the edges. Readable at phone-feed size: body text no smaller than about 1/45 of the slide height; the footer as large as small body text. Generous whitespace, flat, crisp, print-like; no gradients, no 3D, no photo textures; no characters or mascots.
+
+At the top left, the small square tag box with "03 / 10" and, right beside it, a short spaced-out uppercase eyebrow label in small grey grotesk: "WHAT IT COSTS".
+
+Composition, top to bottom:
+Below the tag, the headline in the heavy grotesk on one or two lines: "The only bill:" in black and "your Claude plan" in Claude orange.
+In the middle, a hand-drawn paper receipt card: a cream-white slip with a thin ink outline, a zigzag torn bottom edge and a very faint shadow, slightly rotated by one degree. Inside it, five item rows; each row has the item name on the left and its value on the right in the same line, separated by a dotted leader line. Below the rows, a thin dashed rule and a bold total row.
+Below the receipt, the footnote in a soft yellow highlighter pill, one or two lines.
+
+At the bottom, the thin rule with the footer "CHASE AI" centred under it.
+
+Visible copy, verbatim, with intended occurrence counts:
+"03 / 10" (tag box, once)
+"WHAT IT COSTS" (eyebrow, once)
+"The only bill:" (headline)
+"your Claude plan" (headline, orange)
+"Video editing software" (row 1 left)
+"$0 · not needed" (row 1 right and row 2 right, so twice)
+"AI video generator credits" (row 2 left)
+"The 2 tools it runs on your computer" (row 3 left)
+"$0 · free and open source" (row 3 right)
+"Voice-over" (row 4 left)
+"optional" (row 4 right)
+"Your Claude plan" (row 5 left)
+"the one you already have" (row 5 right)
+"Total extra: $0" (total row)
+"Free ≠ unlimited: videos count toward your Claude usage limits." (highlighter footnote)
+"CHASE AI" (footer, once)
+
+Keep layout instructions internal; do not render section names, zone names or reference labels. Every quoted string appears exactly as many times as specified, verbatim. No extra readable captions, invented UI text, duplicate lines, lorem ipsum, watermarks, handles or logos. No magenta anywhere.
