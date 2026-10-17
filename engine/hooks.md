@@ -88,6 +88,7 @@ as templates, not laws. The ids are stable: storyboards cite them (the worked ex
 | F10 | First-person capability (third-party pattern) | "my Claude Code can {surprising capability} now / here's how I did it." | "My Claude Code makes videos now / here's the exact prompt" | A |
 | F11 | Problem first, fix second | "Your AI {embarrassing failure} / I {verb} {surprising fix}" | "YOUR AI GRADES ITS OWN HOMEWORK / I Make Two AIs Attack Every Plan" | A |
 | F12 | Outcome playbook (third-party pattern) | "{A} + {B} + {C} = {$ or result} IN {timeframe}" | "Claude Code + Figma + Vercel = a live site in one afternoon" | A |
+| F13 | I analyzed N (third-party pattern) | "i {analyzed/read/ran/tested} {N} {things} / {payoff with M}", your own verb, N circled, a real corpus saved in the deck | "i read 120 CLAUDE.md files / here are the 9 rules they share" | C-variant (findings listicle, `engine/spines.md`) |
 
 **Kicker add-ons that lower the risk of swiping:** "(for free)", "(exact setup inside)",
 "(full stack)", "(plain-English version)".

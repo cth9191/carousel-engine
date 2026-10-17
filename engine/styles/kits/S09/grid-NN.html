@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S09 Grid Card</title>
+<!--
+  S09 Charcoal Studio: a ruled grid of 2-4 columns (a roadmap strip, or a tells / truth / what-you-get table) inside an
+  outlined magenta panel. Copy to $D/cards/grid-NN.html and edit only the JSON in <script id="data">.
+
+    label   optional mono yellow caps line above the grid ("→ the 3-step fix"), 30 characters or fewer
+    cols    2-4 columns: { "head": mono yellow caps (18 chars or fewer), "rows": 1-4 short cells (40 chars or fewer) }
+            a cell starting "✓ " gets a yellow check box. A roadmap strip is N columns with one row each
+            ("01 · SKETCH" / "Codex mocks the page as images").
+  Every figure is a verified fact. Cells are Inter 27 px, fitting down to 20 px.
+
+  Render at the zone's --zones-only out bbox x2:
+    node shared/render-card.mjs $D/cards/grid-02.html $D/cards/grid-02.png --w 936 --h 300 --scale 2 --bg "#151515" --min-px 20
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script id="data" type="application/json">
+{
+  "label": "→ the 3-step fix",
+  "cols": [
+    { "head": "01 · Sketch", "rows": ["Codex mocks the page as images"] },
+    { "head": "02 · Build", "rows": ["the picked mock becomes real HTML"] },
+    { "head": "03 · Check", "rows": ["it opens the page and fixes drift"] }
+  ]
+}
+</script>
+</head>
+<body>
+<script src="kit.js"></script>
+<script>
+const CHECK = '<svg viewBox="0 0 24 24"><rect x="1" y="1" width="22" height="22" rx="4" fill="#F5F400"/><path d="M6 12.5l4 4 8-9" fill="none" stroke="#111" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+KIT.ready((d) => {
+  const cols = d.cols || [], E = KIT.esc;
+  KIT.limit(cols.length >= 2 && cols.length <= 4, 'needs-2-to-4-cols');
+  KIT.limit(String(d.label || '').length <= 30, 'label-over-30-chars');
+  KIT.limit(cols.every((c) => String(c.head).length <= 18), 'head-over-18-chars');
+  KIT.limit(cols.every((c) => (c.rows || []).length >= 1 && c.rows.length <= 4), 'col-needs-1-to-4-rows');
+  KIT.limit(cols.every((c) => c.rows.every((r) => String(r).length <= 40)), 'cell-over-40-chars');
+  const cell = (r) => /^✓ /.test(r) ? `<div class="cell">${CHECK}<span>${E(r.slice(2))}</span></div>` : `<div class="cell"><span>${E(r)}</span></div>`;
+  document.body.insertAdjacentHTML('beforeend', `
+    <div class="panel grid">
+      ${d.label ? `<div class="lbl">${E(d.label)}</div>` : ''}
+      <div class="cols" data-fit data-min="20">${cols.map((c) => `<div class="c"><div class="hd">${E(c.head)}</div>${c.rows.map(cell).join('')}</div>`).join('')}</div>
+    </div>`);
+});
+</script>
+</body>
+</html>

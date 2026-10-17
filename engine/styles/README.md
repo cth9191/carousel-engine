@@ -9,7 +9,10 @@ from the exemplars.
 | `styles.json` | The catalog: one entry per style id. Name, one-liner, status, production type, spine fit, attributes, cooldown, exemplar paths, requirements, template. |
 | `<id>-<slug>.prompt.md` | The style's prompt block: the SYSTEM text pasted into every Codex image prompt, the COVER / INTERIOR layouts, and the KEYING rules for magenta (capture) and cyan (logo) zones. |
 | `exemplars/` | One cover and one interior per style (`<id>-cover`, `<id>-interior`), 4:5. They're the art on the pick sheet and the style references attached to a deck's first prompts. |
+| `refs/` | Text-free or keyed layout references that a style's Codex jobs attach (S05, S07, S08, S09), cut from the author's own slides. `refs/src/` holds the builders. |
+| `kits/<id>/` | Per-style HTML card kits (S05–S09, S11): the cards, a README with the render commands, and rendered `samples/`. A deck copies the kit's cards into `$D/cards/`. |
 | `gallery.jpg` | The pick sheet: one tile per style. Built by `shared/build-gallery.mjs` (see below). |
+| `library/` | A browsable HTML page of every style (cards, filters, attributes, requirements, the prompt block). Built by `shared/build-style-library.mjs`; a build output, git-ignored. |
 
 Two placeholders appear in prompt blocks, in `styles.json` and in a deck's copy of an HTML template.
 `{{BRAND}}` is the `brand` in `engine/brand.json`; the skill asks for it before your first deck if
@@ -17,13 +20,18 @@ it's still `YOUR BRAND`. `{{MONTH_YEAR}}` is the month and year of the deck fold
 `OCTOBER ©2026`. The skill fills both in when it writes prompts and when it copies a template into a
 deck.
 
-## The four styles
+## The styles
 
 | Id | Name | Looks like | Spines | Production |
 |---|---|---|---|---|
 | S01 | Terracotta Zine | Terracotta texture, massive lowercase headline with a period, taped dark app windows | D system build, A explainer | html-native |
 | S02 | Logo Equation | Terracotta, giant white "Tool A + Tool B", two big app-icon tiles joined by a plus | A explainer: tool combos, integrations, set-up tutorials | hybrid |
 | S03 | Newsprint Benchmark | Warm newsprint, Didone italic, diagonal VS split with huge percentages, ruled tables, green verdict bar | B head-to-head / launch test | image-native |
+| S05 | Phone-Photo Monitor | A phone photo of a monitor showing the real thing (README, tool, title screen), with white caption stickers | C repo listicle / quick tips, A explainer | hybrid |
+| S06 | Statue Cover + Graph-Paper Cards | A marble statue offering one real logo tile against a changing sky, huge white wordmark; graph-paper repo-card interiors | C top-N / roundups, A explainer | hybrid |
+| S07 | Dark Network Hero | Near-black glowing network or teal starfield, giant white sans, app tile and brush label | A single-tool reveal, D system reveal | hybrid |
+| S08 | Bone Editorial | Grained kraft-cream, Didone with one cobalt accent, rounded dark app pane, ink doodles, taped sticky | D system reveal, A explainer | hybrid |
+| S09 | Charcoal Studio | Charcoal ground, off-white serif, acid-yellow highlights and stickies, browser windows | A tutorial, D step-by-step build | image-native |
 | S11 | Sketchnote Diagram Explainer | Cream, heavy grotesk with a yellow highlighter pill, pastel flow-diagram boxes, hand-drawn arrows | A explainer for cold viewers | image-native |
 
 How each one gets made:
@@ -39,7 +47,22 @@ How each one gets made:
   and long tables, charts and code are HTML cards.
 - **S11**: Codex paints every slide, diagrams included. Real captures go into magenta zones, and exact
   text (a prompt, a command) is an HTML card from `shared/render-card.mjs`. Its exemplars are the
-  cover and slide 4 of this repo's worked example, `carousels/2026-10-14-claude-video-free`.
+  cover and slide 4 of this repo's worked example, `carousels/2026-10-14-claude-video-free`. Its
+  diagram kit (`kits/S11/`: flow, compare and parts) renders a diagram as an exact-text card when a
+  painted one would garble.
+- **S05**: your own photos of your monitor are best. Without them, three Codex plates of a desk (a
+  cover view, a canted and a close view, refs `refs/s05-ref-*`) get the real capture
+  perspective-warped onto their magenta screen (`composite.py --shot …,warp`). Every word is a caption
+  sticker from `kits/S05/`.
+- **S06**: one Codex statue plate per deck (rotate statue, gesture and sky every time), a real logo
+  tile on the statue's palm (`kits/S06/tile.html` through a cyan slot), HTML cover type
+  (`kits/S06/cover.html`). Interiors come from `templates/01-graph-paper-cream/slides.html`.
+- **S07**: one text-free Codex network plate per slide (refs `refs/s07-ref-*`); every word, tile,
+  capture window and rail is HTML from `kits/S07/page.html` over the fitted plate.
+- **S08**: Codex paints only text-free paper (a reusable kraft ground) and ink doodles; every word is
+  HTML from `kits/S08/`, so small type and stickies stay sharp.
+- **S09**: Codex paints charcoal plates (refs `refs/s09-ref-*`); exact text is cards from `kits/S09/`
+  (list, grid, terminal, stats, footer bar) pasted into magenta zones.
 
 ## Reading a tile
 
@@ -51,8 +74,8 @@ COVER                        INTERIOR · slide 2
 [ cover art ]                [ interior art ]
 ```
 
-- **Status**: `card-v1` means the style has a prompt block and can go to Make. All four styles here
-  are `card-v1`. The script also accepts `next-wave` (worked for you, no prompt block yet),
+- **Status**: `card-v1` means the style has a prompt block and can go to Make. Every style here
+  is `card-v1`. The script also accepts `next-wave` (worked for you, no prompt block yet),
   `test-wave` (seen only on other accounts) and `retired` (hidden unless `--include-retired`).
 - **Production**: `html-native` means Playwright renders the exact text and AI paints at most the
   illustration plates. `image-native` means AI paints the slide and real assets get composited in.
@@ -91,6 +114,13 @@ synced post log has them). Within one format, the spine rule also applies: never
 same-format decks within 72 hours. The shipped worked example
 (`carousels/2026-10-14-claude-video-free`) doesn't count toward either clock.
 
+**Cooldown groups.** Styles that look alike in the feed can share a `cooldown_group` (one object or an
+array): `{id, members, applies_to: cover|any, cap_days}`. Every member carries an identical copy. A
+member cools while any member's cover (or, with `any`, any use) is younger than `cap_days`, and the
+tile names the cause, e.g. `cooling until 11-02 · via S08`. `--check` prints a table of the groups and
+fails on a malformed or mismatched one. None ship by default; add one when two of your styles start
+reading as the same look.
+
 The clock reads `stats.last_used` on each style. No style has stats yet. When you post a deck, add
 `"stats": { "last_used": "YYYY-MM-DD" }` to its style, or keep a post log and let
 `build-gallery.mjs --sync` fill it in.
@@ -101,6 +131,7 @@ The clock reads `stats.last_used` on each style. No style has stats yet. When yo
 node shared/build-gallery.mjs                          # every style -> engine/styles/gallery.jpg
 node shared/build-gallery.mjs --only S03,S11 --out carousels/<deck>/style-pick.jpg
 node shared/build-gallery.mjs --check                  # validate + print the table, render nothing
+node shared/build-style-library.mjs                    # the browsable page -> engine/styles/library/index.html
 ```
 
 - `--only` renders just those tiles, recommended first. That's the crop the brief card sends. Without
@@ -144,7 +175,7 @@ A new style is its own R&D session, never part of a deck.
    `exemplars/<ID>-cover.png` and `exemplars/<ID>-interior.png` (`.jpg` is fine). Use your own slides
    when you have them. A third-party reference can seed the prompt block, but keep it out of the
    repo and swap in your own slides once you've made a deck in the style.
-2. **Prompt block.** `<ID>-<slug>.prompt.md`, with the sections the four existing blocks use:
+2. **Prompt block.** `<ID>-<slug>.prompt.md`, with the sections the existing blocks use:
    - An intro: where the look came from, the production type, and which images to attach as
      references.
    - Optional: a production split table saying who makes each element (Codex plate, composited

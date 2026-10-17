@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>S11 Parts Diagram</title>
+<!--
+  S11 sample diagram: LABELLED PARTS (one object, its parts, a handwritten callout and arrow per part),
+  the "what's inside" slide. Copy to $D/cards/ with sketch.css + sketch.js, replace the strings, keep
+  the ids the arrows use (add or drop a part by adding or dropping a row, its callout and its arrow).
+  Copy budget at a ~907x600 zone: object title 2 words, 3-4 parts of 1-2 words, callouts of 7 words
+  or fewer, one closing line of 9 words with the highlighter on its key half.
+  Render at the magenta zone's --zones-only out bbox, 2x, on the plate paper sampled beside the zone:
+    node shared/render-card.mjs $D/cards/diagram-parts.html $D/cards/diagram-parts.png --w 907 --h 600 --scale 2 --bg "#FBF7EE" --min-px 22
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500&family=Kalam:wght@400;700&family=Patrick+Hand&display=block" rel="stylesheet">
+<link rel="stylesheet" href="sketch.css">
+<style>
+  .sk-stage { display: flex; flex-direction: column; justify-content: space-between; }
+  .parts { display: grid; grid-template-columns: 1fr 31% 1fr; column-gap: 1.5em; align-items: center; flex: 1; margin-top: 0.2em; }
+  .obj { display: flex; flex-direction: column; gap: 0.5em; padding: 0.55em 0.65em 0.7em; }
+  .obj .k { font: 500 0.8em/1.2 "JetBrains Mono", monospace; margin: 0 0 0.1em 0.1em; }
+  .obj .sk-box { text-align: center; padding: 0.4em 0.4em; }
+  .side { display: flex; flex-direction: column; justify-content: space-between; align-self: stretch; padding: 0.6em 0; }
+  .side.r { justify-content: center; }
+  .side.l { text-align: right; }
+  .side .sk-note { font-size: 0.88em; line-height: 1.12; }
+  .bottom { font-size: 1.12em; margin-top: 0.6em; }
+</style>
+</head>
+<body>
+<div class="sk-stage" data-fit>
+  <div class="parts">
+    <div class="side l">
+      <div class="sk-note" id="c1">the instructions Claude reads first</div>
+      <div class="sk-note" id="c3">files it fills in, same look each time</div>
+    </div>
+    <div class="sk-box obj" id="obj">
+      <span class="k">my-skill/</span>
+      <div class="sk-box green" id="p1">SKILL.md</div>
+      <div class="sk-box blue" id="p2">scripts/</div>
+      <div class="sk-box pink" id="p3">templates/</div>
+    </div>
+    <div class="side r">
+      <div class="sk-note accent" id="c2">code it runs, so the result is exact</div>
+    </div>
+  </div>
+  <div class="bottom">Claude loads it <span class="sk-hl">only when the task needs it.</span></div>
+</div>
+<script src="sketch.js"></script>
+<script>
+  SK.init({
+    minF: 30, maxF: 40,
+    arrows: [
+      { from: '#c1', fromSide: 'r', to: '#p1', toSide: 'l', bend: -0.08, color: 'grey' },
+      { from: '#c3', fromSide: 'r', to: '#p3', toSide: 'l', bend: 0.08, color: 'grey' },
+      { from: '#c2', fromSide: 'l', to: '#p2', toSide: 'r', bend: 0.08, color: 'orange' },
+    ],
+  });
+</script>
+</body>
+</html>

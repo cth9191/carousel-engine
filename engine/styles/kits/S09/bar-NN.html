@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S09 Bar Card</title>
+<!--
+  S09 Charcoal Studio: the acid-yellow footer bar (lightning mark, a bold lead, the rest regular). The plate keeps the bar
+  as ONE magenta rounded rectangle; this card is the bar. Copy to $D/cards/bar-NN.html and edit only the JSON.
+
+    lead   bold words that open the line ("One install."), 4 words or fewer
+    text   the rest of the line; lead + text 14 words or fewer, at most one verified figure
+  Render at the zone's --zones-only out bbox x2 (about 936x74, 12.6:1):
+    node shared/render-card.mjs $D/cards/bar-03.html $D/cards/bar-03.png --w 936 --h 74 --scale 2 --bg "#F5F400" --min-px 20
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script id="data" type="application/json">
+{
+  "lead": "One prompt.",
+  "text": "Codex sketches, you pick, then it builds."
+}
+</script>
+</head>
+<body>
+<script src="kit.js"></script>
+<script>
+KIT.ready((d) => {
+  const E = KIT.esc;
+  KIT.limit(KIT.words(d.lead) <= 4, 'lead-over-4-words');
+  KIT.limit(KIT.words(d.lead) + KIT.words(d.text) <= 14, 'bar-over-14-words');
+  KIT.limit((String(d.lead) + ' ' + String(d.text)).replace(/\d[\d,.]*/g, '#').split('#').length - 1 <= 1, 'bar-has-more-than-one-figure');
+  document.body.insertAdjacentHTML('beforeend', `
+    <div class="panel bar1">
+      <svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z" fill="none" stroke="#111" stroke-width="2" stroke-linejoin="round"/></svg>
+      <div class="t" data-fit data-min="20"><b>${E(d.lead)}</b> ${E(d.text)}</div>
+    </div>`);
+});
+</script>
+</body>
+</html>

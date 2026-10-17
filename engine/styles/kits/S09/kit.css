@@ -1,0 +1,76 @@
+/* S09 Charcoal Studio: card kit tokens and shared card CSS.
+   Every card is the face of one magenta zone on a Codex plate: square-cornered, edge to edge (the plate's rounded
+   magenta mask trims the corners; the plate paints the thin off-white outline around panel zones).
+   Render with shared/render-card.mjs at the zone's --zones-only out bbox, --scale 2,
+   --bg '#151515' (panels, terminal) or --bg '#F5F400' (bar). */
+:root {
+  --ground: #151515;
+  --paper: #F2F0EA;
+  --soft: #C9C5BC;
+  --grey: #8E8A82;
+  --acid: #F5F400;
+  --ink: #111111;
+  --rule: rgba(242, 240, 234, .16);
+  --term: #0E0E0F;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: var(--ground);
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+body { font-family: 'Inter', sans-serif; color: var(--paper); }
+body, body * { font-variant-ligatures: none; font-feature-settings: 'liga' 0, 'calt' 0, 'dlig' 0; }
+.panel { position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden; }
+.y { color: var(--acid); }
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+/* --- list: check | num | arrow rows --- */
+.list { padding: 34px 44px 30px; gap: 10px; }
+.list .ttl { flex: none; font-weight: 700; font-size: 40px; letter-spacing: -.01em; color: var(--acid); white-space: nowrap; margin-bottom: 6px; }
+.list .rows { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; font-size: 34px; }
+.list .r { flex: 1 1 0; min-height: 0; display: flex; align-items: center; gap: 22px; line-height: 1.2; }
+.list.num .r, .list.arrow .r { border-top: 1.5px solid var(--rule); }
+.list.num .r:first-child, .list.arrow .r:first-child { border-top: none; }
+.list .mk { flex: none; width: 1.15em; height: 1.15em; display: flex; }
+.list .mk svg { width: 100%; height: 100%; }
+.list .no { flex: none; font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--acid); width: 2.1em; }
+.list .tx { min-width: 0; white-space: nowrap; color: var(--soft); }
+.list .tx b { font-weight: 700; color: var(--paper); }
+.list.num .tx b, .list.arrow .tx b { font-family: 'JetBrains Mono', monospace; letter-spacing: .02em; font-size: .9em; }
+.list .ar { flex: none; color: var(--acid); font-weight: 700; }
+.list .warn .tx { color: var(--grey); }
+
+/* --- grid: 2-4 columns, mono yellow heads, short rows (roadmap strip, tells/truth tables) --- */
+.grid { padding: 26px 30px 24px; gap: 14px; }
+.grid .lbl { flex: none; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 24px; letter-spacing: .14em; text-transform: uppercase; color: var(--acid); white-space: nowrap; }
+.grid .cols { flex: 1 1 auto; min-height: 0; display: flex; gap: 0; border: 1.5px solid var(--rule); border-radius: 0; }
+.grid .c { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; border-left: 1.5px solid var(--rule); }
+.grid .c:first-child { border-left: none; }
+.grid .hd { flex: none; padding: 14px 18px 10px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 26px; letter-spacing: .04em; text-transform: uppercase; color: var(--acid); white-space: nowrap; border-bottom: 1.5px solid var(--rule); }
+.grid .cell { flex: 1 1 0; min-height: 0; padding: 8px 18px; display: flex; align-items: center; gap: 12px; font-size: 27px; line-height: 1.2; color: var(--soft); border-top: 1.5px solid var(--rule); }
+.grid .hd + .cell { border-top: none; }
+.grid .cell svg { flex: none; width: 1.05em; height: 1.05em; }
+.grid .cell span { min-width: 0; }
+
+/* --- terminal --- */
+.term { background: var(--term); }
+.term .bar { flex: none; height: 52px; display: flex; align-items: center; gap: 12px; padding: 0 22px; background: #1D1D1F; }
+.term .bar i { width: 15px; height: 15px; border-radius: 50%; background: #4A4A4E; }
+.term .bar span { margin-left: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 20px; letter-spacing: .1em; text-transform: uppercase; color: var(--grey); white-space: nowrap; }
+.term pre { flex: 1 1 auto; min-height: 0; padding: 26px 30px; font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 26px; line-height: 1.5; color: var(--paper); white-space: pre-wrap; word-break: break-word; overflow: hidden; }
+.term pre .hl { color: var(--acid); font-weight: 700; }
+.term pre .p { color: var(--acid); }
+
+/* --- stats: label + 2-4 big verified values with yellow arrows --- */
+.stats { padding: 26px 30px; gap: 10px; align-items: center; justify-content: center; text-align: center; }
+.stats .lbl { flex: none; font-family: "JetBrains Mono", monospace; font-weight: 500; font-size: 21px; line-height: 1.3; letter-spacing: .02em; color: var(--grey); }
+.stats .items { font-size: 50px; flex: 1 1 auto; min-height: 0; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: space-evenly; }
+.stats.right .items { flex-direction: row; }
+.stats .it { display: flex; flex-direction: column; align-items: center; }
+.stats .v { font-weight: 800; font-size: 1em; letter-spacing: -.02em; line-height: 1.05; white-space: nowrap; color: var(--paper); }
+.stats .k { font-size: .46em; color: var(--soft); white-space: nowrap; }
+.stats .ar { color: var(--acid); font-weight: 800; font-size: .68em; line-height: 1; }
+
+/* --- bar: the acid-yellow footer bar --- */
+.bar1 { background: var(--acid); color: var(--ink); flex-direction: row; align-items: center; gap: 22px; padding: 0 40px; }
+.bar1 svg { flex: none; width: 48px; height: 48px; }
+.bar1 .t { min-width: 0; font-size: 40px; line-height: 1.15; letter-spacing: -.01em; white-space: nowrap; }
+.bar1 .t b { font-weight: 800; }

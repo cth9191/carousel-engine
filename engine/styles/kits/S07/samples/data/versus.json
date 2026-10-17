@@ -1,0 +1,3 @@
+{ "layout": "versus", "plate": "samples/plates/parts.png", "footer": ["YOUR BRAND", "swipe →"], "counter": "03 / 09", "label": "02 — why it works",
+  "headline": "Same question, *less to read*", "body": "Placeholder figures for the kit sample only.",
+  "cols": [ { "tag": "grep", "value": "~200k", "caption": "tokens read per answer", "old": true }, { "tag": "orbit", "value": "~80k", "caption": "tokens via the *graph*" } ] }

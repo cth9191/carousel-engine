@@ -1,8 +1,8 @@
 {
   "version": "v0",
-  "updated": "2026-10-14",
+  "updated": "2026-10-17",
   "notes": [
-    "One entry per style id. Only styles with a prompt block (engine/styles/<id>-*.prompt.md) can go to Make, and all four here have one. Edit every field by hand.",
+    "One entry per style id. Only styles with a prompt block (engine/styles/<id>-*.prompt.md) can go to Make, and every style here has one. Edit every field by hand.",
     "exemplars are repo-relative paths to one cover and one interior, 4:5. shared/build-gallery.mjs draws them as the style's tile and fails if a file is missing.",
     "No style has stats yet. When you post a deck, add \"stats\": { \"last_used\": \"YYYY-MM-DD\" } to its style so the cooldown works. uses, median_mult and best_mult are optional; node shared/build-gallery.mjs --sync fills them (with posts, interior_posts and drafts) from your own post log if you keep one. Without --sync the script never writes this file (see engine/styles/README.md).",
     "cooldown_days: a style posted within this many days shows as cooling on the pick sheet, and the skill will not recommend it. Styles tend to decay with repetition. The shipped worked example (carousels/2026-10-14-claude-video-free) does not count toward cooldown.",
@@ -22,7 +22,10 @@
       "status": "card-v1",
       "production": "html-native",
       "formats": {
-        "spines": [ "D", "A" ],
+        "spines": [
+          "D",
+          "A"
+        ],
         "notes": "System reveal, N-step build, levels. The workhorse for system builds."
       },
       "attributes": {
@@ -53,7 +56,9 @@
       "status": "card-v1",
       "production": "hybrid",
       "formats": {
-        "spines": [ "A" ],
+        "spines": [
+          "A"
+        ],
         "notes": "Tool combo, integration, set-up tutorial. Runs as a hybrid: Codex paints the plate and short type; real logos go in through cyan zones, captures through magenta, exact text as HTML cards. There is no HTML template for it yet."
       },
       "attributes": {
@@ -84,7 +89,9 @@
       "status": "card-v1",
       "production": "image-native",
       "formats": {
-        "spines": [ "B" ],
+        "spines": [
+          "B"
+        ],
         "notes": "Head-to-head, model launch test, receipts / contrarian."
       },
       "attributes": {
@@ -109,13 +116,202 @@
       "template": null
     },
     {
+      "id": "S05",
+      "name": "Phone-Photo Monitor",
+      "one_line": "A phone photo of your monitor showing the real thing (README, tool, title screen), with white TikTok-style caption stickers. Your own photo when you have one, else a Codex plate of the desk with the real capture warped onto its screen.",
+      "status": "card-v1",
+      "production": "hybrid",
+      "formats": {
+        "spines": [
+          "C",
+          "A"
+        ],
+        "notes": "Repo listicle and quick tips (C): cover = desk view with the title screen or the best item's hero; one item per slide on alternating canted / close plates, stickers '1) Name' + one or two plain sentences + 'github.com/owner/repo'. Explainer (A) only when every role has a real screen to show (what = the tool's page, how / use = real runs, peak / start = a zoomed capture with the command in the link sticker; a model diagram is an S11 card shown on the screen). Not for B or D: a side-by-side test or a parts diagram needs a layout, and this style's point is having none."
+      },
+      "attributes": {
+        "ground": "A phone photo of a monitor on a home desk like this: green plant wall, softbox lamp edge, webcam on the bezel, wooden desk; warm light or a deep red wash. Your photo, or a Codex plate of the same kind of room",
+        "panel": "The monitor's screen: a real capture or kits/S05/screen-title.html, perspective-warped onto the plate's magenta screen with a photographed-screen look",
+        "ornament": "None, apart from a small white 'N/T' counter sticker"
+      },
+      "cooldown_days": 14,
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S05-cover.jpg",
+        "interior": "engine/styles/exemplars/S05-interior.jpg",
+        "interior_slide": 3,
+        "note": "Cover of a '3 GitHub repos' deck (browser tabs and taskbar blurred) and slide 3 of a '5 repos' deck shot in a red-lit room (tabs and tray blurred)."
+      },
+      "requires": [
+        "Screen content is always real: captures via shared/shots.py or the Browser pane / playwright (faces and avatars cropped or scrubbed), or kits/S05/screen-title.html for the cover (pixel wordmark, optional real mark from $D/logos/, optional mascot PNG: your own mascot, if you have one; never a licensed character)",
+        "Photos, best first: (1) you shoot the real screen (no Codex, no keying); (2) you shoot the monitor once per angle showing a full-screen #FF00FF page, then the warp step; (3) Codex plates: 1 cover (desk view) + 2 interior views (canted, close), refs engine/styles/refs/s05-ref-{desk,canted,close}.png (screen keyed magenta, stickers inpainted), the locked cover first on interiors. The room is painted in mode 3; the screen never is",
+        "Warp step: composite.py --shot N=path@x,y,w,h,warp[,extend=left|right][,aspect=W:H] (perspective onto the magenta quad, photographed-screen look, loose key; leftover must be 0) straight to fitted/slide-NN.png, on every view including the desk cover",
+        "Every word is a sticker in kits/S05/caption.html (title <= 12 words, body <= 34, link <= 48 characters, at most 3 a slide), rendered full frame with render-card --min-px 30 to final/; numbers verified on posting day",
+        "storyboard.json per slide: view (desk | canted | close), screen (shot path or screen-title), stickers[] {role, text, y?, h?, align?}. Stage 4 route in .claude/skills/carousel/SKILL.md"
+      ],
+      "template": null,
+      "prompt_block": "engine/styles/S05-phone-photo-monitor.prompt.md",
+      "kit": "engine/styles/kits/S05"
+    },
+    {
+      "id": "S06",
+      "name": "Statue Cover + Graph-Paper Cards",
+      "one_line": "A marble statue offering one real logo tile against a changing sky, with huge white wordmark type; interiors are graph-paper repo cards.",
+      "status": "card-v1",
+      "production": "hybrid",
+      "formats": {
+        "spines": [
+          "C",
+          "A"
+        ],
+        "notes": "Top-N lists and repo / tool roundups (C): one Template 01 layered slide per item ('#N: Name' + what it does, the real capture, a verified repo card, one body line), CTA with one Comment KEYWORD action. Explainer (A) on the single-image slide (one capture or an S11 diagram card per role, repo card only on start); the cover drops the TOP N kicker. Not for B or D. Decays with repetition: change statue, gesture and sky every deck (block's Rotation table)."
+      },
+      "attributes": {
+        "ground": "Cover: a sky that changes every deck (cobalt #3D7DC8 -> #7AB0DE is the default and the most worn; then golden hour, overcast, dusk, sea, alpine). Interiors: cream + 60px graph-paper grid",
+        "character": "Marble statue (Codex plate) offering one real logo tile on an open palm (cyan slot, kits/S06/tile.html)",
+        "ornament": "Terracotta bookmark mark, arrow accents; cover type in HTML (Inter Black wordmark, Playfair Display italic subtitle)"
+      },
+      "cooldown_days": 14,
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S06-cover.png",
+        "interior": "engine/styles/exemplars/S06-interior.png",
+        "interior_slide": 2,
+        "note": "Cover of a placeholder 'top 3 browser-testing repos' test deck (real logo tile, HTML type) and slide 2 of a 'top 5 Claude Code front-end skills' deck."
+      },
+      "requires": [
+        "One Codex statue plate (SYSTEM + COVER + KEYING in the block), refs: kits/S06/samples/plate-cover.png (quality and slot only) and your latest S06 cover plate (do not repeat). Rotate statue, gesture and sky every deck and log the pair in storyboard.json style_notes; never reuse a pair",
+        "The held object is a real mark: kits/S06/tile.html on the cyan slot via composite.py --logo C1=…@1.07 (tile rendered at the slot aspect); never a painted or sculpted logo",
+        "Cover type in HTML: kits/S06/cover.html over fitted/slide-01.png (kicker, 1-2 line wordmark, italic subtitle; white on saturated skies, ink on pale)",
+        "Interiors from templates/01-graph-paper-cream ({{BRAND}} in the CTA handle replaced): captures saved in $D/assets/ (cropped clear of avatars and faces), repo card stars / language verified on posting day, the keyword CTA (ctaKeyword + ctaDeliverable; export.mjs exits 3 if it can't fit); the NN / TT counter and slide count come from slides.length",
+        "Stage 4 route in .claude/skills/carousel/SKILL.md"
+      ],
+      "template": "templates/01-graph-paper-cream",
+      "prompt_block": "engine/styles/S06-statue-graph-paper.prompt.md",
+      "kit": "engine/styles/kits/S06"
+    },
+    {
+      "id": "S07",
+      "name": "Dark Network Hero",
+      "one_line": "Near-black glowing node network, giant white sans, app tile and brush label.",
+      "status": "card-v1",
+      "production": "hybrid",
+      "formats": {
+        "spines": [
+          "A",
+          "D"
+        ],
+        "notes": "Single-tool reveal (A) or system reveal (D). Cover: 'name' (meet <NAME>) or 'icon' (/<command> over one big app tile). Interiors are network pages, not bare black: each plate paints a network figure that acts out the slide (two clusters for why, named communities for model, a thread into the terminal for peak) under a glass capture window, stat cells or a step rail. A: define, versus, parts, stage, terminal, receipts, steps, cta. D: the system's parts as the cover tile column, then stage / terminal / steps per step and receipts as the day. Not for listicles or head-to-heads."
+      },
+      "attributes": {
+        "ground": "Near-black #06090B with a glowing node-and-hairline network: teal (#39C6BF) by default, warm 'ember' (terracotta / amber) as the alternative; calm dark space where type sits; no haze",
+        "type_pairing": "Giant white Inter Black with a hard dark offset shadow ('meet <NAME>', '/<command>') + a white Inter ExtraBold brush label; interiors Inter Black headlines with one terracotta accent phrase, Inter body, JetBrains Mono section labels and counter",
+        "panel": "Cover: real logo tile column or one big app tile. Interiors: one Codex network figure per slide (versus split, part clusters, converging stage bed, terminal thread, step chain) under glass capture windows with teal glow, stat cells, a terminal card or a numbered rail, all HTML",
+        "character": "None",
+        "ornament": "Dry-brush black label and dashed hand arrow (drawn by the kit), glowing node pins, perspective floor grid on the cover, mono tag line, '{{BRAND}}' footer",
+        "palette": "Near-black / white / teal #39C6BF (or ember) / terracotta #D97757 accent"
+      },
+      "cooldown_days": 14,
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S07-cover.png",
+        "interior": "engine/styles/exemplars/S07-interior.png",
+        "interior_slide": 3,
+        "note": "Cover of a 'meet <NAME>' system-reveal deck (personal tag line blurred) and slide 3 of a /<command> memory-tool deck with dark S07 interiors."
+      },
+      "requires": [
+        "Hybrid, plate-first: one Codex network plate per slide (SYSTEM + COVER or the layout's INTERIOR figure in engine/styles/S07-dark-network-hero.prompt.md), no text and no key colours on the plate; ask for 'no haze' on every dark generation (the block does)",
+        "Refs: engine/styles/refs/s07-ref-teal.png (network crop) and s07-ref-ember.png (a text-free warm plate); never finished exports",
+        "Page kit: engine/styles/kits/S07/page.html sets every word, the brush label, logo tiles, capture windows, terminal and rail over the fitted plate, with the footer set to the brand in engine/brand.json; render-card 1080x1350 --scale 1 --min-px 22 straight to exports/. A parts plate whose clusters land off 47%/73% gets measured 'pos' in the page JSON",
+        "Real logo tiles in $D/logos/ (your own logo files or simple-icons SVGs) and real captures in $D/shots/; every stat a verified figure from the dossier"
+      ],
+      "template": null,
+      "prompt_block": "engine/styles/S07-dark-network-hero.prompt.md",
+      "kit": "engine/styles/kits/S07"
+    },
+    {
+      "id": "S08",
+      "name": "Bone Editorial",
+      "one_line": "Grained kraft-cream, Didone with one accent colour, rounded dark app panes, ruled tables, taped handwritten sticky.",
+      "status": "card-v1",
+      "production": "hybrid",
+      "formats": {
+        "spines": [
+          "D",
+          "A"
+        ],
+        "notes": "System reveals and explainers. what = statements + verb strip; why = old/new rows + dark pane; model/peak = ruled tables; how = 3-col compare table + pane; use = mono summary + large pane; cta = Didone keyword + composer + strip. Cover optional: decks may keep their own."
+      },
+      "attributes": {
+        "ground": "Grained kraft-cream paper (Codex plate, reusable: engine/styles/kits/S08/fitted/ground.png) with header rule, star, blank taped sticky, bolt and crown",
+        "type_pairing": "Playfair Display 800 Didone headline, line 1 ink + line 2 in one accent taken from the subject, hand underline; Inter statements; IBM Plex Mono body and chrome; Kalam handwriting on the sticky and notes",
+        "panel": "Rounded dark app pane (#15171A) or taped paper card holding a real capture",
+        "character": "Optional: your own mascot, if you have one",
+        "ornament": "Taped handwritten sticky top-right, ink doodles, header '{{BRAND}} · topic' + 'NN / TT', footer mantra with one hand-circled word between bolt and crown",
+        "palette": "Kraft cream #EEE4D2 / ink #1A1A1A / one subject accent (default #D9551F, or cobalt #3D7DC8) / pane #15171A"
+      },
+      "cooldown_days": 14,
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S08-cover.png",
+        "interior": "engine/styles/exemplars/S08-interior.png",
+        "interior_slide": 4,
+        "note": "Slides 2 ('What This Is') and 4 ('The 4 Parts You Need') of a 'build your voice-driven OS' deck in cobalt; the same two pages are the style refs. The block has no cover layout, so the cover slot shows slide 2."
+      },
+      "requires": [
+        "Kit engine/styles/kits/S08/ (README): copy cards/s08.css, fitted/ground.png and doodles/*.png into the deck; write one cards/page-NN.html per slide (start from the kit's sample pages) and render each with node shared/render-card.mjs --w 1080 --h 1350 --scale 1 --min-px 20",
+        "Every word is HTML; Codex paints only text-free paper (prompts/ground.txt, prompts/doodles.txt), and the shipped fitted ground can be reused",
+        "Real captures in a dark .pane or taped .card, box sized to the capture's aspect (never cropped); icons via shared/lucide-icons.mjs; real logos as <img>",
+        "Optional mascot: your own transparent PNG pose as <img class=\"mascot\">, never painted, never a licensed character"
+      ],
+      "template": null,
+      "prompt_block": "engine/styles/S08-bone-editorial.prompt.md",
+      "kit": "engine/styles/kits/S08"
+    },
+    {
+      "id": "S09",
+      "name": "Charcoal Studio",
+      "one_line": "Charcoal ground, off-white serif, acid-yellow highlights and stickies, pixel-art props.",
+      "status": "card-v1",
+      "production": "image-native",
+      "formats": {
+        "spines": [
+          "A",
+          "D"
+        ],
+        "notes": "Tool tutorials and step-by-step builds. A: roadmap (what), tells (why), parts (model), step (how), prompt (peak), measured (use), stack (start), cta. D: the same step and prompt pages carry the N build steps, measured is the day. Not for listicles or head-to-heads."
+      },
+      "attributes": {
+        "ground": "#141414 matte charcoal with a fine paper grain; no haze, glow or vignette",
+        "type_pairing": "#F2F0EA editorial serif headlines, Title Case, acid-yellow accent phrase with a hand-drawn marker underline; yellow mono eyebrows; Inter header and cards; marker script for stickies, the cover subline and swipe->",
+        "panel": "Browser windows with magenta screens (real captures), thin off-white outlined panels holding HTML cards (checklist, numbered list, arrow table, roadmap grid, stats), a terminal card for the exact prompt, the yellow footer bar as a card",
+        "character": "Optional: your own mascot, if you have one (never a licensed character), composited as a PNG into a cyan slot beside a painted 8-bit prop that carries the slide's meaning; with none, the props stand alone",
+        "ornament": "Yellow-outlined NN / TT pill, header row, swipe-> script, pale yellow stickies with grey tape, tiny yellow sparkles on the cover, mono footer mantra",
+        "palette": "#141414 / #F2F0EA / #F5F400 acid yellow / #8E8A82 grey / #F6EC8C sticky"
+      },
+      "cooldown_days": 14,
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S09-cover.png",
+        "interior": "engine/styles/exemplars/S09-interior.png",
+        "interior_slide": 3,
+        "note": "Cover and slide 3 (a step slide) of an earlier deck in this style; its mascot painted out, a personal name and two handles blurred."
+      },
+      "requires": [
+        "Codex plates with engine/styles/refs/s09-ref-cover.png + s09-ref-step.png attached (until a locked cover exists)",
+        "Exact text only as cards from engine/styles/kits/S09/ (list, grid, terminal, stats, bar), rendered at each magenta zone's out bbox x2",
+        "Optional mascot: your own cut-out PNG, composited, never drawn: --logo C1=$D/assets/mascot.png@1.0,bottom into a cyan slot of its aspect on plain charcoal (a slot touching the light title bar leaves a pale patch); cover, at most two interiors and the CTA avatar, a different painted prop each time. Never a licensed character; with no mascot, ask for no character slot",
+        "Real logo tiles for cyan squares (full tile PNGs so the erased patch is covered); real captures for every screen",
+        "Ask for 'no haze' on every dark generation (the block's SYSTEM does); headline, eyebrow and sticky checked letter by letter"
+      ],
+      "template": null,
+      "prompt_block": "engine/styles/S09-charcoal-studio.prompt.md",
+      "kit": "engine/styles/kits/S09"
+    },
+    {
       "id": "S11",
       "name": "Sketchnote Diagram Explainer",
       "one_line": "Cream, heavy grotesk with a yellow highlighter pill, pastel flow-diagram boxes, hand-drawn arrows.",
       "status": "card-v1",
       "production": "image-native",
       "formats": {
-        "spines": [ "A" ],
+        "spines": [
+          "A"
+        ],
         "notes": "What-is / how-it-works for cold viewers. Explains with a diagram, where most how-slides are a headline over a screenshot in a box."
       },
       "attributes": {
@@ -134,10 +330,12 @@
         "note": "Cover and slide 4 of this repo's worked example, carousels/2026-10-14-claude-video-free."
       },
       "requires": [
-        "Codex paints the diagrams, boxes, arrows and margin notes from the SYSTEM block; real captures go into magenta zones, and exact text (prompts, commands) into HTML cards from shared/render-card.mjs",
+        "Codex paints the page (cream paper, tag box + eyebrow, headline, margin notes, footer) from the SYSTEM block; each diagram is an HTML/SVG card from engine/styles/kits/S11/ composited into a DIAGRAM ZONE magenta zone (composite.py --card), real captures go into KEYING magenta zones, and exact text (prompts, commands) into HTML cards from shared/render-card.mjs",
         "Never borrow licensed characters; use your own mascot, if you have one, or none"
       ],
-      "template": null
+      "template": null,
+      "prompt_block": "engine/styles/S11-sketchnote.prompt.md",
+      "kit": "engine/styles/kits/S11"
     }
   ]
 }

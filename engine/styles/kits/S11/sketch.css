@@ -1,0 +1,104 @@
+/* S11 Sketchnote Diagram Explainer: shared components for every diagram card in this kit.
+   Tokens are the S11 prompt block's (engine/styles/S11-sketchnote.prompt.md). Load with:
+     <link rel="stylesheet" href="sketch.css">  <script src="sketch.js"></script>
+   Fonts (Google Fonts): Inter 400/700/900 (box headings, labels), Patrick Hand (box text, the
+   hand-lettered diagram voice), Kalam 400/700 (margin notes), JetBrains Mono 500 (code). */
+
+:root {
+  --paper: #FBF7EE;
+  --ink: #1B1B1B;
+  --note: #4A4A4A;
+  --orange: #D9551F;
+  --green: #DDEEDB;
+  --blue: #DCE8F7;
+  --pink: #F8E1E4;
+  --lavender: #E9E3F5;
+  --white: #FFFDF8;
+  --hl: #FBE38E;
+  --code: #232A33;
+  --f: 30px;            /* the fit pass sets this; every size below is in em of it */
+}
+
+html, body { margin: 0; width: 100%; height: 100%; background: transparent; overflow: hidden; }
+
+/* The diagram root: fills the card, paper ground, all sizes scale with --f. */
+.sk-stage {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 var(--f)/1.25 "Patrick Hand", "Segoe Print", cursive;
+  padding: 0.5em 0.6em;
+}
+.sk-stage.clear { background: transparent; }
+
+/* Pastel box. The outline is drawn by sketch.js as a wobbly ink path; CSS only fills it. */
+.sk-box {
+  position: relative;
+  box-sizing: border-box;
+  border-radius: 0.5em;
+  padding: 0.45em 0.7em;
+  background: var(--white);
+}
+.sk-box.green { background: var(--green); }
+.sk-box.blue { background: var(--blue); }
+.sk-box.pink { background: var(--pink); }
+.sk-box.lavender { background: var(--lavender); }
+.sk-box.dashed { background: transparent; }           /* outline drawn dashed */
+.sk-box.soft { border-radius: 0.7em; }                  /* a column panel: no outline (data-outline="none") */
+.sk-box .k { font: 700 0.8em/1.2 Inter, sans-serif; letter-spacing: 0.01em; display: block; margin-bottom: 0.15em; }
+.sk-box.big { font-size: 1.25em; text-align: center; }
+
+/* Column heading chip (compare layout) */
+.sk-chip {
+  display: inline-block;
+  border-radius: 0.4em;
+  padding: 0.12em 0.8em 0.18em;
+  font: 400 1.15em/1.2 "Patrick Hand", cursive;
+}
+
+/* Small typed label above or under a box (Inter, near-black) */
+.sk-label { font: 400 0.75em/1.25 Inter, sans-serif; color: var(--ink); }
+.sk-label b { font-weight: 700; }
+.sk-label.accent { color: var(--orange); font-weight: 700; }
+
+/* Handwritten margin note, dark grey, with a scribbled underline drawn by sketch.js */
+.sk-note {
+  font: 400 0.85em/1.15 Kalam, "Segoe Print", cursive;
+  color: var(--note);
+}
+.sk-note.tilt { transform: rotate(-4deg); }
+.sk-note.accent { color: var(--orange); }
+
+/* Yellow highlighter pill: the one most important line */
+.sk-hl {
+  display: inline;
+  padding: 0.06em 0.32em 0.1em;
+  border-radius: 0.38em;
+  background: var(--hl);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.sk-hl.block { display: inline-block; padding: 0.12em 0.5em 0.16em; }
+
+/* Ink code panel */
+.sk-code {
+  border-radius: 0.4em;
+  padding: 0.55em 0.8em;
+  background: var(--code);
+  color: #F2EFE6;
+  font: 500 0.72em/1.5 "JetBrains Mono", Consolas, monospace;
+  white-space: pre;
+}
+.sk-code .s { color: #F2C38A; }
+.sk-code .g { color: #9BD49B; }
+
+/* Overlay that sketch.js draws outlines, arrows and underlines into */
+svg.sk-ink { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+
+/* Rule breaks found by sketch.js: an overflowing [data-fit] element, so render-card exits 2 */
+.LIMIT { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: hidden; visibility: hidden; }
+.LIMIT i { display: block; width: 50px; height: 50px; }

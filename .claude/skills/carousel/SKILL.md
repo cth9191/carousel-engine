@@ -49,7 +49,11 @@ path.
   JSON specs are content, so they're fine. If a shared tool can't do a job, extend the shared tool
   (and say so), or stop and report.
 - **Styles come from the library** (`engine/styles/`). Only styles with a prompt block can go to Make:
-  S01, S02, S03, S11. A new style is a separate R&D session, never part of a deck.
+  S01, S02, S03, S05, S06, S07, S08, S09 and S11 (routes in Stage 4). A new style is a separate R&D
+  session, never part of a deck.
+- **Mascots are optional and never licensed.** No style needs a character. If the user has their own
+  mascot, it is composited as a PNG cutout (never painted by Codex); `shared/pose-check.py --sprite`
+  checks generated poses against it.
 - **Spacing:** a 14-day style cooldown, and no two same-format decks within 72 hours.
 - **Folders:** `$D` is dated today, or the planned posting day in batch mode. It's never a past date.
   Check `carousels/` for a parallel session's folder on the same topic before creating one.
@@ -116,6 +120,11 @@ says `YOUR BRAND` (see Rules).
      the slide text. Any other `place` is free-form (`eyebrow`, `body`, `panel-label`, …).
    - `evidence {kind: prove|explain|none, describe, source}`. `describe` is one plain line, because the
      cold reader reads it.
+   - Optional per slide: `layout` (a layout name from the style's prompt block; the role still sets the
+     job), `cards[]` (`{zone, html, size}` for HTML cards pasted into zones) and `star: true` on the one
+     item the cover payoff leans on (at most one per deck). The brief card shows layout and ★.
+   - `format: "single"` makes a one-image post (exactly one slide); its gates are in `engine/spines.md`
+     → "Format single". Leave it out for a normal carousel.
 
    Also fill `intent` (`why` is one claim), `glossary`, `keyword`, `deliverable`, `caption` (the keyword
    plus a pointer to the source video when there is one), `sources`, and `style` (the recommendation).
@@ -140,7 +149,8 @@ says `YOUR BRAND` (see Rules).
 1. Pick a style from `engine/styles/styles.json`: spine fit (`formats.spines`), cooldown (`stats.last_used`
    + unposted `drafts`, the user's own post log if they keep one, and recent `carousels/` folders other
    than the worked example), and `requires[]`. Recommend one style plus an alternative, both with
-   prompt blocks.
+   prompt blocks. Look-alike styles can share a `cooldown_group` (see `engine/styles/README.md`):
+   `node shared/build-gallery.mjs --check` prints each style's availability, group cooldowns included.
 2. `node shared/build-gallery.mjs --only <REC>,<ALT> --out $D/style-pick.jpg`. It only renders: it
    never writes `styles.json` unless you pass `--sync`, which re-reads the usage stats from the user's
    post log (`--deck-map FILE`; the log's shape is in the script header). Never pass `--sync` from
@@ -169,6 +179,20 @@ Production depends on the style. Read the style's prompt block first:
   `templates/02-terracotta-zine/slides.html`, baked with `node shared/export.mjs --carousel <id>`
   (step 9).
 - **S02** is a hybrid, per its block.
+- **S05–S09** each have a route below. The style's kit `README.md` (`engine/styles/kits/<id>/`) or
+  template `recipe.md` has the exact commands and limits. Refs live in `engine/styles/refs/` (copy the
+  ones a block names into `$D/refs/`). Exact text is always HTML. A template bake that exits 1 (fit pass
+  threw), 2 (missing image) or 3 (fit/copy or `qa()` failure) means rewrite the copy or fix the data,
+  never shrink the type floor.
+
+  | Style | Route |
+  |---|---|
+  | S05 | The user's own photos of their monitor first. Otherwise 3 Codex plates (a desk cover with `s05-ref-desk` + `s05-ref-canted`; canted and close interiors with the locked cover first, then `s05-ref-canted` / `s05-ref-close`), reused across items. Screens: real captures (faces scrubbed) or `kits/S05/screen-title.html` at the zone aspect. `composite.py --shot 1=…@x,y,w,h,warp` (`,extend=left\|right` when the screen runs off a side; the desk cover takes `,aspect=` its zone aspect) → `fitted/`, leftover 0. Stickers: `kits/S05/caption.html` → `cards/slide-NN.html`, render-card 1080x1350 `--scale 1 --min-px 30` → `final/`. |
+  | S06 | One Codex statue plate (refs: the S06 exemplar cover + the user's last S06 cover, if any; a new statue and sky per the block's Rotation). `kits/S06/tile.html` (a real mark) at the slot aspect → `--logo C1=…@1.07`; `kits/S06/cover.html` → `final/slide-01.png`. Interiors: copy `templates/01-graph-paper-cream/slides.html`, set `coverImg` to that cover, one `layered` slide per item (local captures, a verified repo card), the keyword CTA (`ctaKeyword`, `ctaDeliverable`); `export.mjs` (exit 3 = the keyword or deliverable doesn't fit: cut copy). |
+  | S07 | One Codex plate per slide (SYSTEM + COVER or the layout's INTERIOR figure; refs `s07-ref-teal` + `s07-ref-ember`; no text, no keys); `composite.py plates/slide-NN.png fitted/slide-NN.png`; copy `kits/S07/page.html` to `cards/slide-NN.html` and fill its JSON (layout per role; `parts` sets `pos` from the plate); render-card 1080x1350 `--scale 1 --min-px 22` to `exports/`. |
+  | S08 | Copy `kits/S08/cards/s08.css`, the fitted ground (or paint a fresh one with `kits/S08/jobs-setup.json --only ground`, then fit it per the kit README) and `doodles/`; write `cards/page-NN.html` per slide (layouts in the prompt block, `kits/S08/samples/` as the example); icons with `node shared/lucide-icons.mjs $D/cards/icons.js --from $D/cards`; render-card 1080x1350 `--scale 1 --min-px 20` to `exports/`. |
+  | S09 | Codex plates with `s09-ref-cover` + `s09-ref-step`; cards from `kits/S09/` at each magenta bbox (`--bg "#151515"`, bar `"#F5F400"`, terminal `"#0E0E0F"`); `--shot`, `--card`; logo tiles via `--logo`; a mascot only if the user has one (cyan slot on charcoal, `--logo C1=…@1.0,bottom`); headline and sticky QA letter by letter. |
+  | S11 | Codex plate with one magenta zone; the diagram from `engine/styles/kits/S11/` rendered at the zone bbox (2x, `--bg` paper, `--min-px 22`), `--card M1=`. |
 
 1. **Real assets.**
    - Video frames, stills and tile re-layouts: write `$D/shots/shots.spec.json` (the worked example's
@@ -344,9 +368,9 @@ Use `/carousel batch`.
 | Spines + gates, hooks, templates | `engine/spines.md`, `engine/hooks.md`, `engine/templates/{dossier,brief-card}.md` |
 | Cold reader | `engine/cold-reader-prompt.md`, `engine/cold-reader.schema.json`, `engine/cold-reader-judge.schema.json` |
 | Brand name | `engine/brand.json` (`{{BRAND}}` in the style blocks and the S01 template; `{{MONTH_YEAR}}` comes from the deck folder's date) |
-| Styles | `engine/styles/styles.json`, `README.md`, `exemplars/`, `S01-terracotta-zine` / `S02-logo-equation` / `S03-newsprint-benchmark` / `S11-sketchnote` `.prompt.md` |
-| Tools | `shared/codex-img.mjs`, `cold-reader.mjs`, `brief-card.mjs`, `build-gallery.mjs`, `shots.py`, `composite.py`, `render-card.mjs`, `export.mjs` and `render-heroes.mjs` (S01 only) |
-| S01 interior renderer | `templates/02-terracotta-zine/` |
+| Styles | `engine/styles/styles.json`, `README.md`, `exemplars/`, the `<id>-*.prompt.md` blocks (S01–S03, S05–S09, S11), refs in `engine/styles/refs/`, card kits in `engine/styles/kits/<id>/` |
+| Tools | `shared/codex-img.mjs`, `cold-reader.mjs`, `brief-card.mjs`, `build-gallery.mjs`, `build-style-library.mjs` (a browsable HTML page of the library), `shots.py`, `composite.py`, `render-card.mjs`, `lucide-icons.mjs` (+ `vendor/lucide/`), `pose-check.py` (optional, your own mascot), `export.mjs` and `render-heroes.mjs` (HTML-template decks) |
+| Interior renderers | `templates/02-terracotta-zine/` (S01), `templates/01-graph-paper-cream/` (S06) |
 | Worked example | `carousels/2026-10-14-claude-video-free/` |
 | Logos | the user's own logo files or simple-icons SVGs, as PNGs in `$D/logos/` |
 

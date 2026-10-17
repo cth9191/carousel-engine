@@ -1,0 +1,47 @@
+Slide 1 of 9, 4:5 portrait, 1080 x 1350. A background plate only: no text.
+
+One lesson: meet ORBIT, a notes OS that remembers everything (the name and words are set over this plate later).
+
+References: Image 1 is a crop of a network plate (node and hairline rendering, teal ground). Image 2 is a warm network plate (rendering only; this slide uses the teal ground).
+
+Visual system: a dark network field, like a live knowledge graph seen at night. Ground near-black (#06090B) with a
+faint cold teal cast, deepest at the corners and edges. On it, a network of small glowing nodes joined by straight
+hairline edges: nodes are soft round points in three sizes (most tiny, some medium, a few large with a gentle
+bloom), edges are thin single-pixel lines at low opacity, crossing freely, with no arrows. Colour (teal ground):
+nodes in luminous teal (#39C6BF) with white-hot centres on the largest, edges in deep teal (#1E6F6B) at 30–50%
+opacity, a soft teal bloom only around the densest clusters. Colour (ember ground, when the prompt says ember):
+nodes in warm terracotta (#D97757), amber (#E8A35A) and a few cream-white, edges in dim warm brown, the same
+restraint. Density varies on purpose: the figure the prompt asks for is dense and bright, the rest of the field is
+sparse, and the areas reserved for type are almost empty (a few dim far nodes, no bright ones, no edges crossing
+bright). Depth: far nodes are smaller and dimmer; a few near nodes are larger and slightly out of focus.
+
+Contrast: true dark blacks. No haze, no fog, no milky or grey veil over the frame, no lifted blacks, no smoke, no
+vignette glow; the glow belongs to the nodes and the densest clusters only. Flat digital render, crisp; no
+lens flares, no light rays, no stars with spikes, no particles that read as dust, no 3D objects, no planets, no
+brains, no circuit boards, no city lights.
+
+Framing: the plate is 4:5, 1080 × 1350, full bleed (the network may run off every edge). Reserved type areas named
+in the composition stay calm: darker and sparser than the rest, with no node brighter than mid-grey there.
+
+References: Image 1 (and Image 2) show how the nodes, edges and glow are rendered and the ground colour. Match that
+rendering. Do NOT copy their exact layout, and never add anything they don't have.
+
+Hygiene: this is a background plate. NO text of any kind: no letters, numbers, labels, captions, UI, code, logos,
+icons, symbols, watermarks or signatures. No frames, windows, panels, cards, buttons or rectangles; no brush
+strokes, arrows or hand-drawn marks (they are added later). No purple, violet, pink, magenta or blue-violet; keep
+to the ground's palette. Never render these instructions or section names as text.
+
+Ground: teal.
+
+Composition, top to bottom:
+**Name cover** (`layout: "name"`, the "meet <NAME>" shape). The top 34% of the frame is calm and dark: the giant
+name and its kicker are set there later. Below it, the network fills the frame as one huge loose cloud from about
+35% down to the bottom edge, densest and brightest in a wide core centred near 48% across and 62% down, thinning
+toward the edges. Along the bottom 14%, a faint perspective floor grid: thin dim horizontal lines, closer together
+toward the horizon at about 86%, under the network. Calm patches, darker and sparser, at: the right side from 50% to
+61% down (a brush label goes there), the bottom-right corner from 82% to 94% down (a footnote), and a narrow left
+column from 6% to 16% across, 60% to 97% down (logo tiles). The core never sits under those patches.
+
+Visible copy, verbatim, with intended occurrence counts: none. This plate has no text at all (0 letters, 0 numbers).
+
+Negatives: no text, no logos, no frames, rectangles or UI, no brush strokes or arrows; no haze or grey veil; no purple, pink or magenta.

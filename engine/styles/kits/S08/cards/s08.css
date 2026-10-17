@@ -1,0 +1,163 @@
+/* S08 Bone Editorial — HTML layer over the Codex kraft ground (fitted/ground.png).
+   Copy cards/* to $D/cards/, the ground to $D/fitted/ground.png and the doodle crops to $D/doodles/.
+   Every word on the page is HTML; the plate carries only paper, header rule, star, blank taped sticky,
+   lightning and crown. Render: node shared/render-card.mjs page.html out.png --w 1080 --h 1350 --scale 1 --min-px 20 */
+
+:root {
+  --paper: #EEE4D2;
+  --paper-hi: #F6EEDF;
+  --ink: #1A1A1A;
+  --ink-2: #3A3631;
+  --muted: #6B645A;
+  --accent: #D9551F;          /* one accent taken from the subject; swap per deck (e.g. cobalt #3D7DC8) */
+  --accent-tint: rgba(217, 85, 31, .14);  /* keep in step with --accent */
+  --pane: #15171A;
+  --rule: #1A1A1A;
+  --didone: 'Playfair Display', 'Bodoni Moda', Georgia, serif;
+  --sans: 'Inter', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', 'JetBrains Mono', monospace;
+  --hand: 'Kalam', 'Caveat', cursive;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1350px; overflow: hidden; }
+body { position: relative; background: var(--paper) url(../fitted/ground.png) center / 1080px 1350px no-repeat;
+       color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+
+/* chrome: running header above the painted rule, mantra footer between the painted bolt and crown */
+.hdr { position: absolute; top: 16px; left: 64px; right: 64px; display: flex; justify-content: space-between;
+       font: 500 21px/1 var(--mono); color: var(--ink-2); letter-spacing: .02em; }
+.mantra { position: absolute; left: 140px; right: 170px; top: 1274px; display: flex; align-items: center; gap: 12px;
+          font: 600 20px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink); }
+.mantra .circ { position: relative; padding: 0 10px; }
+.mantra .circ svg { position: absolute; inset: -9px -6px; width: calc(100% + 12px); height: calc(100% + 18px); overflow: visible; }
+
+/* headline: Didone, line 1 ink, line 2 accent with a hand underline */
+.head { position: absolute; left: 64px; top: 138px; width: 640px; }
+.head .l1, .head .l2 { display: block; white-space: nowrap; font: 800 112px/0.98 var(--didone); letter-spacing: -0.02em; }
+.head .l2 { color: var(--accent); }
+.head .l2 .t { position: relative; display: inline-block; }
+.head .l2 svg.ul { position: absolute; left: -4px; bottom: -20px; width: calc(100% + 14px); height: 26px; overflow: visible; }
+.head.step .l1 { color: var(--accent); }
+.head.step .l2 { color: var(--ink); }
+
+/* the painted sticky sits at ~x 81% y 15%, rotated +5deg: write on it */
+.sticky { position: absolute; left: 752px; top: 196px; width: 240px; height: 170px; transform: rotate(5deg);
+          display: flex; align-items: center; justify-content: center; text-align: center;
+          font: 700 27px/1.18 var(--hand); color: var(--ink); text-transform: uppercase; }
+
+/* body zone */
+.zone { position: absolute; left: 64px; right: 64px; top: 440px; bottom: 112px; display: flex; flex-direction: column; gap: 26px; }
+
+/* big statement lines (What slide) */
+.say { font: 400 44px/1.3 var(--sans); color: var(--ink); }
+.say b { font-weight: 700; }
+.u { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px; text-decoration-color: var(--accent); }
+.hi { background: var(--accent); color: #FFF8EE; padding: 0 10px; border-radius: 4px; }
+.loop { position: relative; display: inline-block; padding: 0 8px; }
+.loop svg { position: absolute; inset: -8px -10px; width: calc(100% + 20px); height: calc(100% + 16px); overflow: visible; }
+
+/* hand-drawn svg strokes */
+svg .hand { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+svg .hand.acc { stroke: var(--accent); }
+
+/* mono body */
+.mono { font: 500 25px/1.45 var(--mono); color: var(--ink-2); }
+.mono b { color: var(--ink); font-weight: 700; }
+.mono .acc { color: var(--accent); font-weight: 700; }
+
+/* old/new rows: circle icon + mono text, dashed separators */
+.rows { display: flex; flex-direction: column; }
+.rows .r { display: flex; gap: 22px; align-items: flex-start; padding: 16px 0; border-bottom: 2px dashed rgba(26,26,26,.35); }
+.rows .r:last-child { border-bottom: 0; }
+.rows .ic { flex: none; width: 54px; height: 54px; border: 2.5px solid var(--ink); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--ink); }
+.rows .tx { font: 500 25px/1.42 var(--mono); color: var(--ink-2); padding-top: 4px; }
+.rows .tx .k { color: var(--accent); font-weight: 700; }
+
+/* ruled table */
+.tbl { border: 2.5px solid var(--rule); background: rgba(246, 238, 223, .55); }
+.tbl .th { display: grid; border-bottom: 2.5px solid var(--rule); font: 600 20px/1 var(--mono); letter-spacing: .06em;
+           text-transform: uppercase; color: var(--ink-2); }
+.tbl .th > div { padding: 16px 20px; }
+.tbl .tr { display: grid; border-bottom: 1.5px solid rgba(26,26,26,.55); align-items: center; }
+.tbl .tr:last-child { border-bottom: 0; }
+.tbl .tr > div { padding: 30px 20px; }
+.tbl .tr > div + div, .tbl .th > div + div { border-left: 2.5px solid var(--rule); }
+.tbl .name { display: flex; align-items: center; gap: 16px; font: 700 30px/1.15 var(--sans); }
+.tbl .name .ic { flex: none; width: 58px; height: 58px; border: 2.5px solid var(--ink); border-radius: 12px;
+                 display: flex; align-items: center; justify-content: center; font-size: 28px; }
+.tbl .desc { font: 500 25px/1.4 var(--mono); color: var(--ink-2); }
+.tbl .desc b { color: var(--accent); }
+
+/* dark app pane holding a real capture */
+.pane { position: relative; background: var(--pane); border-radius: 18px; padding: 44px 10px 10px;
+        box-shadow: 0 14px 30px rgba(40, 30, 15, .28), 0 0 0 2px #0B0C0E; }
+.pane::before { content: ''; position: absolute; left: 18px; top: 16px; width: 12px; height: 12px; border-radius: 50%;
+                background: #FF5F57; box-shadow: 20px 0 0 #FEBC2E, 40px 0 0 #28C840; }
+.pane img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 0 0; border-radius: 10px; }
+.pane .tag { position: absolute; right: 18px; top: 11px; font: 600 20px/1 var(--mono); color: #CFC8BC; letter-spacing: .08em; text-transform: uppercase; }
+
+/* paper card holding a light capture */
+.card { position: relative; background: var(--paper-hi); border: 2.5px solid var(--ink); padding: 12px;
+        box-shadow: 6px 6px 0 rgba(26,26,26,.85); }
+.card img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 0 0; }
+.tape { position: absolute; width: 150px; height: 40px; background: rgba(214, 196, 160, .72); transform: rotate(-4deg);
+        top: -20px; left: calc(50% - 75px); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+
+/* icon strip: boxed doodles + caps labels */
+.strip { display: grid; gap: 0; border: 2.5px solid var(--ink); background: rgba(246, 238, 223, .55); }
+.strip > div { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 18px 8px 16px;
+               font: 600 22px/1 var(--mono); text-transform: uppercase; letter-spacing: .05em; }
+.strip > div + div { border-left: 2.5px solid var(--ink); }
+.strip .ic { font-size: 46px; color: var(--ink); height: 52px; display: flex; align-items: center; }
+
+/* margin notes in handwriting */
+.note { position: absolute; font: 700 26px/1.2 var(--hand); color: var(--ink); text-transform: uppercase; }
+.note.acc { color: var(--accent); }
+
+/* doodle crops (paper-coloured ground, multiplied onto the plate) */
+img.dd { position: absolute; pointer-events: none; }
+
+/* lucide icons injected by icons.js (shared/lucide-icons.mjs) */
+i[data-lucide] { display: inline-flex; width: 1em; height: 1em; }
+i[data-lucide] svg { width: 100%; height: 100%; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+/* CTA */
+.cta-kw { font: 800 150px/0.95 var(--didone); color: var(--accent); letter-spacing: -0.02em; }
+.composer { display: flex; align-items: center; gap: 18px; padding: 18px 22px; border: 2.5px solid var(--ink);
+            background: var(--paper-hi); border-radius: 16px; box-shadow: 6px 6px 0 rgba(26,26,26,.85); }
+.composer .av { width: 52px; height: 52px; border-radius: 50%; border: 2.5px solid var(--ink); }
+.composer .kw { font: 600 34px/1 var(--mono); color: var(--ink); flex: 1; }
+.composer .kw::after { content: ''; display: inline-block; width: 3px; height: 34px; background: var(--accent); margin-left: 6px; vertical-align: -6px; }
+.composer .send { width: 52px; height: 52px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 28px; }
+
+/* lucide() swaps <i> for a bare <svg>: size it by its container */
+.ic svg, .send svg { width: 1em; height: 1em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.strip .ic svg { width: 48px; height: 48px; }
+
+.tbl .desc b { white-space: nowrap; }
+.tbl .tr.skip { border-top: 2.5px dashed var(--rule); background: rgba(26,26,26,.05); }
+.tbl .tr.skip .name { color: var(--muted); }
+.strip > div { white-space: nowrap; }
+.strip.wide > div { font-size: 20px; letter-spacing: .03em; padding: 18px 14px 16px; }
+
+/* full-height column rules: cells stretch, content centred */
+.tbl .tr { align-items: stretch; }
+.tbl .tr > div { display: flex; align-items: center; }
+.tbl .tr > div.desc { display: block; align-self: stretch; padding-top: 30px; }
+
+.tbl.compact .tr > div { padding-top: 18px; padding-bottom: 18px; }
+.tbl.compact .tr > div.desc { padding-top: 18px; }
+.loop { padding: 0 14px; }
+
+/* captures never crop: contain inside panes and cards (size boxes to the capture's aspect) */
+.pane img { object-fit: contain; background: var(--pane); }
+.card img { object-fit: contain; object-position: 50% 0; }
+.loop { padding: 0 18px; }
+.loop svg { inset: -10px -6px; width: calc(100% + 12px); }
+
+.loop { padding: 0 26px 0 18px; }
+
+/* optional mascot: your own transparent PNG pose, if you have one (never a licensed character) */
+img.mascot { position: absolute; pointer-events: none; }

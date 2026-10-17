@@ -1,6 +1,7 @@
 """
 Build the real-capture "shots" for a deck: frames pulled from a source video (webcam bubble
-cropped out or scrubbed), still images, and tile re-layouts. Writes PNGs + shots.json.
+cropped out or scrubbed), still images, tile re-layouts and circular disc crops (RGBA). Writes PNGs +
+shots.json.
 
 Usage (from the repo root; -I keeps the deck folder out of sys.path; python3 where that is the name):
   python -I shared/shots.py carousels/<id>/shots/shots.spec.json [--only name1,name2] [--sheet out.jpg]
@@ -33,9 +34,28 @@ Spec (paths are relative to the repo root unless absolute):
       "note": "..." },
     { "slide": 9, "name": "s09-a", "image": "path.png", "crop": [...], "bubble": "none", ... },
     { "slide": 9, "name": "s09-row", "image": "path.png", "tiles": [[x, y, w, h], ...],
-      "layout": "row" | "grid:ROWSxCOLS", "gap": 16, "margin": 16, "bg": [r, g, b] }
+      "layout": "row" | "grid:ROWSxCOLS", "gap": 16, "margin": 16, "bg": [r, g, b] },
+    { "slide": 0, "name": "01", "image": "emblems/sheet.png",                 # disc crop (one disc)
+      "disc": [cx, cy, r] | "auto",                          # source px; auto = the largest round
+                                                             #   blob in "crop" (or the whole image)
+      "crop": [x, y, w, h],                                  # auto only: the search window
+      "inset": 1,                                            # px cut inside the edge (auto 1, else 0)
+      "size": 512,                                           # output side px (default 2 x radius)
+      "tol": 48, "bg": [r, g, b], "min_iou": 0.9 },          # auto: ground tolerance / colour /
+                                                             #   roundness gate
+    { "slide": 0, "name": "{nn}", "image": "emblems/sheet.png",               # every disc on a sheet
+      "discs": "auto", "count": 6, "size": 512 }             # -> 01.png, 02.png ... reading order
   ]
 }
+
+Disc crops write a square RGBA PNG: the circle (radius r - inset) on a transparent ground with an
+anti-aliased edge (linear 1 px coverage ramp), e.g. emblem faces for composite.py --logo N=x.png@1.0.
+Auto finds blobs that differ from the sheet ground (median of the window border, or "bg") by more than
+"tol" (sum of |dR|+|dG|+|dB|), fills their holes, takes centre and radius from the area, checks the
+blob is round (IoU with its disc >= min_iou, else the shot fails) and snaps the circle to the
+strongest edge within 2 px. "discs" names each disc from "name": "{nn}" is replaced by 01, 02 ...,
+otherwise "-NN" is appended; "count" (optional) fails the run if a different number is found. --only
+matches the entry's own name. The circle must lie inside the image (else the shot fails).
 
 Scrub methods (they fill only the part of the disc inside the crop; the crop edge is a free
 boundary, while mirror/shift may copy from anywhere in the frame outside the bubble):
@@ -58,6 +78,7 @@ import tempfile
 
 import numpy as np
 from PIL import Image, ImageDraw
+from scipy import ndimage
 from scipy.sparse import coo_matrix
 from scipy.sparse.linalg import splu
 
@@ -326,6 +347,131 @@ def relayout(spec):
     return out
 
 
+# ---------- disc crops ----------
+
+def find_discs(img, spec, rect):
+    """Round blobs that differ from the ground in rect (x, y, w, h) of img (HxWx3 float).
+    Returns [(cx, cy, r, iou)] in image px, largest first."""
+    x, y, w, h = rect
+    sub = img[y:y + h, x:x + w]
+    if 'bg' in spec:
+        bg = np.array(spec['bg'], dtype=np.float64)
+    else:
+        bg = np.median(np.concatenate([sub[0], sub[-1], sub[:, 0], sub[:, -1]]), axis=0)
+    fg = np.abs(sub - bg).sum(2) > spec.get('tol', 48)
+    fg = ndimage.binary_opening(fg, iterations=1)            # drop grain specks
+    lab, n = ndimage.label(fg)
+    if n == 0:
+        return []
+    areas = ndimage.sum_labels(fg, lab, index=np.arange(1, n + 1))
+    min_area = spec.get('min_area', 0.002 * w * h)
+    min_iou = spec.get('min_iou', 0.9)
+    found = []
+    for i, (sl, area) in enumerate(zip(ndimage.find_objects(lab), areas), start=1):
+        if area < min_area:
+            continue
+        comp = ndimage.binary_fill_holes(lab[sl] == i)
+        A = comp.sum()
+        cyl, cxl = ndimage.center_of_mass(comp)
+        r = float(np.sqrt(A / np.pi))
+        yy, xx = np.mgrid[0:comp.shape[0], 0:comp.shape[1]]
+        dsk = (xx - cxl) ** 2 + (yy - cyl) ** 2 <= r * r
+        iou = float((dsk & comp).sum() / max(1, (dsk | comp).sum()))
+        cx, cy = x + sl[1].start + cxl, y + sl[0].start + cyl
+        found.append((float(cx), float(cy), r, iou, int(A)))
+    round_ = [f for f in found if f[3] >= min_iou]
+    if not round_ and found:
+        big = max(found, key=lambda f: f[4])
+        raise SystemExit(f'{spec["name"]}: largest blob at {big[0]:.0f},{big[1]:.0f} is not round '
+                         f'(IoU {big[3]:.2f} < min_iou {min_iou}); give "disc": [cx, cy, r] or a tighter "crop"')
+    round_.sort(key=lambda f: -f[4])
+    return [f[:4] for f in round_]
+
+
+def snap_disc(mag, cx, cy, r, reach=2.0, step=0.5):
+    """Move the circle to the strongest edge within reach px (sub-pixel grid)."""
+    best = (ring_score(mag, cx, cy, r), cx, cy, r)
+    offs = np.arange(-reach, reach + 1e-9, step)
+    for dx in offs:
+        for dy in offs:
+            for dr in offs:
+                s = ring_score(mag, cx + dx, cy + dy, r + dr)
+                if s > best[0]:
+                    best = (s, cx + dx, cy + dy, r + dr)
+    return best[1:]
+
+
+def disc_cut(img, cx, cy, R, name, size=None):
+    """Square RGBA crop of the circle (cx, cy, R) with an anti-aliased circular alpha. Coordinates are
+    pixel-index coords (pixel i spans i-0.5..i+0.5), like bubble_prior and the ring search."""
+    H, W = img.shape[:2]
+    if cx - R < -0.5 or cy - R < -0.5 or cx + R > W - 0.5 or cy + R > H - 0.5:
+        raise SystemExit(f'{name}: disc {cx:.1f},{cy:.1f} r{R:.1f} runs off the {W}x{H} image')
+    x0, y0 = max(0, int(np.floor(cx - R + 0.5))), max(0, int(np.floor(cy - R + 0.5)))
+    x1, y1 = min(W, int(np.ceil(cx + R + 0.5))), min(H, int(np.ceil(cy + R + 0.5)))
+    S = max(x1 - x0, y1 - y0)
+    x1, y1 = min(W, x0 + S), min(H, y0 + S)
+    rgb = np.zeros((S, S, 3))
+    rgb[:y1 - y0, :x1 - x0] = img[y0:y1, x0:x1]
+    yy, xx = np.mgrid[0:S, 0:S]
+    d = np.hypot(xx - (cx - x0), yy - (cy - y0))
+    a = np.clip(R + 0.5 - d, 0, 1)
+    rgba = np.dstack([np.clip(np.round(rgb), 0, 255), np.round(a * 255)]).astype(np.uint8)
+    im = Image.fromarray(rgba, 'RGBA')
+    if size and size != S:
+        im = im.resize((int(size), int(size)), Image.LANCZOS)   # PIL resamples RGBA premultiplied
+    return im, [x0, y0, S, S]
+
+
+def build_discs(spec, img, base):
+    """'disc' / 'discs' entries -> [(im, entry, focus, info)]. base carries the source fields."""
+    name = spec['name']
+    H, W = img.shape[:2]
+    mag = _grad(img)
+    many = 'discs' in spec
+    mode = spec['discs'] if many else spec['disc']
+    if mode == 'auto':
+        rect = spec.get('crop') or [0, 0, W, H]
+        found = find_discs(img, spec, rect)
+        if not found:
+            raise SystemExit(f'{name}: no disc found in {rect} (tol {spec.get("tol", 48)})')
+        if many:
+            # reading order: rows of discs whose centres sit within one radius vertically, then left
+            rows = []
+            for f in sorted(found, key=lambda f: f[1]):
+                if rows and abs(f[1] - rows[-1][0][1]) <= min(f[2], rows[-1][0][2]):
+                    rows[-1].append(f)
+                else:
+                    rows.append([f])
+            found = [f for row in rows for f in sorted(row, key=lambda f: f[0])]
+            if 'count' in spec and len(found) != spec['count']:
+                raise SystemExit(f'{name}: found {len(found)} discs, expected count {spec["count"]} '
+                                 f'(tune tol / bg / min_iou, or crop the sheet)')
+        else:
+            found = found[:1]
+        circles = []
+        for cx, cy, r, iou in found:
+            scx, scy, sr = (float(v) for v in snap_disc(mag, cx, cy, r))
+            circles.append((scx, scy, sr, dict(area_fit=[round(cx, 1), round(cy, 1), round(r, 1)],
+                                               iou=round(iou, 3))))
+        inset = spec.get('inset', 1)
+    else:
+        if many:
+            raise SystemExit(f'{name}: "discs" only takes "auto"; use one "disc": [cx, cy, r] per entry')
+        cx, cy, r = [float(v) for v in mode]
+        circles = [(cx, cy, r, {})]
+        inset = spec.get('inset', 0)
+    out = []
+    for i, (cx, cy, r, info) in enumerate(circles, 1):
+        nm = name if not many else (name.replace('{nn}', f'{i:02d}') if '{nn}' in name else f'{name}-{i:02d}')
+        R = r - inset
+        im, box = disc_cut(img, cx, cy, R, nm, spec.get('size'))
+        info = dict(info, disc=[round(cx, 2), round(cy, 2), round(R, 2)], inset=inset)
+        entry = dict(base, name=nm, file=f'{nm}.png', bubble='none', crop_in_source=box, disc=info['disc'])
+        out.append((im, entry, [0, 0, im.width, im.height], info))
+    return out
+
+
 # ---------- main ----------
 
 def build(spec, cfg, tmp):
@@ -335,7 +481,7 @@ def build(spec, cfg, tmp):
         im = relayout(spec)
         entry.update(source_time=None, source=spec['image'], bubble='none')
         focus = spec.get('focus') or [0, 0, im.width, im.height]
-        return im, entry, focus, {}
+        return [(im, entry, focus, {})]
     if 'image' in spec:
         src = need_file(spec['image'], name, 'image', 'Fix "image" in the spec.')
         img = np.asarray(Image.open(src).convert('RGB')).astype(np.float64)
@@ -348,6 +494,10 @@ def build(spec, cfg, tmp):
                           'or point "video" in the spec at it.')
         img = extract(video, tsec, os.path.join(tmp, f'{name}.png'))
         entry.update(source_time=fmt_t(tsec), source=cfg['video'])
+    if 'disc' in spec or 'discs' in spec:
+        if spec.get('bubble', 'none') != 'none':
+            raise SystemExit(f'{name}: a disc crop takes no "bubble"; scrub in a separate shot first')
+        return build_discs(spec, img, entry)
     mode = spec.get('bubble', 'none')
     info = {}
     H, W = img.shape[:2]
@@ -387,7 +537,7 @@ def build(spec, cfg, tmp):
     entry['crop_in_source'] = [x, y, w, h]
     entry['bubble'] = mode
     focus = spec.get('focus') or [0, 0, im.width, im.height]
-    return im, entry, focus, info
+    return [(im, entry, focus, info)]
 
 
 def main():
@@ -420,25 +570,28 @@ def main():
         manifest = json.load(open(man_path, encoding='utf-8'))
     by_name = {e['name']: e for e in manifest}
     built = []
+    spec_pos = {s['name']: i for i, s in enumerate(cfg['shots'])}
+    gen_order = {}
     with tempfile.TemporaryDirectory() as tmp:
         for spec in cfg['shots']:
             if only and spec['name'] not in only:
                 continue
-            im, entry, focus, info = build(spec, cfg, tmp)
-            fx, fy, fw, fh = focus
-            if fx < 0 or fy < 0 or fx + fw > im.width or fy + fh > im.height:
-                raise SystemExit(f'{spec["name"]}: focus {focus} outside {im.size}')
-            im.save(os.path.join(out_dir, entry['file']), optimize=True)
-            entry['size'] = [im.width, im.height]
-            entry['focus'] = focus
-            entry['note'] = spec.get('note', '')
-            if info:
-                entry['check'] = info
-            by_name[entry['name']] = entry
-            built.append((entry, im))
-            print(f'ok  {entry["file"]:34s} {im.width}x{im.height}  bubble={entry["bubble"]}  {info}')
-    order = [s['name'] for s in cfg['shots']]
-    manifest = sorted(by_name.values(), key=lambda e: order.index(e['name']) if e['name'] in order else 999)
+            for j, (im, entry, focus, info) in enumerate(build(spec, cfg, tmp)):
+                fx, fy, fw, fh = focus
+                if fx < 0 or fy < 0 or fx + fw > im.width or fy + fh > im.height:
+                    raise SystemExit(f'{spec["name"]}: focus {focus} outside {im.size}')
+                im.save(os.path.join(out_dir, entry['file']), optimize=True)
+                entry['size'] = [im.width, im.height]
+                entry['focus'] = focus
+                entry['note'] = spec.get('note', '')
+                if info:
+                    entry['check'] = info
+                by_name[entry['name']] = entry
+                built.append((entry, im))
+                gen_order[entry['name']] = (spec_pos[spec['name']], j)
+                print(f'ok  {entry["file"]:34s} {im.width}x{im.height}  bubble={entry["bubble"]}  {info}')
+    manifest = sorted(by_name.values(),
+                      key=lambda e: gen_order.get(e['name'], (spec_pos.get(e['name'], 999), 0)))
     with open(man_path, 'w', encoding='utf-8') as f:
         json.dump(manifest, f, indent=2, ensure_ascii=False)
     print(f'wrote {rel(man_path)} ({len(manifest)} shots)')
@@ -447,7 +600,10 @@ def main():
         cells = []
         for e, im in built:
             th = int(tw * im.height / im.width)
-            t = im.resize((tw, th), Image.LANCZOS).convert('RGB')
+            t = im.resize((tw, th), Image.LANCZOS)
+            if t.mode == 'RGBA':                     # disc crops: show the alpha on mid grey
+                t = Image.alpha_composite(Image.new('RGBA', t.size, (128, 128, 128, 255)), t)
+            t = t.convert('RGB')
             d = ImageDraw.Draw(t)
             fx, fy, fw, fh = [v * tw / im.width for v in e['focus']]
             d.rectangle([fx, fy, fx + fw, fy + fh], outline=(0, 255, 0), width=2)

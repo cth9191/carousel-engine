@@ -15,3 +15,6 @@ research/
 # events. Boards, composite reports and QA notes in runs/ are worth keeping.
 carousels/*/runs/runs.jsonl
 carousels/*/runs/logs/
+
+# build output of shared/build-style-library.mjs
+engine/styles/library/

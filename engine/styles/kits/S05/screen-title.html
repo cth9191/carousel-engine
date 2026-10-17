@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S05 title screen</title>
+<!--
+  S05 cover screen: what the photographed monitor shows on the cover when the deck has no better real screen
+  (the exemplar's pixel-wordmark wallpaper, rebuilt as HTML). It is a screen, so it is warped onto the plate's
+  magenta screen like any capture. Copy to $D/cards/screen-title.html, edit only the JSON, render at the screen's
+  aspect (the zone report's quad, e.g. 1600x900 for 16:9) and composite it as a shot:
+    node shared/render-card.mjs $D/cards/screen-title.html $D/shots/screen-title.png --w 1600 --h 900 --scale 1 --bg "#0B0B0F"
+  "side" is an optional real mark shown on a white panel at the right (a $D/logos/ PNG, path relative to this file),
+  "pose" an optional mascot PNG: your own mascot, if you have one (never a licensed
+  character, never a redrawn sprite). Title: 1-2 lines, <= 12 characters a line.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #0B0B0F; }
+  body { display: flex; align-items: center; justify-content: center; gap: 3vw; padding: 0 4vw; box-sizing: border-box;
+         background: radial-gradient(ellipse at 50% 55%, #17141A 0%, #0B0B0F 70%); }
+  .title { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; justify-content: center; height: 78vh; overflow: hidden; }
+  .title p { margin: 0; font-family: 'Silkscreen', monospace; font-weight: 700; line-height: 1.02; letter-spacing: -0.03em; white-space: nowrap;
+             color: var(--c); font-size: 26vh;
+             text-shadow: 0.035em 0.035em 0 #0B0B0F, 0.06em 0.06em 0 var(--c); }
+  .side { flex: 0 0 26vw; height: 52vh; background: #F4F4F2; border-radius: 1.2vw; display: flex; align-items: center; justify-content: center; }
+  .side img { width: 76%; height: 76%; object-fit: contain; }
+  .pose { position: absolute; right: 4vw; bottom: 6vh; height: 34vh; }
+</style>
+</head>
+<body>
+<script type="application/json" id="data">
+{
+  "lines": ["YOUR", "TOPIC"],
+  "colour": "#E2643C",
+  "side": "",
+  "pose": ""
+}
+</script>
+<script src="kit.js"></script>
+<script>
+  KIT.ready((d) => {
+    const lines = d.lines || [];
+    KIT.limit(lines.length >= 1 && lines.length <= 2, 'title-1-to-2-lines');
+    KIT.limit(lines.every((l) => String(l).length <= 12), 'title-line-over-12-chars');
+    document.body.style.setProperty('--c', d.colour || '#E2643C');
+    const t = document.createElement('div');
+    t.className = 'title';
+    t.setAttribute('data-fit', '');
+    t.dataset.min = 40;
+    t.innerHTML = lines.map((l) => `<p>${KIT.esc(l)}</p>`).join('');
+    document.body.appendChild(t);
+    t.style.fontSize = getComputedStyle(t.querySelector('p')).fontSize;
+    t.querySelectorAll('p').forEach((p) => { p.style.fontSize = 'inherit'; });
+    if (d.side) {
+      const s = document.createElement('div');
+      s.className = 'side';
+      s.innerHTML = `<img src="${KIT.esc(d.side)}" alt="">`;
+      document.body.appendChild(s);
+    }
+    if (d.pose) {
+      const p = document.createElement('img');
+      p.className = 'pose';
+      p.src = d.pose;
+      document.body.appendChild(p);
+    }
+  });
+</script>
+</body>
+</html>

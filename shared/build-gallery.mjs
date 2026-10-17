@@ -24,6 +24,12 @@
 // mult is the post's performance ratio, e.g. its views / the median views of your carousels posted
 // within +-21 days. Median and best per style are taken over it. Without --sync (or without a log),
 // the gallery renders from styles.json as it is, and a style with no stats shows the spines it fits.
+//
+// Cooldown: a style cools for cooldown_days after its own last cover. A style may also carry
+// cooldown_group: one object or an array of them, {id, members: [style ids], applies_to: 'cover'|'any',
+// cap_days}. It then also cools while any member's last cover ('cover'), or last cover or interior
+// ('any'), is under cap_days old. Every member carries an identical copy of each of its groups.
+// Groups read the post log too: without one, nothing cools.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -132,6 +138,37 @@ for (const s of catalog.styles) {
 for (const e of deckmap ?? []) for (const k of ['cover_style', 'interior_style'])
   if (e[k] && !ids.has(e[k])) problems.push(`post log ${e.code ?? e.folder}: ${k} ${e[k]} not in styles.json`);
 
+// cooldown groups: one object or an array; every copy of a group id identical; every member carries it
+const APPLIES_TO = ['cover', 'any'];
+const groupsOf = (s) => (s.cooldown_group == null ? [] : [s.cooldown_group].flat());
+const groupKey = (g) => JSON.stringify({ id: g.id, members: [...(g.members ?? [])].sort(), applies_to: g.applies_to, cap_days: g.cap_days });
+const groups = new Map(); // id -> { def, from }
+for (const s of catalog.styles) {
+  const seen = new Set();
+  for (const g of groupsOf(s)) {
+    if (!g || typeof g !== 'object' || Array.isArray(g)) { problems.push(`${s.id}: cooldown_group entries must be objects`); continue; }
+    const where = `${s.id} cooldown_group ${g.id ?? '(no id)'}`;
+    if (typeof g.id !== 'string' || !g.id) problems.push(`${where}: needs a string id`);
+    if (seen.has(g.id)) problems.push(`${where}: listed twice`);
+    seen.add(g.id);
+    if (!Array.isArray(g.members) || g.members.length < 2) problems.push(`${where}: members needs 2 or more style ids`);
+    else {
+      for (const m of g.members) if (!ids.has(m)) problems.push(`${where}: unknown member ${m}`);
+      if (new Set(g.members).size !== g.members.length) problems.push(`${where}: duplicate member`);
+      if (!g.members.includes(s.id)) problems.push(`${where}: ${s.id} carries the group but is not a member`);
+    }
+    if (!APPLIES_TO.includes(g.applies_to)) problems.push(`${where}: applies_to must be ${APPLIES_TO.join(' or ')}`);
+    if (!Number.isInteger(g.cap_days) || g.cap_days < 1) problems.push(`${where}: cap_days must be a positive integer`);
+    const prev = groups.get(g.id);
+    if (!prev) groups.set(g.id, { def: g, from: s.id });
+    else if (groupKey(prev.def) !== groupKey(g)) problems.push(`${where}: differs from ${prev.from}'s copy`);
+  }
+}
+for (const [gid, { def }] of groups) for (const m of def.members ?? []) {
+  const ms = catalog.styles.find((x) => x.id === m);
+  if (ms && !groupsOf(ms).some((g) => g?.id === gid)) problems.push(`${m}: member of cooldown_group ${gid} but doesn't carry it`);
+}
+
 // ---------- sync (only with --sync and a post log) ----------
 if (deckmap) {
   for (const s of catalog.styles) Object.assign(s, derive(s));
@@ -152,12 +189,39 @@ const styles = catalog.styles.map((s) => ({
 }));
 const hasStats = styles.some((s) => s.stats.uses);
 
+// A member's latest posted use that counts for a group: its cover, or (applies_to 'any') cover or interior.
+function lastUse(id, appliesTo) {
+  const hits = posted.filter((e) => e.cover_style === id || (appliesTo === 'any' && e.interior_style === id));
+  const e = hits[hits.length - 1]; // posted is sorted by date
+  return e ? { date: e.date, kind: e.cover_style === id ? 'cover' : 'interior' } : null;
+}
+
+// The latest-ending cooldown still running decides; `via` names the group use behind it (null = own cover).
 function availability(s) {
+  let until = null, via = null;
+  const consider = (date, days, why) => {
+    if (!date || daysBetween(date, TODAY) >= days) return;
+    const end = addDays(date, days);
+    if (!until || end > until) { until = end; via = why; }
+  };
+  consider(s.stats.last_used, s.cooldown_days, null);
+  for (const g of groupsOf(s)) for (const m of g.members ?? []) {
+    const u = lastUse(m, g.applies_to);
+    if (u) consider(u.date, g.cap_days, { group: g.id, cap: g.cap_days, applies_to: g.applies_to, member: m, ...u });
+  }
+  if (until) {
+    const base = `cooling until ${mmdd(until)}`;
+    if (!via) return { cooling: true, text: base, tile: base };
+    const who = via.member === s.id ? `own ${via.kind}` : `${via.member} ${via.kind}`;
+    return {
+      cooling: true,
+      text: `${base} · group ${via.group} (${via.applies_to}, ${via.cap}d): ${who} ${mmdd(via.date)}`,
+      tile: `${base} · ${via.member === s.id ? `${via.cap}d group cap` : `via ${via.member}`}`,
+    };
+  }
   const last = s.stats.last_used;
-  if (!last) return { cooling: false, text: deckmap ? 'never posted' : 'no posts logged' };
-  const ago = daysBetween(last, TODAY);
-  if (ago < s.cooldown_days) return { cooling: true, text: `cooling until ${mmdd(addDays(last, s.cooldown_days))}` };
-  return { cooling: false, text: `rested ${ago}d` };
+  const text = last ? `rested ${daysBetween(last, TODAY)}d` : deckmap ? 'never posted' : 'no posts logged';
+  return { cooling: false, text, tile: text };
 }
 
 // table for the terminal / report
@@ -165,6 +229,16 @@ console.log(`\n| id | name | status | production | uses | median | best | last |
 for (const s of styles) {
   const t = s.stats;
   console.log(`| ${s.id} | ${s.name} | ${s.status} | ${s.production} | ${t.uses} | ${t.median_mult?.toFixed(2) ?? '-'} | ${t.best_mult != null ? `${t.best_mult.toFixed(2)}${t.best_code ? ` ${t.best_code}` : ''}` : '-'} | ${t.last_used ?? '-'} | ${availability(s).text}${s.drafts.length ? ` · ${s.drafts.length} unposted draft(s)` : ''} |`);
+}
+if (groups.size) {
+  console.log(`\n| cooldown group | members | applies to | cap | latest counted use | cooling until |\n|---|---|---|---|---|---|`);
+  for (const [gid, { def }] of groups) {
+    const uses = (def.members ?? []).map((m) => ({ m, u: lastUse(m, def.applies_to) })).filter((x) => x.u)
+      .sort((a, b) => a.u.date.localeCompare(b.u.date));
+    const latest = uses[uses.length - 1];
+    const end = latest && addDays(latest.u.date, def.cap_days);
+    console.log(`| ${gid} | ${(def.members ?? []).join(', ')} | ${def.applies_to} | ${def.cap_days}d | ${latest ? `${latest.m} ${latest.u.kind} ${latest.u.date}` : 'none posted'} | ${end && end > TODAY ? end : '-'} |`);
+  }
 }
 if (problems.length) { console.log(`\nPROBLEMS (${problems.length}):\n- ` + problems.join('\n- ')); process.exit(1); }
 if (flag('check')) process.exit(0);
@@ -255,7 +329,7 @@ async function renderTile(s) {
   const status = await textBlock((k) =>
     span(` ${st.label} `, { size: Math.round(25 * k), weight: 'bold', color: '#FFFFFF', bg: st.chip }) +
     span(`   ${s.production}   `, { size: Math.round(25 * k), weight: 'semibold', color: C.sub }) +
-    span(av.text + draftNote, { size: Math.round(25 * k), weight: av.cooling ? 'bold' : 'normal', color: av.cooling ? C.cool : C.dim }),
+    span(av.tile + draftNote, { size: Math.round(25 * k), weight: av.cooling ? 'bold' : 'normal', color: av.cooling ? C.cool : C.dim }),
   { maxW: INNER_W, label: `${s.id} status` });
   put(status, PAD, ROW.status);
 
@@ -315,7 +389,7 @@ const sub = `Pick by number: reply "S03". ` +
   (deckmap ? `Stats: your posted decks grouped by COVER style (${scoredPosts} scored posts in your post log). ` : '') +
   (hasStats ? `median = the typical result, best = the ceiling; trust the median. ` : 'Each tile shows the story spines the style fits, its status and production, then an exemplar cover and interior. ') +
   (hasEvidence ? `Third-party tiles show that creator's likes / comments, a different metric that is not comparable to x. ` : '') +
-  (hasStats ? `Cooldown: a style posted in the last ${cooldowns.length === 1 ? cooldowns[0] : DEFAULT_COOLDOWN} days is cooling. ` : '') +
+  (hasStats ? `Cooldown: a style posted in the last ${cooldowns.length === 1 ? cooldowns[0] : DEFAULT_COOLDOWN} days is cooling, and so is a style whose cooldown group (look-alikes in the feed) had a member post inside the group's cap ("via S08"). ` : '') +
   `Built ${TODAY}.`;
 await renderSheet(tiles, 3, `STYLE GALLERY · ${shown.length} styles`, sub, fullOut);
 

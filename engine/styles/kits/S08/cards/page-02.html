@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S08 Bone Editorial · sample · page 02 (model)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&family=Kalam:wght@700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="s08.css">
+<script src="icons.js"></script>
+</head>
+<body>
+<!-- placeholder copy about a generic tool; replace every string per deck -->
+<div class="hdr"><span>{{BRAND}} · The Task Router</span><span>03 / 08</span></div>
+<div class="head">
+  <span class="l1" data-hl>The 3 Parts</span>
+  <span class="l2" data-hl><span class="t">You Need<svg class="ul" viewBox="0 0 300 26" preserveAspectRatio="none"><path class="hand acc" d="M4 16 C 60 6, 120 22, 180 12 S 270 8, 296 14"/></svg></span></span>
+</div>
+<div class="sticky">Three parts.<br>One loop.<br>That’s it.</div>
+<div class="zone" data-fit>
+  <div class="tbl">
+    <div class="th" style="grid-template-columns:400px 1fr"><div>Part</div><div>What it does</div></div>
+    <div class="tr" style="grid-template-columns:400px 1fr"><div class="name"><span class="ic"><i data-lucide="inbox"></i></span>The inbox</div><div class="desc">Catches every request in <b>one list</b>.</div></div>
+    <div class="tr" style="grid-template-columns:400px 1fr"><div class="name"><span class="ic"><i data-lucide="git-fork"></i></span>The router</div><div class="desc">Sends each task to the <b>right step</b>.</div></div>
+    <div class="tr" style="grid-template-columns:400px 1fr"><div class="name"><span class="ic"><i data-lucide="notebook-pen"></i></span>The log</div><div class="desc">Keeps a record of <b>what shipped</b>.</div></div>
+  </div>
+</div>
+<img class="dd" src="../doodles/star5.png" style="left:650px; top:378px; width:50px; transform:rotate(10deg)" alt="">
+<img class="dd" src="../doodles/arrow-r.png" style="left:470px; top:976px; width:140px; transform:rotate(14deg)" alt="">
+<div class="note acc" style="left:120px; top:960px; transform:rotate(-3deg)">Start with<br>the inbox.</div>
+<div class="note" style="left:650px; top:970px; transform:rotate(2deg)">Add the rest<br>when it hurts.</div>
+<img class="dd" src="../doodles/checkbox.png" style="left:930px; top:950px; width:62px; transform:rotate(-4deg)" alt="">
+<div class="mantra"><span>One inbox.</span><span>Every task.</span><span class="circ">Zero<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path class="hand" d="M8 22 C 6 8, 40 3, 70 5 C 96 7, 99 26, 80 34 C 55 42, 14 38, 6 26 C 2 18, 14 9, 30 8"/></svg></span><span>tabs.</span></div>
+<script>
+window.cardReady = (async () => {
+  await document.fonts.ready;
+  if (window.lucide) window.lucide();
+  for (const el of document.querySelectorAll('[data-hl]')) {
+    let px = 112; el.style.fontSize = px + 'px';
+    while (el.scrollWidth > el.clientWidth + 1 && px > 76) { px -= 2; el.style.fontSize = px + 'px'; }
+  }
+})();
+</script>
+</body>
+</html>

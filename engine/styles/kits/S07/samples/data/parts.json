@@ -1,0 +1,5 @@
+{ "layout": "parts", "plate": "samples/plates/parts.png", "ground": "teal", "footer": ["YOUR BRAND", "swipe →"], "counter": "04 / 09", "label": "03 — how it's built",
+  "headline": "Four parts, one *memory*", "body": "Every note you save travels the same path.",
+  "pos": [[0.276, 0.41], [0.724, 0.41], [0.27, 0.73], [0.733, 0.726]],
+  "parts": [ { "name": "Inbox", "def": "raw notes land here first" }, { "name": "Index", "def": "every note becomes a node" },
+             { "name": "Links", "def": "edges between related notes" }, { "name": "Recall", "def": "Claude asks the graph first" } ] }

@@ -89,6 +89,21 @@ anti-pattern.
 Every item slide is its own mini what-and-why. A slide of names alone fails (a past listicle
 showed about 70 repo names with no descriptions).
 
+### C-variant: findings listicle
+
+N findings, rules or tips from a corpus you actually went through (videos, repos, posts, runs), packed
+up to three numbered items to a slide. It is a declared deviation: log
+`M counts numbered items 01–M, not slides` in `deviations[]`.
+
+- **Corpus:** real, and saved in the deck folder. Its capture is the proof slide.
+- **Stack slides:** 3 at most (M ≤ 9). Each has a theme headline of 7 words or fewer naming the
+  one lesson its items share, plus the item range ("01–03"), so G5 and G8 have a headline.
+- **Captions:** each carries the corpus count ("in 41 of 120"). That is the PROVE layer.
+- **Tools, repos and skills** stay one per slide; only findings stack.
+- **G1 note:** the cover's N is the corpus size and M is the item count. The cover passes
+  when a proof slide shows N (the corpus capture) and the items run 01–M with no gaps. A count
+  the deck never shows still fails. The usual hook is F13 "I analyzed N" (`engine/hooks.md`).
+
 ## D. System build (8–10 slides)
 
 | # | Role | Required? | Must contain |
@@ -103,6 +118,22 @@ showed about 70 repo names with no descriptions).
 
 The cover's N counts **step slides only**. A build "in 5 steps" can run 8 slides: cover, prize, 5
 steps, CTA.
+
+## Format single (one image)
+
+`storyboard.json` → `format: "single"` is a one-image post: exactly one slide, role `cover`, and the
+page is the whole post (for example a 6–12 tile cheat sheet on spine C). Only a style with a one-page
+layout can make it. The schema relaxes the 5-slide minimum for `single` only.
+
+| Gate | On a single |
+|---|---|
+| G1 | The hook's count equals the tiles on the page, and every tile has a name plus a one-line what (names alone fail) |
+| G2 | n/a: there is no slide 2. Log `pass: true` with the note "single" |
+| G3 | Run on the page text; every term is defined on the tile that uses it |
+| G4 | The style's page budgets replace the role budget: hook 9 words or fewer; per tile a name of 3 words or fewer and one line of 7 words or fewer. Tile text may be smaller than slide body text (it is a save-and-zoom page); that is the only exception |
+| G5, G6 | n/a: no sequence. Log `pass: true` with the note "single"; the tile order is the storyboard's stated sort |
+| G7 | Run on the caption: it carries `Comment KEYWORD` and the deliverable, since there is no CTA slide |
+| G8 | The cold reader reads the page text plus the caption |
 
 ## Text gates
 

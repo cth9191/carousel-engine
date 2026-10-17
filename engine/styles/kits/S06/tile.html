@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S06 logo tile</title>
+<!--
+  S06 held tile: one real mark centred on a rounded app-icon tile, for the statue's cyan slot. Copy to
+  $D/cards/tile-NN.html, edit only the JSON, render square and transparent outside the corners (no --bg):
+    node shared/render-card.mjs $D/cards/tile-01.html $D/logos/tile-01.png --w 512 --h 512 --scale 2
+  then paste with composite.py --logo C1=$D/logos/tile-01.png@1.07 (the tile covers the slot; the slot is erased first).
+  "mark" is a real PNG or SVG from $D/logos/ (path relative to this file): never a painted or redrawn mark.
+  Grounds: "cream" #F5EBE0 (default), "white", "ink" #0E0E0E (for a white mark), "terracotta" #D97757 (for an ink or white mark).
+-->
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: transparent; }
+  .tile { position: absolute; inset: 0; border-radius: 22%; display: flex; align-items: center; justify-content: center;
+          box-shadow: inset 0 -1.5vw 3vw rgba(0, 0, 0, 0.10), inset 0 1.2vw 2.4vw rgba(255, 255, 255, 0.35); }
+  .tile img { width: 62%; height: 62%; object-fit: contain; }
+</style>
+</head>
+<body>
+<script type="application/json" id="data">
+{ "mark": "../logos/mark.png", "ground": "cream" }
+</script>
+<script src="kit.js"></script>
+<script>
+  const GROUND = { cream: '#F5EBE0', white: '#FFFFFF', ink: '#0E0E0E', terracotta: '#D97757' };
+  KIT.ready((d) => {
+    KIT.limit(!!GROUND[d.ground || 'cream'], 'unknown-ground');
+    KIT.limit(!!d.mark, 'no-mark');
+    const t = document.createElement('div');
+    t.className = 'tile';
+    t.style.background = GROUND[d.ground || 'cream'] || GROUND.cream;
+    t.innerHTML = `<img src="${KIT.esc(d.mark)}" alt="">`;
+    document.body.appendChild(t);
+    return new Promise((r) => { const i = t.querySelector('img'); i.complete ? r() : (i.onload = i.onerror = r); });
+  });
+</script>
+</body>
+</html>

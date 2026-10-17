@@ -178,13 +178,27 @@ pass `--sync`, which re-reads usage stats from your post log.
 | [S01 Terracotta Zine](../engine/styles/S01-terracotta-zine.prompt.md) | Terracotta texture, massive lowercase headline, taped app windows | HTML-native: Codex paints only the cover plate; interiors come from [`templates/02-terracotta-zine`](../templates/02-terracotta-zine/), baked to 1080 × 1350 by [`shared/export.mjs`](../shared/export.mjs) | D, A |
 | [S02 Logo Equation](../engine/styles/S02-logo-equation.prompt.md) | Flat terracotta, giant "A + B" equation of real app icons | Hybrid: Codex paints the ground and short type; real logos go in through cyan zones | A |
 | [S03 Newsprint Benchmark](../engine/styles/S03-newsprint-benchmark.prompt.md) | Ivory newsprint, grotesk + Didone italic, ruled tables, green verdict bar | Image-native: Codex paints the slide; captures and logos are composited | B |
-| [S11 Sketchnote](../engine/styles/S11-sketchnote.prompt.md) | Cream paper, highlighter pill, pastel diagram boxes, hand-drawn arrows | Image-native in the worked example; captures and exact-text cards are composited | A |
+| [S05 Phone-Photo Monitor](../engine/styles/S05-phone-photo-monitor.prompt.md) | A phone photo of a monitor showing the real thing, white caption stickers | Hybrid: your photo, or a Codex desk plate with the real capture perspective-warped onto its screen; every word a sticker card | C, A |
+| [S06 Statue + Graph Paper](../engine/styles/S06-statue-graph-paper.prompt.md) | Marble statue offering a real logo tile against a changing sky; graph-paper repo cards | Hybrid: one Codex statue plate, HTML cover type and logo tile; interiors from [`templates/01-graph-paper-cream`](../templates/01-graph-paper-cream/) | C, A |
+| [S07 Dark Network Hero](../engine/styles/S07-dark-network-hero.prompt.md) | Near-black glowing network, giant white sans, app tile, brush label | Hybrid: text-free Codex network plates, every word HTML from the kit | A, D |
+| [S08 Bone Editorial](../engine/styles/S08-bone-editorial.prompt.md) | Kraft-cream, Didone with one accent, dark app pane, ink doodles, taped sticky | Hybrid: Codex paints only paper and doodles, every word HTML from the kit | D, A |
+| [S09 Charcoal Studio](../engine/styles/S09-charcoal-studio.prompt.md) | Charcoal, off-white serif, acid-yellow highlights and stickies | Image-native: Codex plates, exact text as kit cards in magenta zones | A, D |
+| [S11 Sketchnote](../engine/styles/S11-sketchnote.prompt.md) | Cream paper, highlighter pill, pastel diagram boxes, hand-drawn arrows | Image-native in the worked example; captures and exact-text cards are composited; a diagram kit for exact-text diagrams | A |
+
+Styles that are more than a prompt block carry a **kit** (`engine/styles/kits/<id>/`: HTML cards with a
+fit pass, CSS, needed assets, a README with the render commands, and rendered samples) and **refs**
+(`engine/styles/refs/`: text-free or keyed layout references the Codex jobs attach instead of finished
+slides, so the model copies the look and not old text). The skill's Stage 4 table gives each style's
+route. [`shared/build-style-library.mjs`](../shared/build-style-library.mjs) turns the whole library
+into one browsable HTML page.
 
 **Cooldown.** A style posted in the last 14 days is cooling: don't pick it unless you mean to.
 Unposted drafts don't start the clock, but count them, because three drafts in one style in a row is
 overuse in the making. Most styles score best the first time and decay with repeats, so when you log
 results, judge a style by its **median** across uses, not its best post: showing only the best is
-selection on outcome. The shipped worked example doesn't count toward the cooldown, the 72-hour format
+selection on outcome. Look-alike styles can share a **cooldown group** (`cooldown_group` in
+`styles.json`): a member cools while any member's cover is inside the group's cap, and the tile says
+`via S0N`. The shipped worked example doesn't count toward the cooldown, the 72-hour format
 spacing or the folder-collision check. A new style is designed in a separate R&D session, never
 inside a deck.
 
@@ -241,6 +255,18 @@ tables. The plate leaves flat key-colour zones for them, and
 |---|---|---|
 | Magenta `#FF00FF` | Real captures (`--shot N=path@x,y,w,h`) or exact-text cards (`--card N=path`) | Shots cover-fit around the **focus box**, which always stays fully visible; cards contain-fit and never crop |
 | Cyan `#00FFFF` | Real logos (`--logo N=path@scale`) | The zone is erased into the surrounding ground, then the logo is fitted on top |
+
+More modes, for the hybrid styles:
+
+| Mode | What it does |
+|---|---|
+| `--shot N=path@x,y,w,h,warp` | Perspective-warps a capture onto a screen photographed at an angle (S05), with a photographed-screen look; `,extend=left\|right` when the screen runs off the frame, `,aspect=W:H` for the real screen aspect. Needs opencv |
+| `--card N=path --ground fill` | Erases the zone into the ground first, then lays a transparent card on top (cards rendered without `--bg` on textured grounds) |
+| `--logo …,bottom` / `,top` / `,tight` / `,fill=#hex` | Sits a cutout on the slot's bottom or top edge, quilts the erased slot from nearby ground, or erases it to one colour |
+| `--paste …,erase` | Patches a garbled piece of a plate with a rendered card (fix a bad label without a new generation) |
+
+Template bakes (`shared/export.mjs`) also exit 3 when a template's own fit check (`window.fitReport`)
+or `window.qa()` reports a failure, so copy that doesn't fit stops the bake instead of shipping small.
 
 1. **Learn the zones:** `--zones-only` prints each zone's id (M1…, C1… in reading order), aspect, fill
    and `out bbox`, with a debug PNG. A fill under 0.97 means something overlaps the zone.

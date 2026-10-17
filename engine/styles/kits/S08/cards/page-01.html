@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S08 Bone Editorial · sample · page 01 (what)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&family=Kalam:wght@700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="s08.css">
+<script src="icons.js"></script>
+</head>
+<body>
+<!-- placeholder copy about a generic tool; replace every string per deck -->
+<div class="hdr"><span>{{BRAND}} · The Task Router</span><span>02 / 08</span></div>
+<div class="head">
+  <span class="l1" data-hl>What</span>
+  <span class="l2" data-hl><span class="t">This Is<svg class="ul" viewBox="0 0 300 26" preserveAspectRatio="none"><path class="hand acc" d="M4 16 C 60 6, 120 22, 180 12 S 270 8, 296 14"/></svg></span></span>
+</div>
+<div class="sticky">One inbox.<br>Every task.<br>Zero tabs.</div>
+<div class="zone" data-fit>
+  <p class="say">You <span class="loop">write<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path class="hand acc" d="M8 22 C 6 8, 40 3, 70 5 C 96 7, 99 26, 80 34 C 55 42, 14 38, 6 26 C 2 18, 14 9, 30 8"/></svg></span> one note. The tool sorts the work.</p>
+  <p class="say">It is a <span class="u">task router</span>: one place <b>collects</b> every request and <span class="hi">hands it off</span>.</p>
+  <p class="say">Swap any piece. <span class="loop">That’s it.<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path class="hand acc" d="M8 22 C 6 8, 40 3, 70 5 C 96 7, 99 26, 80 34 C 55 42, 14 38, 6 26 C 2 18, 14 9, 30 8"/></svg></span></p>
+  <div style="margin-top:26px"><div class="strip" style="grid-template-columns:repeat(4,1fr)"><div><span class="ic"><i data-lucide="inbox"></i></span>Collect</div><div><span class="ic"><i data-lucide="list-filter"></i></span>Sort</div><div><span class="ic"><i data-lucide="play"></i></span>Run</div><div><span class="ic"><i data-lucide="check-check"></i></span>Review</div></div></div>
+</div>
+<img class="dd" src="../doodles/bulb.png" style="left:470px; top:128px; width:92px; transform:rotate(-6deg)" alt="">
+<img class="dd" src="../doodles/arrow-dl.png" style="left:640px; top:330px; width:60px; transform:rotate(4deg)" alt="">
+<img class="dd" src="../doodles/twinkle.png" style="left:930px; top:1000px; width:48px" alt="">
+<img class="dd" src="../doodles/arrow-r.png" style="left:110px; top:1010px; width:150px; transform:rotate(-14deg)" alt="">
+<div class="note" style="left:290px; top:1006px; transform:rotate(-3deg)">Like a to-do list<br>that does itself.</div>
+<!-- optional: your own mascot, if you have one (never a licensed character), as a transparent PNG:
+<img class="mascot" src="../mascot/pose.png" style="left:780px; top:1080px; width:220px" alt=""> -->
+<div class="mantra"><span>One inbox.</span><span>Every task.</span><span class="circ">Zero<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path class="hand" d="M8 22 C 6 8, 40 3, 70 5 C 96 7, 99 26, 80 34 C 55 42, 14 38, 6 26 C 2 18, 14 9, 30 8"/></svg></span><span>tabs.</span></div>
+<script>
+window.cardReady = (async () => {
+  await document.fonts.ready;
+  if (window.lucide) window.lucide();
+  // headline lines shrink from 112px (floor 76px) until each fits the 640px column on one line
+  for (const el of document.querySelectorAll('[data-hl]')) {
+    let px = 112; el.style.fontSize = px + 'px';
+    while (el.scrollWidth > el.clientWidth + 1 && px > 76) { px -= 2; el.style.fontSize = px + 'px'; }
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+{ "layout": "icon", "plate": "samples/plates/cover.png", "ground": "teal", "name": "/orbit",
+  "tile": { "src": "../../../../shared/vendor/lucide/orbit.svg", "bg": "white", "pad": true }, "sub": "the open source repo that *remembers* for Claude", "tag": "PLACEHOLDER · KIT SAMPLE" }

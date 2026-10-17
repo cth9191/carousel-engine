@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>S11 Compare Diagram</title>
+<!--
+  S11 sample diagram: COMPARE (two side-by-side columns running the same input), the "old way vs new
+  way" slide. Copy to $D/cards/ with sketch.css + sketch.js, replace the strings, keep the ids.
+  Copy budget at a ~907x640 zone, per column: a 2-word heading chip, a 6-word input box, a middle box
+  (left: up to 14 words of the old way's output; right: 3 words of what the tool does), a 5-word step, a 4-word result,
+  and one 6-word margin note. Lavender = the old way, green = ours; the orange note sits on the old side.
+  Render at the magenta zone's --zones-only out bbox, 2x, on the plate paper sampled beside the zone:
+    node shared/render-card.mjs $D/cards/diagram-compare.html $D/cards/diagram-compare.png --w 907 --h 640 --scale 2 --bg "#FBF7EE" --min-px 22
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500&family=Kalam:wght@400;700&family=Patrick+Hand&display=block" rel="stylesheet">
+<link rel="stylesheet" href="sketch.css">
+<style>
+  .sk-stage { display: grid; grid-template-columns: 1fr 1fr; column-gap: 0.7em; padding: 0.15em; }
+  .col { border-radius: 0.7em; padding: 0.5em 0.6em 0.6em; display: flex; flex-direction: column; align-items: center; }
+  .col.old { background: #F1EEF8; }
+  .col.new { background: #EEF6EC; }
+  .col .sk-chip { margin-bottom: 0.65em; }
+  .old .sk-chip { background: var(--lavender); }
+  .new .sk-chip { background: var(--green); }
+  .stack { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 0.75em; flex: 1; }
+  .stack .sk-box { width: 92%; box-sizing: border-box; }
+  .stack .out { font-size: 0.82em; line-height: 1.22; width: 100%; }
+  .stack .tool { width: 62%; text-align: center; font-size: 1.15em; padding: 0.35em 0.4em; }
+  .stack .pill { width: auto; padding: 0.2em 0.7em; text-align: center; }
+  .stack .sk-note { margin-top: -0.1em; }
+</style>
+</head>
+<body>
+<div class="sk-stage" data-fit>
+  <div class="col old">
+    <div class="sk-chip">Chat window</div>
+    <div class="stack">
+      <div class="sk-box" id="oin">"Why is this test failing?"</div>
+      <div class="sk-box out" id="oout">Here's my analysis: the mock returns null, so try changing line 42 to...</div>
+      <div class="sk-box lavender pill" id="ostep">You copy, paste, re-run</div>
+      <div class="sk-box pink pill" id="ores">still failing?</div>
+      <div class="sk-note accent tilt" data-underline>you are the loop</div>
+    </div>
+  </div>
+  <div class="col new">
+    <div class="sk-chip">Claude Code</div>
+    <div class="stack">
+      <div class="sk-box" id="nin">"Why is this test failing?"</div>
+      <div class="sk-box green tool" id="ntool">reads the code</div>
+      <div class="sk-box dashed pill" id="nstep">runs it, fixes, re-runs</div>
+      <div class="sk-box green pill" id="nres">Green. Done.</div>
+      <div class="sk-note tilt" data-underline>it runs the loop for you</div>
+    </div>
+  </div>
+</div>
+<script src="sketch.js"></script>
+<script>
+  SK.init({
+    minF: 30, maxF: 40,
+    arrows: [
+      { from: '#oin', fromSide: 'b', to: '#oout', toSide: 't', gap: 0.1 },
+      { from: '#oout', fromSide: 'b', to: '#ostep', toSide: 't', gap: 0.1 },
+      { from: '#ostep', fromSide: 'b', to: '#ores', toSide: 't', gap: 0.1 },
+      { from: '#nin', fromSide: 'b', to: '#ntool', toSide: 't', gap: 0.1 },
+      { from: '#ntool', fromSide: 'b', to: '#nstep', toSide: 't', gap: 0.1 },
+      { from: '#nstep', fromSide: 'b', to: '#nres', toSide: 't', gap: 0.1 },
+    ],
+  });
+</script>
+</body>
+</html>

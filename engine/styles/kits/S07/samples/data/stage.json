@@ -1,0 +1,4 @@
+{ "layout": "stage", "plate": "samples/plates/parts.png", "footer": ["YOUR BRAND", "swipe →"], "counter": "05 / 09", "label": "04 — how it builds",
+  "headline": "It *links* as you write", "body": "Save a note and Orbit finds the three it belongs with.",
+  "shot": { "src": "samples/shots/graph.png", "title": "orbit · live graph", "focus": "50% 45%" },
+  "pins": [ { "x": 0.30, "y": 0.62, "label": "your note" }, { "x": 0.72, "y": 0.42, "label": "its cluster" } ] }

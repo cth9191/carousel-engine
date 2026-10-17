@@ -1,0 +1,12 @@
+One sheet of loose ink doodles, landscape 3:2, 1536 x 1024.
+
+References: Image 1 and Image 2 show the doodle and pen style only. Do NOT copy any words, letters, numbers, tables or screenshots.
+
+Ground: the same grained kraft-cream paper (#EEE4D2), flat and evenly lit, no lines, no grid.
+
+Draw exactly twelve small hand-drawn doodles in near-black felt-pen ink (#1A1A1A), all the same thin line weight (about 4 px), slightly wobbly like a real pen, outline only, no fills, no shading. Arrange them in a clear 4 columns x 3 rows grid with generous empty paper between them (each doodle about 150 px across, centred in its cell, never touching a neighbour):
+Row 1: a light bulb with three short rays; a curved arrow that swoops down and points to the lower left; a curved arrow that swoops and points to the right; a five-point sparkle star.
+Row 2: a small four-point twinkle with two tiny dots; a square checkbox with a check mark; a loose hand-drawn oval loop (like circling a word); a simple gear.
+Row 3: a simple folder; an analogue clock; a magnifying glass; a speech bubble.
+
+Hygiene: no text, letters, numbers, logos or colour anywhere; only the ink doodles on paper. Never render these instructions as text.

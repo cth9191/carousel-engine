@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S06 statue cover type</title>
+<!--
+  S06 Statue Cover: the cover's type over the composited statue plate (logo tile already pasted into its cyan slot).
+  Copy to $D/cards/cover.html, edit only the JSON, render full frame:
+    node shared/render-card.mjs $D/cards/cover.html $D/final/slide-01.png --w 1080 --h 1350 --scale 1 --min-px 30
+  "plate" is relative to this file (default ../fitted/slide-01.png). "ink": "white" on saturated skies (cobalt, night,
+  amber), "ink" on pale ones (overcast grey, studio white). The block starts at "top" (% of height; keep >= 55 so the
+  statue's head and the held tile stay clear and IG's top chrome never cuts the kicker).
+  Limits: kicker <= 3 words; title 1-2 lines, <= 12 characters a line; subtitle <= 6 words.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@800;900&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; width: 1080px; height: 1350px; overflow: hidden; }
+  body { position: relative; background: #3D7DC8 center / cover no-repeat; }
+  .block { position: absolute; left: 5%; right: 5%; bottom: 5.5%; display: flex; flex-direction: column; align-items: center;
+           text-align: center; --c: #fff; --sh: rgba(8, 20, 40, 0.42); }
+  .block.ink { --c: #0E0E0E; --sh: rgba(255, 255, 255, 0.55); }
+  .block.left { align-items: flex-start; text-align: left; }
+  .kicker { font: 900 64px/1 'Inter', sans-serif; letter-spacing: -0.01em; color: var(--c); margin-bottom: 4px;
+            text-shadow: 0 4px 22px var(--sh); }
+  .title { width: 100%; overflow: hidden; font: 900 300px/0.84 'Inter', sans-serif; letter-spacing: -0.055em; color: var(--c);
+           text-shadow: 0 10px 40px var(--sh), 0 2px 6px var(--sh); padding: 0.14em 0 0.24em; margin: -0.14em 0 -0.2em; }
+  .title div { white-space: nowrap; }
+  .sub { width: 100%; font: italic 600 92px/1.35 'Playfair Display', serif; color: var(--c); margin-top: -4px;
+         text-shadow: 0 6px 26px var(--sh), 0 2px 4px var(--sh); white-space: nowrap; overflow: hidden; }
+  .shade { position: absolute; left: 0; right: 0; bottom: 0; height: 52%; pointer-events: none;
+           background: linear-gradient(to top, rgba(10, 22, 44, 0.38), rgba(10, 22, 44, 0)); }
+  .shade.ink { background: linear-gradient(to top, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0)); }
+</style>
+</head>
+<body>
+<script type="application/json" id="data">
+{
+  "plate": "",
+  "kicker": "TOP 5",
+  "title": ["Your", "Topic"],
+  "subtitle": "Repos Worth Installing",
+  "ink": "white",
+  "align": "center",
+  "top": 58,
+  "shade": true
+}
+</script>
+<script src="kit.js"></script>
+<script>
+  KIT.ready((d) => {
+    let plate = d.plate;
+    if (!plate) plate = '../fitted/slide-01.png';
+    document.body.style.backgroundImage = `url("${plate}")`;
+    const title = d.title || [];
+    KIT.limit(KIT.words(d.kicker) <= 3, 'kicker-over-3-words');
+    KIT.limit(title.length >= 1 && title.length <= 2, 'title-1-to-2-lines');
+    KIT.limit(title.every((l) => String(l).length <= 12), 'title-line-over-12-chars');
+    KIT.limit(KIT.words(d.subtitle) <= 6, 'subtitle-over-6-words');
+    KIT.limit((d.top ?? 58) >= 55, 'block-top-under-55');
+    const ink = d.ink === 'ink' ? 'ink' : '';
+    if (d.shade) {
+      const s = document.createElement('div');
+      s.className = 'shade ' + ink;
+      document.body.appendChild(s);
+    }
+    const b = document.createElement('div');
+    b.className = `block ${ink} ${d.align === 'left' ? 'left' : ''}`;
+    b.style.top = (d.top ?? 58) + '%';
+    b.style.justifyContent = 'flex-end';
+    b.innerHTML =
+      (d.kicker ? `<div class="kicker">${KIT.esc(d.kicker)}</div>` : '') +
+      `<div class="title" data-fit data-min="150">${title.map((l) => `<div>${KIT.esc(l)}</div>`).join('')}</div>` +
+      (d.subtitle ? `<div class="sub" data-fit data-min="56">${KIT.esc(d.subtitle)}</div>` : '');
+    document.body.appendChild(b);
+    window.cardInfo = { plate, ink: d.ink };
+  });
+</script>
+</body>
+</html>

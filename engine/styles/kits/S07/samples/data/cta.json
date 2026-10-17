@@ -1,0 +1,3 @@
+{ "layout": "cta", "plate": "samples/plates/cover.png", "counter": "09 / 09",
+  "headline": "that's *orbit*.", "body": "One graph. Every chat remembers.", "keyword": "ORBIT", "deliverable": "and I'll DM you the repo, the *setup prompt* and my vault template",
+  "tiles": [ { "src": "../../../../shared/vendor/lucide/folder-git-2.svg", "bg": "white", "pad": true }, { "src": "../../../../shared/vendor/lucide/orbit.svg", "bg": "white", "pad": true } ] }

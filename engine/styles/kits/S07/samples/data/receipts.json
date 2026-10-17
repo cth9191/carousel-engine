@@ -1,0 +1,4 @@
+{ "layout": "receipts", "plate": "samples/plates/parts.png", "footer": ["YOUR BRAND", "swipe →"], "counter": "08 / 09", "label": "07 — the receipts",
+  "headline": "What a week *looked like*", "body": "Placeholder numbers: a deck fills these from the dossier.",
+  "stats": [ { "value": "412", "caption": "notes linked" }, { "value": "3x", "caption": "faster *recall*" }, { "value": "$0", "caption": "API cost" } ],
+  "shot": { "src": "samples/shots/table.png", "title": "orbit · weekly report", "focus": "50% 0%", "contain": true } }

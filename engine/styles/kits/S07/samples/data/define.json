@@ -1,0 +1,3 @@
+{ "layout": "define", "plate": "samples/plates/parts.png", "footer": ["YOUR BRAND", "swipe →"], "counter": "02 / 09", "label": "01 — the fix",
+  "headline": "*Orbit* turns notes into a map", "body": "Claude forgets everything between chats. Orbit is a local graph that keeps every note, link and decision, so the next chat starts where you left off.",
+  "strip": ["capture", "connect", "recall"], "shot": { "src": "samples/shots/graph.png", "title": "orbit · graph view", "focus": "50% 40%" } }

@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S07 Dark Network Hero — page</title>
+<!--
+  S07 Dark Network Hero: one whole slide (1080x1350) = this page over ONE fitted, text-free Codex network plate.
+  Copy to $D/cards/slide-NN.html (with kit.css + kit.js beside it) and edit only the JSON in <script id="data">.
+  Layouts (pick by role; geometry matches the plate figures in engine/styles/S07-dark-network-hero.prompt.md):
+
+    name      cover A   kicker + giant name + brush label + dashed arrow + logo tile column + footnote + tag
+    icon      cover B   giant /command + one big app tile + three-line subline
+    define    what      headline + body + plain-word strip (2-4 chips) + capture window
+    versus    why       headline + body + two stat columns (old dim, new accent), optional capture in each
+    parts     model     headline + body + 3-4 glowing named parts at the plate's clusters
+    stage     how/step  headline + body + big capture window + up to 3 numbered pins with labels
+    terminal  peak      headline + body + terminal card with the exact prompt/command
+    receipts  use       headline + body + 2-3 verified stat cells + capture window
+    steps     start     headline + 3-4 rail steps, each a title and an exact command
+    cta       cta       giant sign-off + Comment KEYWORD pill + deliverable line (+ optional tile row)
+
+  Common fields: plate (default ../fitted/<this file's name>.png), ground "teal" | "ember", counter "NN / TT",
+  label (section label, interiors), footer [left, right] (left = the brand in engine/brand.json; default "YOUR BRAND"). Text fields take *accent* for the terracotta accent phrase.
+  Paths (plate, shots, logos) are relative to this file. Copy limits are enforced (LIMIT-<rule> -> render exit 2).
+
+  Render:
+    node shared/render-card.mjs $D/cards/slide-NN.html $D/exports/slide-NN-YYYY-MM-DD.png --w 1080 --h 1350 --scale 1 --min-px 22
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script id="data" type="application/json">
+{
+  "layout": "parts",
+  "plate": "samples/plates/parts.png",
+  "footer": ["YOUR BRAND", "swipe →"],
+  "ground": "teal",
+  "counter": "04 / 09",
+  "label": "03 — how it's built",
+  "headline": "Four parts, one *memory*",
+  "body": "Every note you save travels the same path.",
+  "parts": [
+    { "name": "Inbox", "def": "raw notes land here first" },
+    { "name": "Index", "def": "every note becomes a node" },
+    { "name": "Links", "def": "edges between related notes" },
+    { "name": "Recall", "def": "Claude asks the graph first" }
+  ]
+}
+</script>
+</head>
+<body>
+<script src="kit.js"></script>
+<script>
+KIT.ready((d) => {
+  const B = document.body, E = KIT.esc, A = KIT.acc;
+  const add = (html) => B.insertAdjacentHTML('beforeend', html);
+  const L = d.layout;
+  const LAYOUTS = ['name', 'icon', 'define', 'versus', 'parts', 'stage', 'terminal', 'receipts', 'steps', 'cta'];
+  KIT.limit(LAYOUTS.includes(L), 'unknown-layout');
+
+  // plate
+  let plate = d.plate;
+  if (!plate) plate = '../fitted/' + location.pathname.split('/').pop().replace(/\.html$/, '.png');
+  B.style.backgroundImage = `url("${plate}")`;
+  B.dataset.ground = d.ground || 'teal';
+
+  const tile = (t, cls = '') => `<div class="tile ${cls} ${E(t.bg || 'white')} ${t.pad ? 'pad' : ''}"><img src="${E(t.src)}"></div>`;
+  const win = (s, box) => `<div class="win" style="left:${box[0]}px;top:${box[1]}px;width:${box[2]}px;height:${box[3]}px">
+      <div class="bar"><i></i><i></i><i></i>${s.title ? `<span>${E(s.title)}</span>` : ''}</div>
+      <div class="shot ${s.contain ? 'contain' : ''}" style="background-image:url('${E(s.src)}');background-position:${E(s.focus || '50% 0%')}"></div></div>`;
+  const chrome = () => {
+    add(`<div class="chrome top"><span class="lbl" data-fit data-min="22">${E(d.label || '')}</span><span class="ctr">${E(d.counter || '')}</span></div>`);
+    const f = d.footer || ['YOUR BRAND', 'swipe →'];
+    add(`<div class="chrome bot"><span>${E(f[0])}</span><span>${E(f[1])}</span></div>`);
+  };
+  // headline + body block, fixed height so the stage below lines up with the plate figure
+  const typeBlock = (h, bodyMax) => {
+    KIT.limit(KIT.words(d.headline) <= 7, 'headline-over-7-words');
+    KIT.limit(KIT.words(d.body) <= bodyMax, `body-over-${bodyMax}-words`);
+    add(`<div class="scrim" style="height:${h + 120}px"></div>`);
+    add(`<div class="type" style="height:${h - 108}px">
+      <div class="h" data-fit data-min="60" style="max-height:${Math.round((h - 108) * 0.6)}px">${A(d.headline)}</div>
+      ${d.body ? `<div class="b" data-fit data-min="30" style="flex:1 1 auto;min-height:0">${A(d.body)}</div>` : ''}</div>`);
+  };
+
+  if (L === 'name') {
+    KIT.limit(KIT.plain(d.name).length <= 12, 'name-over-12-chars');
+    KIT.limit(!d.brush || KIT.plain(d.brush).length <= 22, 'brush-over-22-chars');
+    KIT.limit(!d.foot || KIT.words(d.foot) <= 8, 'foot-over-8-words');
+    KIT.limit((d.tiles || []).length <= 4, 'over-4-tiles');
+    add(`<div class="scrim" style="height:560px"></div>`);
+    if (d.kicker) add(`<div class="kicker">${E(d.kicker)}</div>`);
+    add(`<div class="giant" data-fit data-min="120" style="top:${d.kicker ? 112 : 60}px;height:350px;font-size:330px">${A(d.name)}</div>`);
+    if (d.brush) {
+      add(`<div class="brush" style="left:470px;right:0;top:672px;height:150px">${BRUSH}<div class="bt" data-fit data-min="40">${A(d.brush)}</div></div>`);
+      add(`<svg class="arrow" style="left:700px;top:458px;width:300px;height:250px" viewBox="0 0 300 250">
+        <path d="M232 10 C 300 90 290 190 140 214" fill="none" stroke="#E9ECEB" stroke-width="9" stroke-linecap="round" stroke-dasharray="34 22"/>
+        <path d="M160 190 L120 216 L164 236" fill="none" stroke="#E9ECEB" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg>`);
+    }
+    const n = (d.tiles || []).length;
+    if (n) add(`<div class="tiles" style="left:44px;top:${1300 - n * 150 - (n - 1) * 22}px">${d.tiles.map((t) => tile(t)).join('')}</div>`);
+    if (d.foot) add(`<div class="foot" data-fit data-min="34" style="bottom:110px;width:520px;max-height:130px">${A(d.foot)}</div>`);
+    if (d.tag) add(`<div class="tag">${E(d.tag)}</div>`);
+  }
+
+  if (L === 'icon') {
+    KIT.limit(KIT.plain(d.name).length <= 14, 'name-over-14-chars');
+    KIT.limit(!d.sub || KIT.words(d.sub) <= 10, 'sub-over-10-words');
+    add(`<div class="scrim" style="height:300px"></div>`);
+    add(`<div class="giant" data-fit data-min="110" style="top:40px;height:210px;font-size:200px">${A(d.name)}</div>`);
+    const t = d.tile || {};
+    add(`<div class="icontile ${E(t.bg || 'white')}" style="left:310px;top:300px;width:460px;height:460px;background:${t.bg === 'dark' ? '#1C1F22' : '#FFFFFF'}">
+      <img src="${E(t.src)}" style="${t.pad ? 'width:70%;height:70%' : ''}"></div>`);
+    if (d.sub) add(`<div class="sub" data-fit data-min="44" style="top:800px;height:220px">${A(d.sub)}</div>`);
+    if (d.brush) add(`<div class="brush" style="left:280px;right:0;top:1060px;height:140px">${BRUSH}<div class="bt" data-fit data-min="40">${A(d.brush)}</div></div>`);
+    if (d.tag) add(`<div class="tag">${E(d.tag)}</div>`);
+  }
+
+  if (L === 'define') {
+    chrome(); typeBlock(560, 35);
+    const s = d.strip || [];
+    KIT.limit(s.length >= 2 && s.length <= 4, 'strip-needs-2-to-4-chips');
+    KIT.limit(s.every((c) => KIT.plain(c).length <= 16), 'chip-over-16-chars');
+    add(`<div class="strip" style="top:596px">${s.map((c, i) => `<div class="chip"><b>${i + 1}</b><span data-fit data-min="22">${E(c)}</span></div>`).join('')}</div>`);
+    if (d.shot) add(win(d.shot, [72, 712, 936, 520]));
+  }
+
+  if (L === 'stage') {
+    chrome(); typeBlock(520, 30);
+    const pins = d.pins || [];
+    KIT.limit(pins.length <= 3, 'over-3-pins');
+    KIT.limit(pins.every((p) => !p.label || KIT.plain(p.label).length <= 18), 'pin-label-over-18-chars');
+    const box = [72, 552, 936, 690];
+    add(win(d.shot || {}, box));
+    pins.forEach((p, i) => {
+      const x = box[0] + p.x * box[2], y = box[1] + 38 + p.y * (box[3] - 38);
+      add(`<div class="pin" style="left:${x}px;top:${y}px">${i + 1}</div>`);
+      if (p.label) add(`<div class="chip" style="position:absolute;height:58px;padding:0 18px;font-size:26px;${p.side === 'left' ? `right:${1080 - x + 34}px` : `left:${x + 34}px`};top:${y - 29}px;flex:none">${E(p.label)}</div>`);
+    });
+  }
+
+  if (L === 'versus') {
+    chrome(); typeBlock(480, 25);
+    const cols = d.cols || [];
+    KIT.limit(cols.length === 2, 'versus-needs-2-cols');
+    KIT.limit(cols.every((c) => KIT.plain(c.value).length <= 7), 'value-over-7-chars');
+    KIT.limit(cols.every((c) => KIT.words(c.caption) <= 10), 'caption-over-10-words');
+    const anyShot = cols.some((c) => c.shot);
+    cols.forEach((c, i) => {
+      const x = 72 + i * 488;
+      if (c.shot) add(win(c.shot, [x, 520, 448, 400]));
+      add(`<div class="stat ${c.old ? 'old' : 'new'}" style="position:absolute;left:${x}px;width:448px;top:${anyShot ? 956 : 640}px">
+        <div class="tg">${E(c.tag)}</div><div class="v" data-fit data-min="80">${E(c.value)}</div><div class="k">${A(c.caption)}</div></div>`);
+    });
+    add(`<div style="position:absolute;left:539px;top:540px;width:2px;height:680px;background:linear-gradient(180deg,transparent,rgba(255,255,255,.22),transparent)"></div>`);
+  }
+
+  if (L === 'parts') {
+    chrome(); typeBlock(470, 20);
+    const P = d.parts || [];
+    KIT.limit(P.length === 3 || P.length === 4, 'parts-needs-3-or-4');
+    KIT.limit(P.every((p) => KIT.plain(p.name).length <= 14), 'part-name-over-14-chars');
+    KIT.limit(P.every((p) => KIT.words(p.def) <= 8), 'part-def-over-8-words');
+    // node centres (fractions of 1080x1350) = the plate's cluster centres. The prompt asks for these; when the plate
+    // lands them elsewhere, measure the fitted plate and set "pos" (Codex put the top row at 41% on the sample plate).
+    const POS = d.pos || (P.length === 4 ? [[.27, .47], [.73, .47], [.27, .73], [.73, .73]] : [[.27, .47], [.73, .47], [.50, .73]]);
+    KIT.limit(POS.length === P.length && POS.every((p) => p[1] >= .38 && p[1] <= .80), 'pos-needs-one-centre-per-part-between-38-and-80-percent');
+    P.forEach((p, i) => {
+      const x = POS[i][0] * 1080, y = POS[i][1] * 1350;
+      add(`<div class="node ${i === 0 ? 'acc' : ''}" style="left:${x}px;top:${y}px"></div>`);
+      add(`<div class="part" style="left:${x - 230}px;width:460px;top:${y + 44}px">
+        <div class="n">0${i + 1}</div><div class="t">${E(p.name)}</div><div class="d" data-fit data-min="24" style="max-height:72px">${E(p.def)}</div></div>`);
+    });
+  }
+
+  if (L === 'terminal') {
+    chrome(); typeBlock(500, 25);
+    const lines = String(d.lines || '').split('\n');
+    KIT.limit(lines.length <= 14, 'terminal-over-14-lines');
+    const fmt = (l) => /^\$ /.test(l) ? `<span class="p">$</span>${E(l.slice(1))}` : /^[✓✔]/.test(l) ? `<span class="ok">${E(l)}</span>` : /^#/.test(l) ? `<span class="c">${E(l)}</span>` : E(l);
+    add(`<div class="term" style="left:72px;top:536px;width:936px;height:${d.caption ? 640 : 700}px">
+      <div class="bar"><i></i><i></i><i></i><span>${E(d.title || 'copy this')}</span></div>
+      <pre data-fit data-min="22">${lines.map(fmt).join('\n')}</pre></div>`);
+    if (d.caption) add(`<div class="b" style="position:absolute;left:72px;right:72px;top:1196px;font-size:28px;text-align:center" data-fit data-min="24">${A(d.caption)}</div>`);
+  }
+
+  if (L === 'receipts') {
+    chrome(); typeBlock(480, 25);
+    const S = d.stats || [];
+    KIT.limit(S.length >= 2 && S.length <= 3, 'receipts-needs-2-or-3-stats');
+    KIT.limit(S.every((s) => KIT.plain(s.value).length <= 7), 'value-over-7-chars');
+    KIT.limit(S.every((s) => KIT.words(s.caption) <= 6), 'caption-over-6-words');
+    const w = (936 - (S.length - 1) * 24) / S.length;
+    S.forEach((s, i) => add(`<div class="stat new" style="position:absolute;left:${72 + i * (w + 24)}px;width:${w}px;top:500px">
+      <div class="v" data-fit data-min="64" style="font-size:${S.length === 3 ? 96 : 116}px">${E(s.value)}</div><div class="k" data-fit data-min="24" style="max-height:72px">${A(s.caption)}</div></div>`));
+    if (d.shot) add(win(d.shot, [72, 720, 936, 520]));
+  }
+
+  if (L === 'steps') {
+    chrome(); typeBlock(470, 20);
+    const S = d.steps || [];
+    KIT.limit(S.length >= 3 && S.length <= 4, 'steps-needs-3-or-4');
+    KIT.limit(S.every((s) => KIT.words(s.title) <= 7), 'step-title-over-7-words');
+    KIT.limit(S.every((s) => !s.cmd || s.cmd.length <= 40), 'cmd-over-40-chars');
+    add(`<div class="rail" style="top:500px;height:740px"><div class="line"></div>${S.map((s, i) => `<div class="row"><div class="num">${i + 1}</div>
+      <div class="tx"><div class="tt" data-fit data-min="30">${A(s.title)}</div>${s.cmd ? `<code><span class="p">$</span>${E(s.cmd)}</code>` : ''}</div></div>`).join('')}</div>`);
+  }
+
+  if (L === 'cta') {
+    KIT.limit(KIT.words(d.headline) <= 4, 'cta-headline-over-4-words');
+    KIT.limit(KIT.plain(d.keyword).length <= 12, 'keyword-over-12-chars');
+    KIT.limit(KIT.words(d.deliverable) <= 16, 'deliverable-over-16-words');
+    add(`<div class="scrim" style="height:760px"></div>`);
+    add(`<div class="chrome top"><span class="lbl"></span><span class="ctr">${E(d.counter || '')}</span></div>`);
+    add(`<div class="ctah" data-fit data-min="96" style="top:250px;height:300px">${A(d.headline)}</div>`);
+    if (d.body) add(`<div class="b" data-fit data-min="30" style="position:absolute;left:72px;right:72px;top:580px;height:110px">${A(d.body)}</div>`);
+    add(`<div class="pill" style="top:760px"><span class="c1">Comment</span><span class="c2">${E(d.keyword)}</span></div>`);
+    add(`<div class="ctab" data-fit data-min="30" style="top:950px;height:110px">${A(d.deliverable)}</div>`);
+    const t = d.tiles || [];
+    if (t.length) add(`<div class="tiles row" style="left:${540 - (t.length * 120 + (t.length - 1) * 22) / 2}px;top:1110px">${t.map((x) => tile(x).replace('class="tile', 'style="width:120px;height:120px;border-radius:28px" class="tile')).join('')}</div>`);
+  }
+});
+
+// dry-brush black label stroke (drawn, never painted by the model)
+var BRUSH = `<svg class="stroke" viewBox="0 0 600 150" preserveAspectRatio="none">
+  <defs><filter id="rough" x="-5%" y="-20%" width="110%" height="140%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.012 0.22" numOctaves="3" seed="11"/>
+    <feDisplacementMap in="SourceGraphic" scale="26"/></filter></defs>
+  <g filter="url(#rough)" fill="#050505">
+    <path d="M30 26 C170 12 420 16 604 22 L604 104 C430 116 170 120 14 106 Z"/>
+    <path d="M60 100 C220 116 420 112 604 120 L604 136 C430 132 210 140 40 128 Z" opacity=".8"/>
+    <path d="M90 128 L604 140 L604 146 L120 140 Z" opacity=".5"/>
+  </g></svg>`;
+</script>
+</body>
+</html>

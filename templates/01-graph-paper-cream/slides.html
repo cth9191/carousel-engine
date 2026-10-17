@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Template 01 — Graph Paper Cream</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5EBE0;
+    --ink: #0E0E0E;
+    --terracotta: #D97757;
+    --shadow:
+      0 2px 4px rgba(14, 14, 14, 0.10),
+      0 6px 10px rgba(14, 14, 14, 0.10),
+      0 14px 22px rgba(14, 14, 14, 0.12),
+      0 28px 48px rgba(14, 14, 14, 0.14),
+      0 50px 90px rgba(14, 14, 14, 0.16);
+    --radius: 18px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: #1a1a1a;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .stage {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .slide-wrap {
+    width: 1080px;
+    height: 1350px;
+    transform-origin: center;
+  }
+
+  .slide {
+    --bg-size: 60px;
+    --bg-opacity: 0.05;
+    --accent: var(--terracotta);
+    --head-size: 80px;
+    --tilt: -6deg;
+
+    width: 1080px;
+    height: 1350px;
+    background-color: var(--cream);
+    position: relative;
+    overflow: hidden;
+    padding: 70px 80px 90px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .slide.bg-grid {
+    background-image:
+      linear-gradient(to right,  rgba(14, 14, 14, var(--bg-opacity)) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(14, 14, 14, var(--bg-opacity)) 1px, transparent 1px);
+    background-size: var(--bg-size) var(--bg-size);
+  }
+
+  .slide.bg-dots {
+    background-image: radial-gradient(circle, rgba(14, 14, 14, var(--bg-opacity)) 1px, transparent 1px);
+    background-size: var(--bg-size) var(--bg-size);
+  }
+
+  .slide.bg-hatch {
+    background-image:
+      repeating-linear-gradient( 45deg, rgba(14, 14, 14, var(--bg-opacity)) 0 1px, transparent 1px var(--bg-size)),
+      repeating-linear-gradient(-45deg, rgba(14, 14, 14, var(--bg-opacity)) 0 1px, transparent 1px var(--bg-size));
+  }
+
+  .slide.bg-none { background-image: none; }
+
+  .mark {
+    width: 70px;
+    height: 90px;
+    background: var(--accent);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+    margin-bottom: 50px;
+    flex-shrink: 0;
+  }
+
+  .headline {
+    font-weight: 800;
+    font-size: var(--head-size);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    margin-bottom: 50px;
+    flex-shrink: 0;
+  }
+
+  .headline .accent { color: var(--accent); }
+
+  .hero {
+    width: 100%;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    background: #0d1117;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    position: relative;
+  }
+
+  .hero.light { background: #ffffff; }
+
+  .hero.layered {
+    padding: 0;
+    background: #0d1117;
+  }
+
+  .hero img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  /* Layered: full-bleed bg image + tilted floating card */
+  .hero.layered .bg-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-width: none;
+    max-height: none;
+  }
+
+  .hero.layered .float-card {
+    position: absolute;
+    left: var(--card-x, -30px);
+    bottom: var(--card-y, 40px);
+    width: var(--card-w, 58%);
+    transform: rotate(var(--tilt));
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow:
+      0 30px 70px rgba(0, 0, 0, 0.45),
+      0 8px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    cursor: grab;
+    user-select: none;
+  }
+  .hero.layered .float-card:active { cursor: grabbing; }
+  .hero.layered .float-card.dragging {
+    transition: none;
+    box-shadow:
+      0 40px 90px rgba(0, 0, 0, 0.55),
+      0 12px 28px rgba(0, 0, 0, 0.4);
+  }
+
+  .hero.layered .float-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-width: none;
+    max-height: none;
+  }
+
+  /* Custom GitHub-style repo card (light theme, no avatar) */
+  .repo-card {
+    background: #ffffff;
+    color: #1f2328;
+    padding: 24px 28px;
+    font-family: -apple-system, "Segoe UI", sans-serif;
+    border: 1px solid #d1d9e0;
+  }
+
+  .repo-card .top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    color: #59636e;
+    margin-bottom: 14px;
+  }
+
+  .repo-card .top svg { fill: #59636e; flex-shrink: 0; }
+
+  .repo-card .top .owner { color: #59636e; }
+  .repo-card .top .sep   { color: #59636e; }
+  .repo-card .top .name  { color: #0969da; font-weight: 600; }
+
+  .repo-card .title {
+    font-size: 44px;
+    font-weight: 700;
+    color: #1f2328;
+    line-height: 1;
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+
+  .repo-card .desc {
+    font-size: 18px;
+    color: #59636e;
+    line-height: 1.45;
+    margin-bottom: 22px;
+  }
+
+  .repo-card .meta {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    font-size: 16px;
+    color: #59636e;
+  }
+
+  .repo-card .meta .item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .repo-card .lang-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #f1e05a;
+  }
+
+  .repo-card .meta svg { fill: #59636e; }
+
+  .body {
+    font-weight: 800;
+    font-size: 40px;
+    line-height: 1.18;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-top: 50px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+  }
+
+  .body .arrow {
+    color: var(--accent);
+    font-size: 56px;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+
+  .dots {
+    /* Hidden in exports — IG/TT add their own pagination */
+    display: none !important;
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    gap: 10px;
+  }
+
+  .dots .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(14, 14, 14, 0.25);
+  }
+
+  .dots .dot.active { background: var(--ink); }
+
+  /* === COVER SLIDE === */
+  .slide.is-cover {
+    padding: 0;
+    background: #3D7DC8;
+  }
+  .slide.is-cover .mark,
+  .slide.is-cover .headline,
+  .slide.is-cover .hero,
+  .slide.is-cover .body,
+  .slide.is-cover .cta-content,
+  .slide.is-cover .dots { display: none; }
+
+  .cover-img {
+    display: none;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center; /* source pre-cropped to remove pill; minor side crop only */
+  }
+  .slide.is-cover .cover-img { display: block; }
+
+  /* === CTA SLIDE === */
+  .slide.is-cta .headline,
+  .slide.is-cta .hero,
+  .slide.is-cta .body { display: none; }
+
+  .cta-content {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: left;
+  }
+  .slide.is-cta .cta-content { display: flex; }
+
+  .cta-headline {
+    font-weight: 800;
+    font-size: 90px;
+    line-height: 0.92;
+    letter-spacing: -0.045em;
+    color: var(--ink);
+    margin-bottom: 30px;
+    display: none; /* default hidden in minimal mode */
+  }
+  .slide.is-cta.show-headline .cta-headline { display: block; }
+
+  .cta-headline .accent { color: var(--accent); }
+
+  .cta-sub {
+    font-weight: 500;
+    font-size: 36px;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    opacity: 0.78;
+    margin-bottom: 60px;
+    max-width: 800px;
+    display: none;
+  }
+  .slide.is-cta.show-sub .cta-sub { display: block; }
+
+  .cta-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 70px;
+    align-items: flex-start;
+  }
+
+  .cta-action {
+    font-weight: 800;
+    font-size: 180px;
+    line-height: 0.95;
+    letter-spacing: -0.05em;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    text-transform: uppercase;
+  }
+
+  .cta-action .marker {
+    color: var(--accent);
+    font-weight: 900;
+    font-size: 140px;
+    line-height: 1;
+  }
+
+  .cta-handle {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 22px 48px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 50px;
+    letter-spacing: -0.02em;
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+    box-shadow:
+      0 4px 8px rgba(14, 14, 14, 0.10),
+      0 16px 30px rgba(14, 14, 14, 0.18);
+  }
+
+  .cta-handle .arrow {
+    color: var(--accent);
+    font-size: 56px;
+    font-weight: 900;
+  }
+
+  /* === COUNTER (NN / TT, every slide but the cover) === */
+  .counter {
+    position: absolute;
+    top: 74px;
+    right: 80px;
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    opacity: 0.55;
+    font-variant-numeric: tabular-nums;
+  }
+  .slide.is-cover .counter { display: none; }
+
+  /* === KEYWORD CTA (ctaKeyword set): headline, "Comment KEYWORD", deliverable line, handle === */
+  .cta-kw { display: none; width: 100%; margin-bottom: 64px; }
+  .slide.is-cta.is-keyword .cta-kw { display: block; }
+  .slide.is-cta.is-keyword .cta-actions { display: none; }
+  .slide.is-cta.is-keyword .cta-headline { display: block; margin-bottom: 44px; }
+  .cta-kw-verb, .cta-kw-word {
+    font-weight: 800;
+    font-size: 180px;
+    line-height: 0.95;
+    letter-spacing: -0.05em;
+    color: var(--ink);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .cta-kw-verb { display: flex; align-items: center; gap: 28px; }
+  .cta-kw-verb .marker { color: var(--accent); font-weight: 900; font-size: 0.78em; line-height: 1; }
+  .cta-kw-word { color: var(--accent); }
+  .cta-kw-sub {
+    font-weight: 600;
+    font-size: 44px;
+    line-height: 1.22;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    margin-top: 26px;
+    max-width: 920px;
+  }
+
+  /* Nav UI */
+  .ui {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(12px);
+    padding: 10px 14px;
+    border-radius: 999px;
+    z-index: 10;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .ui button {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 8px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .ui button:hover { background: rgba(255, 255, 255, 0.16); }
+
+  .ui .arrow-btn {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .ui .label {
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    min-width: 200px;
+    text-align: center;
+  }
+
+  .ui .label .num { color: var(--terracotta); }
+
+  :fullscreen .ui { display: none; }
+
+  /* === TWEAKS PANEL === */
+  .tw-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #1A1A1A;
+    color: white;
+    border: none;
+    border-radius: 999px;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    z-index: 100;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .tw-panel {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 300px;
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 16px 50px rgba(0,0,0,0.18);
+    z-index: 100;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: #1f2328;
+    display: none;
+  }
+
+  .tw-panel.open { display: block; }
+
+  .tw-panel h3 {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .tw-panel .close {
+    background: none; border: none; font-size: 18px; cursor: pointer; padding: 0; line-height: 1;
+  }
+
+  .tw-row { margin-bottom: 14px; }
+  .tw-row .lbl { display: block; color: #6b7280; margin-bottom: 6px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+  .tw-row input[type=range] { width: 100%; }
+  .tw-row input[type=color] { width: 100%; height: 32px; border: 1px solid #e5e5e5; border-radius: 6px; cursor: pointer; }
+  .tw-row select { width: 100%; padding: 6px 8px; border: 1px solid #e5e5e5; border-radius: 6px; font-family: inherit; font-size: 12px; }
+  .tw-row .val { float: right; color: #1f2328; font-weight: 600; }
+  .tw-reset { width: 100%; padding: 8px; background: #f5f5f5; border: none; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 600; color: #1f2328; margin-top: 4px; }
+
+  :fullscreen .tw-toggle, :fullscreen .tw-panel { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="slide-wrap" id="slideWrap">
+    <div class="slide bg-grid" id="slide">
+      <img class="cover-img" id="coverImg" alt="">
+      <div class="mark"></div>
+      <h1 class="headline" id="headline"></h1>
+      <div class="hero" id="hero">
+        <img id="heroImg" alt="" class="single-img">
+        <img id="heroBg" alt="" class="bg-img" style="display:none;">
+        <div id="floatCard" class="float-card" style="display:none;">
+          <div class="repo-card" id="repoCard">
+            <div class="top">
+              <svg width="18" height="18" viewBox="0 0 16 16"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"/></svg>
+              <span class="owner" id="repoOwner">owner</span>
+              <span class="sep">/</span>
+              <span class="name" id="repoName">repo-name</span>
+            </div>
+            <div class="title" id="repoTitle">repo-name</div>
+            <div class="desc" id="repoDesc">One-line description of the repo.</div>
+            <div class="meta">
+              <div class="item">
+                <span class="lang-dot" id="repoLangDot"></span>
+                <span id="repoLang">TypeScript</span>
+              </div>
+              <div class="item">
+                <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/></svg>
+                <span id="repoStars">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="body">
+        <span id="bodyText"></span>
+        <span class="arrow">&rarr;</span>
+      </div>
+      <div class="counter" id="counter"></div>
+      <div class="cta-content">
+        <h1 class="cta-headline" id="ctaHeadline">STOLE<br>THESE 5?</h1>
+        <p class="cta-sub" id="ctaSub">Tag a dev who builds with AI</p>
+        <div class="cta-actions" id="ctaActions">
+          <div class="cta-action"><span class="marker">→</span> Save this post</div>
+          <div class="cta-action"><span class="marker">→</span> Tag a dev who codes with AI</div>
+          <div class="cta-action"><span class="marker">→</span> Follow for the next list</div>
+        </div>
+        <div class="cta-kw" id="ctaKw">
+          <div class="cta-kw-verb"><span class="marker">→</span><span id="ctaKwVerb">Comment</span></div>
+          <div class="cta-kw-word" id="ctaKwWord"></div>
+          <p class="cta-kw-sub" id="ctaKwSub"></p>
+        </div>
+        <div class="cta-handle" id="ctaHandle">{{BRAND}} <span class="arrow">→</span></div>
+      </div>
+      <div class="dots" id="dotsEl"></div>
+    </div>
+  </div>
+</div>
+
+<div class="ui">
+  <button class="arrow-btn" id="prev">&larr;</button>
+  <span class="label"><span class="num" id="num">1/5</span> &nbsp; <span id="name"></span></span>
+  <button class="arrow-btn" id="next">&rarr;</button>
+  <button id="fs">Fullscreen (F)</button>
+</div>
+
+<button class="tw-toggle" id="twToggle">⚙ Tweaks</button>
+<div class="tw-panel" id="twPanel">
+  <h3>Tweaks <button class="close" id="twClose">×</button></h3>
+
+  <div class="tw-row">
+    <span class="lbl">BG pattern <span class="val" id="vBgKind"></span></span>
+    <select id="twBgKind">
+      <option value="grid">Graph paper</option>
+      <option value="dots">Dots</option>
+      <option value="hatch">Crosshatch</option>
+      <option value="none">None</option>
+    </select>
+  </div>
+
+  <div class="tw-row">
+    <span class="lbl">Pattern density <span class="val" id="vBgSize"></span></span>
+    <input type="range" id="twBgSize" min="20" max="100" step="2">
+  </div>
+
+  <div class="tw-row">
+    <span class="lbl">Pattern opacity <span class="val" id="vBgOpacity"></span></span>
+    <input type="range" id="twBgOpacity" min="0" max="20" step="1">
+  </div>
+
+  <div class="tw-row">
+    <span class="lbl">Accent color</span>
+    <input type="color" id="twAccent">
+  </div>
+
+  <div class="tw-row">
+    <span class="lbl">Headline size <span class="val" id="vHeadSize"></span></span>
+    <input type="range" id="twHeadSize" min="60" max="100" step="2">
+  </div>
+
+  <div style="border-top:1px solid #eee; margin:14px 0; padding-top:14px;">
+    <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#1f2328; margin-bottom:10px;">PER-SLIDE: <span id="vSlideName" style="color:var(--terracotta);">—</span></div>
+
+    <div class="tw-row">
+      <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+        <input type="checkbox" id="twCardOn">
+        <span style="font-weight:600;">Show repo card</span>
+      </label>
+    </div>
+
+    <div class="tw-row">
+      <span class="lbl">Card X offset <span class="val" id="vCardX"></span></span>
+      <input type="range" id="twCardX" min="-100" max="200" step="2">
+    </div>
+
+    <div class="tw-row">
+      <span class="lbl">Card Y offset <span class="val" id="vCardY"></span></span>
+      <input type="range" id="twCardY" min="-50" max="500" step="2">
+    </div>
+
+    <div class="tw-row">
+      <span class="lbl">Card width <span class="val" id="vCardW"></span></span>
+      <input type="range" id="twCardW" min="30" max="80" step="1">
+    </div>
+
+    <div class="tw-row">
+      <span class="lbl">Card tilt <span class="val" id="vTilt"></span></span>
+      <input type="range" id="twTilt" min="-15" max="15" step="1">
+    </div>
+
+    <div class="tw-row">
+      <span class="lbl">Headline (use \n for line break)</span>
+      <textarea id="twHeadline" rows="3" style="width:100%;padding:6px 8px;border:1px solid #e5e5e5;border-radius:6px;font-family:inherit;font-size:12px;resize:vertical;"></textarea>
+    </div>
+
+    <div class="tw-row">
+      <span class="lbl">Body line</span>
+      <textarea id="twBody" rows="2" style="width:100%;padding:6px 8px;border:1px solid #e5e5e5;border-radius:6px;font-family:inherit;font-size:12px;resize:vertical;"></textarea>
+    </div>
+
+    <div class="tw-row">
+      <span class="lbl">Repo card description</span>
+      <textarea id="twRepoDesc" rows="2" style="width:100%;padding:6px 8px;border:1px solid #e5e5e5;border-radius:6px;font-family:inherit;font-size:12px;resize:vertical;"></textarea>
+    </div>
+  </div>
+
+  <button class="tw-reset" id="twReset">Reset to defaults</button>
+  <button class="tw-reset" id="twExport" style="background:#1A1A1A;color:white;margin-top:6px;">📋 Export tweaks (copy to clipboard)</button>
+  <pre id="twExportOut" style="display:none;margin-top:10px;padding:10px;background:#f5f5f5;border-radius:6px;font-size:11px;white-space:pre-wrap;word-break:break-all;max-height:160px;overflow:auto;"></pre>
+</div>
+
+<script>
+  // Sample deck (placeholder copy): cover, 3 value slides, keyword CTA. A deck replaces all of it, one entry per slide.
+  // - cover: true + coverImg: the finished cover PNG, relative to the deck folder (S06: 'final/slide-01.png').
+  //   assets/cover.png is a sample statue cover so the template previews; a deck never ships it.
+  // - layered: true: heroBg is a real capture saved in the deck's assets/ (never hotlinked), repoCard is read off
+  //   the repo page on posting day. assets/hero-placeholder.png only marks where a capture goes.
+  // - heroImg (no layered): a single image, no repo card.
+  // - defaults: the bake reads only these, never the browser's localStorage tweaks.
+  // - CTA: {{BRAND}} in ctaHandle (and the pill's fallback) is replaced with your handle or engine/brand.json's brand.
+  const slides = [
+    {
+      name: 'Cover',
+      cover: true,
+      coverImg: 'assets/cover.png',
+      slideIndex: 0,
+    },
+    {
+      name: 'Repo One',
+      headlineHTML: '#1: <span class="accent">Repo One</span><br>does the one thing<br>you need',
+      layered: true,
+      heroBg: 'assets/hero-placeholder.png',
+      repoCard: {
+        owner: 'owner',
+        name: 'repo-one',
+        title: 'repo-one',
+        desc: 'One-line description of the repo, 12 words or fewer.',
+        lang: 'TypeScript',
+        langColor: '#3178c6',
+        stars: '—',
+      },
+      body: 'One body line with one verified number in it, 20 words or fewer',
+      slideIndex: 1,
+      defaults: { cardX: -15, cardY: 25, cardW: 42, tilt: 0 },
+    },
+    {
+      name: 'Repo Two',
+      headlineHTML: '#2: <span class="accent">Repo Two</span><br>replaces a tool<br>you pay for',
+      layered: true,
+      heroBg: 'assets/hero-placeholder.png',
+      repoCard: {
+        owner: 'owner',
+        name: 'repo-two',
+        title: 'repo-two',
+        desc: 'What it is, in the words of its own README.',
+        lang: 'Python',
+        langColor: '#3572A5',
+        stars: '—',
+      },
+      body: 'What it replaces, or the one use that sells it',
+      slideIndex: 2,
+      defaults: { cardOn: true, cardX: 542, cardY: 59, cardW: 44, tilt: 0 },
+    },
+    {
+      name: 'Repo Three',
+      headlineHTML: '#3: <span class="accent">Repo Three</span><br>shows its work<br>on screen',
+      layered: true,
+      heroBg: 'assets/hero-placeholder.png',
+      repoCard: {
+        owner: 'owner',
+        name: 'repo-three',
+        title: 'repo-three',
+        desc: 'One-line description of the repo.',
+        lang: 'JavaScript',
+        langColor: '#f1e05a',
+        stars: '—',
+      },
+      body: 'The capture is the proof; this line says what to look at',
+      slideIndex: 3,
+      defaults: { cardX: 4, cardY: 40, cardW: 43, tilt: 0 },
+    },
+    {
+      // Keyword CTA (one action): set ctaKeyword (+ ctaDeliverable, optional ctaHeadline,
+      // ctaVerb default 'Comment'). Without ctaKeyword the legacy ctaActions list below renders instead.
+      name: 'CTA',
+      cta: true,
+      ctaKeyword: 'KEYWORD',
+      ctaDeliverable: 'I’ll send you all 3 with install links.',
+      ctaHeadline: 'WANT<br>ALL 3?',
+      ctaSub: '3 ways to keep getting these:',
+      ctaActions: [
+        { marker: '→', text: 'Save' },
+        { marker: '→', text: 'Share' },
+        { marker: '→', text: 'Follow' },
+      ],
+      ctaHandle: '{{BRAND}}',
+      slideIndex: 4,
+    },
+  ];
+
+  const TOTAL_SLIDES = slides.length;
+  let i = 0;
+
+  const headlineEl = document.getElementById('headline');
+  const heroEl = document.getElementById('hero');
+  const heroImg = document.getElementById('heroImg');
+  const bodyText = document.getElementById('bodyText');
+  const dotsEl = document.getElementById('dotsEl');
+  const numEl = document.getElementById('num');
+  const nameEl = document.getElementById('name');
+
+  const heroBg = document.getElementById('heroBg');
+  const floatCard = document.getElementById('floatCard');
+
+  const slideEl = document.getElementById('slide');
+
+  // Fit report for shared/export.mjs (exit 3 on any entry): window.fitReport[idx] = [messages].
+  window.fitReport = window.fitReport || {};
+  const pad2 = (n) => String(n).padStart(2, '0');
+
+  // Keyword CTA fit pass: the verb and the keyword shrink together until both fit the content width,
+  // never below 96 px; the deliverable line stays <= 2 lines at 44 px. Failures go to fitReport.
+  function fitKeyword(idx) {
+    const errs = [];
+    const verb = document.querySelector('.cta-kw-verb'), word = document.getElementById('ctaKwWord');
+    const sub = document.getElementById('ctaKwSub');
+    const maxW = document.getElementById('ctaKw').clientWidth;
+    let fs = 180;
+    const apply = () => { verb.style.fontSize = word.style.fontSize = fs + 'px'; };
+    apply();
+    while ((verb.scrollWidth > maxW + 1 || word.scrollWidth > maxW + 1) && fs > 96) { fs -= 2; apply(); }
+    if (verb.scrollWidth > maxW + 1 || word.scrollWidth > maxW + 1) errs.push(`keyword CTA: "${word.textContent}" does not fit at 96px`);
+    const lh = parseFloat(getComputedStyle(sub).lineHeight);
+    if (sub.textContent && sub.offsetHeight > lh * 2 + 2) errs.push('keyword CTA: deliverable line runs past 2 lines; cut it');
+    const slide = document.getElementById('slide');
+    if (slide.scrollHeight > slide.clientHeight + 1) errs.push('keyword CTA: content overflows the slide');
+    window.fitReport[idx] = errs;
+  }
+
+  function render(idx) {
+    const s = slides[idx];
+    document.getElementById('counter').textContent = `${pad2(idx + 1)} / ${pad2(slides.length)}`;
+    window.fitReport[idx] = [];
+
+    // Cover branch
+    slideEl.classList.toggle('is-cover', !!s.cover);
+    if (s.cover) {
+      document.getElementById('coverImg').src = s.coverImg;
+      // Pagination dots
+      dotsEl.innerHTML = '';
+      for (let k = 0; k < TOTAL_SLIDES; k++) {
+        const d = document.createElement('span');
+        d.className = 'dot' + (k === s.slideIndex ? ' active' : '');
+        dotsEl.appendChild(d);
+      }
+      numEl.textContent = `${idx + 1}/${slides.length}`;
+      nameEl.textContent = s.name;
+      return;
+    }
+
+    // CTA branch
+    slideEl.classList.toggle('is-cta', !!s.cta);
+    slideEl.classList.toggle('is-keyword', !!(s.cta && s.ctaKeyword));
+    if (s.cta && s.ctaKeyword) {
+      // Keyword CTA (Engine v3: exactly one action): ctaHeadline (optional), "Comment" + ctaKeyword in the
+      // accent, ctaDeliverable (what they get), ctaHandle.
+      const h = document.getElementById('ctaHeadline');
+      h.innerHTML = s.ctaHeadline || '';
+      h.style.display = s.ctaHeadline ? '' : 'none';
+      document.getElementById('ctaKwVerb').textContent = s.ctaVerb || 'Comment';
+      document.getElementById('ctaKwWord').textContent = s.ctaKeyword;
+      document.getElementById('ctaKwSub').textContent = s.ctaDeliverable || '';
+      document.getElementById('ctaHandle').innerHTML = `${s.ctaHandle || '{{BRAND}}'} <span class="arrow">&rarr;</span>`;
+      dotsEl.innerHTML = '';
+      numEl.textContent = `${idx + 1}/${slides.length}`;
+      nameEl.textContent = s.name;
+      fitKeyword(idx);
+      return;
+    }
+    document.getElementById('ctaHeadline').style.display = '';
+    if (s.cta) {
+      document.getElementById('ctaHeadline').innerHTML = s.ctaHeadline;
+      document.getElementById('ctaSub').textContent = s.ctaSub;
+      const actions = document.getElementById('ctaActions');
+      actions.innerHTML = '';
+      s.ctaActions.forEach(a => {
+        const div = document.createElement('div');
+        div.className = 'cta-action';
+        div.innerHTML = `<span class="marker">${a.marker}</span> ${a.text}`;
+        actions.appendChild(div);
+      });
+      document.getElementById('ctaHandle').innerHTML = `${s.ctaHandle} <span class="arrow">&rarr;</span>`;
+      // Pagination dots
+      dotsEl.innerHTML = '';
+      for (let k = 0; k < TOTAL_SLIDES; k++) {
+        const d = document.createElement('span');
+        d.className = 'dot' + (k === s.slideIndex ? ' active' : '');
+        dotsEl.appendChild(d);
+      }
+      numEl.textContent = `${idx + 1}/${slides.length}`;
+      nameEl.textContent = s.name;
+      return;
+    }
+
+    headlineEl.innerHTML = s.headlineHTML;
+    heroEl.classList.toggle('light', !!s.heroLight);
+    heroEl.classList.toggle('layered', !!s.layered);
+
+    if (s.layered) {
+      heroImg.style.display = 'none';
+      heroBg.style.display = 'block';
+      heroBg.src = s.heroBg;
+      floatCard.style.display = 'block';
+
+      // Populate custom repo card
+      const r = s.repoCard;
+      document.getElementById('repoOwner').textContent = r.owner;
+      document.getElementById('repoName').textContent = r.name;
+      document.getElementById('repoTitle').textContent = r.title;
+      document.getElementById('repoDesc').textContent = r.desc;
+      document.getElementById('repoLang').textContent = r.lang;
+      document.getElementById('repoLangDot').style.background = r.langColor;
+      document.getElementById('repoStars').textContent = r.stars;
+    } else {
+      heroImg.style.display = 'block';
+      heroImg.src = s.heroImg;
+      heroBg.style.display = 'none';
+      floatCard.style.display = 'none';
+    }
+
+    bodyText.textContent = s.body;
+
+    // Pagination dots
+    dotsEl.innerHTML = '';
+    for (let k = 0; k < TOTAL_SLIDES; k++) {
+      const d = document.createElement('span');
+      d.className = 'dot' + (k === s.slideIndex ? ' active' : '');
+      dotsEl.appendChild(d);
+    }
+
+    numEl.textContent = `${idx + 1}/${slides.length}`;
+    nameEl.textContent = s.name;
+  }
+
+  document.getElementById('prev').addEventListener('click', () => {
+    i = (i - 1 + slides.length) % slides.length;
+    render(i);
+  });
+
+  document.getElementById('next').addEventListener('click', () => {
+    i = (i + 1) % slides.length;
+    render(i);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft')  { i = (i - 1 + slides.length) % slides.length; render(i); }
+    if (e.key === 'ArrowRight') { i = (i + 1) % slides.length; render(i); }
+    if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+  });
+
+  // Programmatic navigation (used by Playwright export)
+  window.goSlide = (idx) => { i = idx; render(idx); };
+  window.totalSlides = () => slides.length;
+
+  document.getElementById('fs').addEventListener('click', () => {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  });
+
+  function fit() {
+    const wrap = document.getElementById('slideWrap');
+    const margin = 80;
+    const sx = (window.innerWidth  - margin) / 1080;
+    const sy = (window.innerHeight - margin) / 1350;
+    const s = Math.min(sx, sy);
+    wrap.style.transform = `scale(${s})`;
+  }
+  window.addEventListener('resize', fit);
+  fit();
+  render(0);
+
+  // === TWEAKS ENGINE (global + per-slide) ===
+  const GLOBAL_DEFAULTS = /*EDITMODE-BEGIN*/{
+    bgKind: 'grid',
+    bgSize: 60,
+    bgOpacity: 14,
+    accent: '#D97757',
+    headSize: 80,
+  }/*EDITMODE-END*/;
+
+  const PER_SLIDE_DEFAULTS = {
+    cardOn: true,
+    cardX: -30,
+    cardY: 40,
+    cardW: 58,
+    tilt: 0,
+    headline: null,
+    body: null,
+    repoDesc: null,
+  };
+
+  // localStorage keys are namespaced by the page path, so two decks open in one browser keep separate tweaks.
+  const NS = location.pathname;
+  const G_KEY = `${NS}::global-v2`;
+  const heroElForCard = document.getElementById('hero');
+
+  function perSlideKey(name) { return `${NS}::slide-${name}-v2`; }
+
+  function loadGlobal() {
+    try {
+      const s = localStorage.getItem(G_KEY);
+      return s ? { ...GLOBAL_DEFAULTS, ...JSON.parse(s) } : { ...GLOBAL_DEFAULTS };
+    } catch { return { ...GLOBAL_DEFAULTS }; }
+  }
+
+  function slideBaked(name) {
+    const s = slides.find(x => x.name === name);
+    return s?.defaults || {};
+  }
+
+  function loadPerSlide(name) {
+    const baked = slideBaked(name);
+    try {
+      const s = localStorage.getItem(perSlideKey(name));
+      if (s) return { ...PER_SLIDE_DEFAULTS, ...baked, ...JSON.parse(s) };
+    } catch {}
+    return { ...PER_SLIDE_DEFAULTS, ...baked };
+  }
+
+  function saveGlobal(t) { try { localStorage.setItem(G_KEY, JSON.stringify(t)); } catch {} }
+  function savePerSlide(name, t) { try { localStorage.setItem(perSlideKey(name), JSON.stringify(t)); } catch {} }
+
+  let gTweaks = loadGlobal();
+  let sTweaks = PER_SLIDE_DEFAULTS;
+
+  function applyAll() {
+    // Global
+    slideEl.classList.remove('bg-grid', 'bg-dots', 'bg-hatch', 'bg-none');
+    slideEl.classList.add('bg-' + gTweaks.bgKind);
+    slideEl.style.setProperty('--bg-size', gTweaks.bgSize + 'px');
+    slideEl.style.setProperty('--bg-opacity', (gTweaks.bgOpacity / 100).toFixed(3));
+    slideEl.style.setProperty('--accent', gTweaks.accent);
+    slideEl.style.setProperty('--head-size', gTweaks.headSize + 'px');
+
+    // Per-slide card pos/size/tilt
+    slideEl.style.setProperty('--card-x', sTweaks.cardX + 'px');
+    slideEl.style.setProperty('--card-y', sTweaks.cardY + 'px');
+    slideEl.style.setProperty('--card-w', sTweaks.cardW + '%');
+    slideEl.style.setProperty('--tilt', sTweaks.tilt + 'deg');
+
+    // Card visibility (only matters when slide is layered)
+    const fc = document.getElementById('floatCard');
+    if (slides[i].layered && sTweaks.cardOn) fc.style.display = 'block';
+    else fc.style.display = 'none';
+
+    // Sync UI
+    document.getElementById('twBgKind').value = gTweaks.bgKind;
+    document.getElementById('twBgSize').value = gTweaks.bgSize;
+    document.getElementById('twBgOpacity').value = gTweaks.bgOpacity;
+    document.getElementById('twAccent').value = gTweaks.accent;
+    document.getElementById('twHeadSize').value = gTweaks.headSize;
+    document.getElementById('twTilt').value = sTweaks.tilt;
+    document.getElementById('twCardOn').checked = sTweaks.cardOn;
+    document.getElementById('twCardX').value = sTweaks.cardX;
+    document.getElementById('twCardY').value = sTweaks.cardY;
+    document.getElementById('twCardW').value = sTweaks.cardW;
+
+    // Text overrides
+    const cur = slides[i];
+    const headlinePlain = cur.headlinePlain ?? (cur.headlineHTML ? cur.headlineHTML.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '') : '');
+    document.getElementById('twHeadline').value = sTweaks.headline ?? headlinePlain;
+    document.getElementById('twBody').value = sTweaks.body ?? (cur.body ?? '');
+    document.getElementById('twRepoDesc').value = sTweaks.repoDesc ?? (cur.repoCard ? cur.repoCard.desc : '');
+
+    // Apply text overrides to live slide
+    if (sTweaks.headline) {
+      const txt = sTweaks.headline;
+      // Auto-wrap accent: detect skill name (first word matching slide.name) and wrap in span
+      const lines = txt.split('\n');
+      const skillName = cur.name;
+      const html = lines.map(line => {
+        if (line.includes(skillName)) {
+          return line.replace(skillName, `<span class="accent">${skillName}</span>`);
+        }
+        return line;
+      }).join('<br>');
+      headlineEl.innerHTML = html;
+    }
+    if (sTweaks.body) bodyText.textContent = sTweaks.body;
+    if (sTweaks.repoDesc && cur.layered && cur.repoCard) {
+      document.getElementById('repoDesc').textContent = sTweaks.repoDesc;
+    }
+
+    document.getElementById('vBgSize').textContent = gTweaks.bgSize + 'px';
+    document.getElementById('vBgOpacity').textContent = (gTweaks.bgOpacity / 100).toFixed(2);
+    document.getElementById('vHeadSize').textContent = gTweaks.headSize + 'px';
+    document.getElementById('vTilt').textContent = sTweaks.tilt + '°';
+    document.getElementById('vCardX').textContent = sTweaks.cardX + 'px';
+    document.getElementById('vCardY').textContent = sTweaks.cardY + 'px';
+    document.getElementById('vCardW').textContent = sTweaks.cardW + '%';
+    document.getElementById('vSlideName').textContent = slides[i].name;
+  }
+
+  function loadCurrentSlideTweaks() {
+    sTweaks = loadPerSlide(slides[i].name);
+  }
+
+  function updateGlobal(patch) {
+    gTweaks = { ...gTweaks, ...patch };
+    saveGlobal(gTweaks);
+    applyAll();
+  }
+
+  function updateSlide(patch) {
+    sTweaks = { ...sTweaks, ...patch };
+    savePerSlide(slides[i].name, sTweaks);
+    applyAll();
+  }
+
+  // Hook into slide nav so per-slide tweaks reload
+  const origRender = render;
+  render = function(idx) {
+    origRender(idx);
+    loadCurrentSlideTweaks();
+    applyAll();
+  };
+
+  // Init
+  loadCurrentSlideTweaks();
+  applyAll();
+
+  // Wire global
+  document.getElementById('twBgKind').addEventListener('change', e => updateGlobal({ bgKind: e.target.value }));
+  document.getElementById('twBgSize').addEventListener('input', e => updateGlobal({ bgSize: +e.target.value }));
+  document.getElementById('twBgOpacity').addEventListener('input', e => updateGlobal({ bgOpacity: +e.target.value }));
+  document.getElementById('twAccent').addEventListener('input', e => updateGlobal({ accent: e.target.value }));
+  document.getElementById('twHeadSize').addEventListener('input', e => updateGlobal({ headSize: +e.target.value }));
+
+  // Wire per-slide
+  document.getElementById('twTilt').addEventListener('input', e => updateSlide({ tilt: +e.target.value }));
+  document.getElementById('twCardOn').addEventListener('change', e => updateSlide({ cardOn: e.target.checked }));
+  document.getElementById('twCardX').addEventListener('input', e => updateSlide({ cardX: +e.target.value }));
+  document.getElementById('twCardY').addEventListener('input', e => updateSlide({ cardY: +e.target.value }));
+  document.getElementById('twCardW').addEventListener('input', e => updateSlide({ cardW: +e.target.value }));
+  document.getElementById('twHeadline').addEventListener('input', e => updateSlide({ headline: e.target.value || null }));
+  document.getElementById('twBody').addEventListener('input', e => updateSlide({ body: e.target.value || null }));
+  document.getElementById('twRepoDesc').addEventListener('input', e => updateSlide({ repoDesc: e.target.value || null }));
+
+  // === DRAG TO REPOSITION ===
+  // Card uses left + bottom anchoring; drag updates cardX (left) and cardY (bottom).
+  // Account for slide-wrap CSS scale so 1px drag in viewport = 1px move in slide coords.
+  const wrapEl = document.getElementById('slideWrap');
+  let drag = null;
+
+  function getScale() {
+    const m = wrapEl.style.transform.match(/scale\(([\d.]+)\)/);
+    return m ? +m[1] : 1;
+  }
+
+  document.getElementById('floatCard').addEventListener('mousedown', (e) => {
+    if (!slides[i].layered) return;
+    e.preventDefault();
+    const fc = e.currentTarget;
+    fc.classList.add('dragging');
+    drag = {
+      startX: e.clientX,
+      startY: e.clientY,
+      origX: sTweaks.cardX,
+      origY: sTweaks.cardY,
+      scale: getScale(),
+    };
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!drag) return;
+    const dx = (e.clientX - drag.startX) / drag.scale;
+    const dy = (e.clientY - drag.startY) / drag.scale;
+    // dx = horizontal delta -> cardX moves with it (left anchor)
+    // dy = vertical delta — but cardY is bottom-anchored, so DOWN drag = LESS cardY
+    const newX = Math.round(drag.origX + dx);
+    const newY = Math.round(drag.origY - dy);
+    sTweaks = { ...sTweaks, cardX: newX, cardY: newY };
+    slideEl.style.setProperty('--card-x', newX + 'px');
+    slideEl.style.setProperty('--card-y', newY + 'px');
+    document.getElementById('twCardX').value = newX;
+    document.getElementById('twCardY').value = newY;
+    document.getElementById('vCardX').textContent = newX + 'px';
+    document.getElementById('vCardY').textContent = newY + 'px';
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (!drag) return;
+    drag = null;
+    document.getElementById('floatCard').classList.remove('dragging');
+    savePerSlide(slides[i].name, sTweaks);
+  });
+
+  document.getElementById('twReset').addEventListener('click', () => {
+    gTweaks = { ...GLOBAL_DEFAULTS };
+    sTweaks = { ...PER_SLIDE_DEFAULTS, ...slideBaked(slides[i].name) };
+    saveGlobal(gTweaks);
+    // Clear localStorage for this slide so baked defaults apply cleanly
+    try { localStorage.removeItem(perSlideKey(slides[i].name)); } catch {}
+    applyAll();
+  });
+
+  document.getElementById('twExport').addEventListener('click', async () => {
+    // Export all: global + every slide's per-slide
+    const allSlideTweaks = {};
+    slides.forEach(s => { allSlideTweaks[s.name] = loadPerSlide(s.name); });
+    const payload = { global: gTweaks, slides: allSlideTweaks };
+    const json = JSON.stringify(payload, null, 2);
+    const out = document.getElementById('twExportOut');
+    out.textContent = json;
+    out.style.display = 'block';
+    try {
+      await navigator.clipboard.writeText(json);
+      const btn = document.getElementById('twExport');
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied to clipboard';
+      setTimeout(() => { btn.textContent = orig; }, 1800);
+    } catch {}
+  });
+
+  // Toggle panel
+  const twToggle = document.getElementById('twToggle');
+  const twPanel = document.getElementById('twPanel');
+  const twClose = document.getElementById('twClose');
+
+  twToggle.addEventListener('click', () => {
+    twPanel.classList.add('open');
+    twToggle.style.display = 'none';
+  });
+  twClose.addEventListener('click', () => {
+    twPanel.classList.remove('open');
+    twToggle.style.display = '';
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>S11 Flow Diagram</title>
+<!--
+  S11 sample diagram: FLOW (input -> engine -> fan-out of steps -> results), the "how it works" slide.
+  Copy to $D/cards/ with sketch.css + sketch.js, replace the strings, keep the ids the arrows use.
+  Copy budget at a ~907x560 zone: input box 8 words, engine 2 words, 3 steps of 3 words, each with a
+  3-word result under it, one 5-word margin note, one 7-word closing line with the highlighter on its key half.
+  Render at the magenta zone's --zones-only out bbox, 2x, on the plate paper sampled beside the zone:
+    node shared/render-card.mjs $D/cards/diagram-flow.html $D/cards/diagram-flow.png --w 907 --h 560 --scale 2 --bg "#FBF7EE" --min-px 22
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500&family=Kalam:wght@400;700&family=Patrick+Hand&display=block" rel="stylesheet">
+<link rel="stylesheet" href="sketch.css">
+<style>
+  .sk-stage { display: flex; flex-direction: column; justify-content: space-between; }
+  .top, .steps { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 1.6em; }
+  .top { align-items: end; margin-top: 0.1em; }
+  .top .sk-label { margin-bottom: 0.3em; }
+  .mid { display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .mid .sk-label { margin-top: 0.35em; }
+  .steps { margin-top: 1.7em; }
+  .step { display: flex; flex-direction: column; align-items: center; gap: 0.95em; }
+  .step .sk-box { width: 100%; text-align: center; padding: 0.3em 0.4em; white-space: nowrap; }
+  .bottom { font-size: 1.12em; margin-top: 0.7em; }
+  .note { justify-self: end; align-self: center; text-align: right; }
+</style>
+</head>
+<body>
+<div class="sk-stage" data-fit>
+  <div class="top">
+    <div>
+      <div class="sk-label"><b>You type</b> (once)</div>
+      <div class="sk-box blue" id="in">"Add dark mode to the settings page."</div>
+    </div>
+    <div class="mid">
+      <div class="sk-box green big" id="cc">Claude Code</div>
+    </div>
+    <div class="note sk-note tilt" data-underline>one prompt,<br>the whole loop</div>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="sk-box" id="s1">reads 12 files</div><div class="sk-box green" id="r1">knows your code</div></div>
+    <div class="step"><div class="sk-box" id="s2">edits 4 files</div><div class="sk-box green" id="r2">makes the change</div></div>
+    <div class="step"><div class="sk-box" id="s3">runs your tests</div><div class="sk-box green" id="r3">all passing</div></div>
+  </div>
+  <div class="bottom">You review one diff, <span class="sk-hl">not every keystroke.</span></div>
+</div>
+<script src="sketch.js"></script>
+<script>
+  SK.init({
+    minF: 30, maxF: 40,
+    arrows: [
+      { from: '#in', to: '#cc' },
+      { from: '#cc', fromSide: 'b', fromAt: 0.12, to: '#s1', toSide: 't', toAt: 0.78, bend: 0.1 },
+      { from: '#cc', fromSide: 'b', fromAt: 0.5, to: '#s2', toSide: 't' },
+      { from: '#cc', fromSide: 'b', fromAt: 0.88, to: '#s3', toSide: 't', toAt: 0.22, bend: -0.1 },
+      { from: '#s1', fromSide: 'b', to: '#r1', toSide: 't', gap: 0.12 },
+      { from: '#s2', fromSide: 'b', to: '#r2', toSide: 't', gap: 0.12 },
+      { from: '#s3', fromSide: 'b', to: '#r3', toSide: 't', gap: 0.12 },
+    ],
+  });
+</script>
+</body>
+</html>

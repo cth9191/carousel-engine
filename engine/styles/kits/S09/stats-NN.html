@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S09 Stats Card</title>
+<!--
+  S09 Charcoal Studio: the measured-numbers box (2-4 verified values joined by yellow arrows) inside an outlined
+  magenta panel. Copy to $D/cards/stats-NN.html and edit only the JSON in <script id="data">.
+
+    label   small grey line naming who measured and where ("Measured on my laptop:"), 32 characters or fewer
+    flow    "down" (a tall box, values stacked) | "right" (a wide box, values in a row)
+    items   2-4 { "value": 10 characters or fewer, "caption": 24 characters or fewer }; every value is a verified
+            figure from a real run or a cited source, saved in the deck's dossier
+  Render at the zone's --zones-only out bbox x2:
+    node shared/render-card.mjs $D/cards/stats-07.html $D/cards/stats-07.png --w 300 --h 440 --scale 2 --bg "#151515" --min-px 20
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script id="data" type="application/json">
+{
+  "label": "Measured on the sample run:",
+  "flow": "down",
+  "items": [
+    { "value": "3 mockups", "caption": "one prompt" },
+    { "value": "1 pick", "caption": "yours, not the model's" },
+    { "value": "0 files", "caption": "you edit by hand" }
+  ]
+}
+</script>
+</head>
+<body>
+<script src="kit.js"></script>
+<script>
+KIT.ready((d) => {
+  const E = KIT.esc, it = d.items || [], flow = d.flow === 'right' ? 'right' : 'down';
+  KIT.limit(it.length >= 2 && it.length <= 4, 'needs-2-to-4-items');
+  KIT.limit(String(d.label || '').length <= 32, 'label-over-32-chars');
+  KIT.limit(it.every((x) => String(x.value).length <= 10 && String(x.caption || '').length <= 24), 'value-or-caption-too-long');
+  const arrow = `<div class="ar">${flow === 'right' ? '→' : '↓'}</div>`;
+  document.body.insertAdjacentHTML('beforeend', `
+    <div class="panel stats ${flow}">
+      ${d.label ? `<div class="lbl">${E(d.label)}</div>` : ''}
+      <div class="items" data-fit data-min="20">${it.map((x) => `<div class="it"><div class="v">${E(x.value)}</div>${x.caption ? `<div class="k">${E(x.caption)}</div>` : ''}</div>`).join(arrow)}</div>
+    </div>`);
+});
+</script>
+</body>
+</html>

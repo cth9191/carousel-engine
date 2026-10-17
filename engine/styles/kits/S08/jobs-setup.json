@@ -1,0 +1,11 @@
+{
+ "deck": "engine/styles/kits/S08",
+ "model": "gpt-6.1-sol",
+ "effort": "high",
+ "tier": "priority",
+ "concurrency": 2,
+ "jobs": [
+  { "id": "ground", "prompt_file": "prompts/ground.txt", "refs": ["../../refs/s08-ref-what.png", "../../refs/s08-ref-parts.png"], "out": "plates/ground.png" },
+  { "id": "doodles", "prompt_file": "prompts/doodles.txt", "refs": ["../../refs/s08-ref-what.png", "../../refs/s08-ref-parts.png"], "out": "plates/doodles.png" }
+ ]
+}

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S08 Bone Editorial · sample · page 03 (why)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&family=Kalam:wght@700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="s08.css">
+<script src="icons.js"></script>
+<style>
+  /* stand-in for a real capture: on a deck, put <img src="../shots/NN.png"> in the .pane instead */
+  .mock { height: 100%; padding: 26px 30px; font: 500 26px/1.6 var(--mono); color: #CFC8BC; }
+  .mock .p { color: #8BD17C; }
+  .mock .a { color: #F08A5D; font-weight: 700; }
+</style>
+</head>
+<body>
+<!-- placeholder copy about a generic tool; replace every string per deck -->
+<div class="hdr"><span>{{BRAND}} · The Task Router</span><span>04 / 08</span></div>
+<div class="head">
+  <span class="l1" data-hl>Why It</span>
+  <span class="l2" data-hl><span class="t">Matters<svg class="ul" viewBox="0 0 300 26" preserveAspectRatio="none"><path class="hand acc" d="M4 16 C 60 6, 120 22, 180 12 S 270 8, 296 14"/></svg></span></span>
+</div>
+<div class="sticky">You stop<br>being the<br>switchboard.</div>
+<div class="zone" data-fit>
+  <div class="rows"><div class="r"><span class="ic"><i data-lucide="x"></i></span><span class="tx"><span class="k">Old way:</span> you copy each request into the right app by hand, then follow up.</span></div><div class="r"><span class="ic"><i data-lucide="check"></i></span><span class="tx"><span class="k">New way:</span> you drop it in one inbox. The router files it and logs the result.</span></div></div>
+  <div style="margin-top:auto; display:flex; justify-content:center"><div class="pane" style="width:952px; height:300px"><span class="tag">the router</span>
+    <div class="mock"><div><span class="p">&gt;</span> collect 4 new requests</div><div><span class="p">&gt;</span> sort → write · fix · reply · plan</div><div><span class="p">&gt;</span> run 4 steps</div><div><span class="a">&gt; done. 4 logged_</span></div></div>
+  </div></div><div style="height:24px"></div>
+</div>
+<div class="note acc" style="left:300px; top:770px; transform:rotate(-2deg)">One drop in. Four tasks out.</div>
+<img class="dd" src="../doodles/arrow-dl.png" style="left:230px; top:790px; width:64px; transform:rotate(10deg)" alt="">
+<img class="dd" src="../doodles/gear.png" style="left:900px; top:700px; width:80px; transform:rotate(-8deg)" alt="">
+<div class="mantra"><span>One inbox.</span><span>Every task.</span><span class="circ">Zero<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path class="hand" d="M8 22 C 6 8, 40 3, 70 5 C 96 7, 99 26, 80 34 C 55 42, 14 38, 6 26 C 2 18, 14 9, 30 8"/></svg></span><span>tabs.</span></div>
+<script>
+window.cardReady = (async () => {
+  await document.fonts.ready;
+  if (window.lucide) window.lucide();
+  for (const el of document.querySelectorAll('[data-hl]')) {
+    let px = 112; el.style.fontSize = px + 'px';
+    while (el.scrollWidth > el.clientWidth + 1 && px > 76) { px -= 2; el.style.fontSize = px + 'px'; }
+  }
+})();
+</script>
+</body>
+</html>

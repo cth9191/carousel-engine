@@ -6,6 +6,8 @@
 // Writes <deck dir>/brief-card.md (or --out) and prints it. Format: engine/templates/brief-card.md.
 // The storyboard column shows every string except the reserved places "headline" (its own column),
 // "counter" (NN / TT) and "chrome" (brand header/footer).
+// The role column adds the slide's style layout ("item · dossier") and ★ marks the star slide;
+// a format:"single" storyboard is labelled as a single image.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -44,7 +46,8 @@ function styleLine(id, label) {
 const L = [];
 const dl = sb.deliverable || {};
 L.push(`# Brief card: ${sb.topic}`, '');
-L.push(`**${sb.topic}** · spine ${sb.spine} · ${sb.slides.length} slides · keyword **${sb.keyword}** → ${dl.name ?? '—'} (${dl.exists ? 'exists' : 'needs building'})`, '');
+const shape = sb.format === 'single' ? 'single image (format single)' : `${sb.slides.length} slides`;
+L.push(`**${sb.topic}** · spine ${sb.spine} · ${shape} · keyword **${sb.keyword}** → ${dl.name ?? '—'} (${dl.exists ? 'exists' : 'needs building'})`, '');
 
 L.push('### Hooks', '', '| | Main line · kicker | Visual promise | Formula | Score |', '|---|---|---|---|---|');
 L.push(`| ★1 | "${esc(sb.hook.main)}" · "${esc(sb.hook.kicker)}" | ${esc(sb.hook.visual_promise)} | ${sb.hook.formula} | ${score(sb.hook)} |`);
@@ -57,7 +60,7 @@ L.push('### Storyboard', '', '| # | Role | Headline | Everything else on the sli
 for (const s of sb.slides) {
   const rest = (s.strings || []).filter(x => !SKIP.has(x.place)).map(x => `${x.text}`).join(' / ');
   const ev = s.evidence ? `${s.evidence.kind?.toUpperCase()}: ${s.evidence.describe}` : '—';
-  L.push(`| ${s.n} | ${s.role} | **${esc(s.headline)}** | ${esc(rest)} | ${esc(ev)} |`);
+  L.push(`| ${s.n}${s.star ? ' ★' : ''} | ${s.role}${s.layout ? ` · ${s.layout}` : ''} | **${esc(s.headline)}** | ${esc(rest)} | ${esc(ev)} |`);
 }
 L.push('');
 if (sb.gates?.G5?.note) L.push(`**Spine test:** ${sb.gates.G5.note}`, '');

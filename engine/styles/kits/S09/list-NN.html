@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S09 List Card</title>
+<!--
+  S09 Charcoal Studio: the panel card (checklist, numbered list or arrow table) inside an outlined magenta panel.
+  Copy to $D/cards/list-NN.html (NN = slide) and edit only the JSON in <script id="data">.
+
+    title   acid-yellow lead line ("You need exactly this:"), 34 characters or fewer; optional
+    mode    "check" (yellow check boxes; a row with "mark": "warn" gets a warning triangle and grey text)
+            | "num" (01, 02 ... in yellow mono, divider rules) | "arrow" (KEY -> value rows, divider rules)
+    rows    3-6 rows: { "name": bold lead (26 chars or fewer), "text": the rest (56 chars or fewer), "mark" }
+            check mode joins them "name — text"; num and arrow set the name in mono caps
+  Every figure is a verified fact from the dossier. Text is Inter 34 px, fitting down to 22 px.
+
+  Render at the zone's --zones-only out bbox x2:
+    node shared/render-card.mjs $D/cards/list-03.html $D/cards/list-03.png --w 936 --h 330 --scale 2 --bg "#151515" --min-px 20
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script id="data" type="application/json">
+{
+  "title": "You need exactly this:",
+  "mode": "check",
+  "rows": [
+    { "name": "Codex", "text": "the agent doing the work" },
+    { "name": "A browser", "text": "to check each page it builds" },
+    { "name": "Node.js", "text": "serves the finished site locally" },
+    { "name": "Not needed", "text": "Figma, or a design file", "mark": "warn" }
+  ]
+}
+</script>
+</head>
+<body>
+<script src="kit.js"></script>
+<script>
+const CHECK = '<svg viewBox="0 0 24 24"><rect x="1" y="1" width="22" height="22" rx="4" fill="#F5F400"/><path d="M6 12.5l4 4 8-9" fill="none" stroke="#111" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const WARN = '<svg viewBox="0 0 24 24"><path d="M12 2.5L23 21.5H1Z" fill="#F5F400" stroke="#F5F400" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 9v5.5" stroke="#111" stroke-width="2.6" stroke-linecap="round"/><circle cx="12" cy="18" r="1.5" fill="#111"/></svg>';
+KIT.ready((d) => {
+  const rows = d.rows || [], mode = d.mode || 'check';
+  KIT.limit(['check', 'num', 'arrow'].includes(mode), 'unknown-mode');
+  KIT.limit(rows.length >= 3 && rows.length <= 6, 'needs-3-to-6-rows');
+  KIT.limit(String(d.title || '').length <= 34, 'title-over-34-chars');
+  KIT.limit(rows.every((r) => String(r.name || '').length <= 26), 'name-over-26-chars');
+  KIT.limit(rows.every((r) => String(r.text || '').length <= 56), 'text-over-56-chars');
+  const E = KIT.esc;
+  const row = (r, i) => {
+    if (mode === 'check') return `<div class="r ${r.mark === 'warn' ? 'warn' : ''}"><span class="mk">${r.mark === 'warn' ? WARN : CHECK}</span>
+      <span class="tx"><b>${E(r.name)}</b>${r.text ? ' — ' + E(r.text) : ''}</span></div>`;
+    if (mode === 'num') return `<div class="r"><span class="no">${String(i + 1).padStart(2, '0')}</span><span class="tx"><b>${E(String(r.name).toUpperCase())}</b>${r.text ? ' — ' + E(r.text) : ''}</span></div>`;
+    return `<div class="r"><span class="tx"><b>${E(String(r.name).toUpperCase())}</b></span><span class="ar">→</span><span class="tx">${E(r.text)}</span></div>`;
+  };
+  document.body.insertAdjacentHTML('beforeend', `
+    <div class="panel list ${mode}">
+      ${d.title ? `<div class="ttl" data-fit data-min="24">${E(d.title)}</div>` : ''}
+      <div class="rows" data-fit data-min="22">${rows.map(row).join('')}</div>
+    </div>`);
+});
+</script>
+</body>
+</html>

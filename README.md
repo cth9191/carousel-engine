@@ -111,17 +111,26 @@ Each deck lives in its own folder, `carousels/YYYY-MM-DD-slug/`, and ends with
 
 ## Styles
 
-Four styles ship with prompt blocks and exemplars. Add your own in
-[`engine/styles/`](engine/styles/); a style rests 14 days after each use.
+Nine styles ship with prompt blocks and exemplars, six of them with HTML card kits and Codex
+references. Add your own in [`engine/styles/`](engine/styles/); a style rests 14 days after each use
+(look-alike styles can share a cooldown group).
 
 | ID | Style | Best for | Made as |
 |---|---|---|---|
 | S01 | Terracotta Zine | system builds, N-step tutorials | Codex cover + HTML interiors |
 | S02 | Logo Equation | tool combos, integrations | hybrid: Codex plates, real logos composited in |
 | S03 | Newsprint Benchmark | head-to-heads, model launch tests | Codex, every slide |
-| S11 | Sketchnote | what-is / how-it-works explainers | Codex, every slide |
+| S05 | Phone-Photo Monitor | repo listicles, quick tips | your monitor photo (or a Codex desk plate) with the real capture warped onto the screen, HTML stickers |
+| S06 | Statue Cover + Graph-Paper Cards | top-N lists, tool roundups | Codex statue cover + HTML type and logo tile, HTML interiors |
+| S07 | Dark Network Hero | single-tool and system reveals | text-free Codex network plates, every word HTML |
+| S08 | Bone Editorial | system reveals, explainers | Codex paper ground and doodles, every word HTML |
+| S09 | Charcoal Studio | tutorials, step-by-step builds | Codex plates, exact text as HTML cards |
+| S11 | Sketchnote | what-is / how-it-works explainers | Codex, every slide (diagram kit for exact-text diagrams) |
 
-![The four styles, with an example cover and interior for each](engine/styles/gallery.jpg)
+![Every style, with an example cover and interior for each](engine/styles/gallery.jpg)
+
+`node shared/build-style-library.mjs` builds a browsable page of the library (cards, filters, the
+spec and prompt block per style) at `engine/styles/library/index.html`.
 
 ## What's in the repo
 
@@ -129,9 +138,10 @@ Four styles ship with prompt blocks and exemplars. Add your own in
 |---|---|
 | [`.claude/skills/carousel/SKILL.md`](.claude/skills/carousel/SKILL.md) | The orchestrator skill: every stage, rule and command |
 | [`engine/`](engine/) | Story spines and gates, hook bank and rubric, storyboard schema, cold-reader prompts, templates, `brand.json` |
-| [`engine/styles/`](engine/styles/) | Style library: `styles.json`, prompt blocks, exemplars |
-| [`shared/`](shared/) | Tools: Codex image worker, cold reader, compositor, card renderer, frame grabber, brief-card and gallery builders, and `export.mjs` (the S01 HTML bake) |
+| [`engine/styles/`](engine/styles/) | Style library: `styles.json`, prompt blocks, exemplars, Codex refs (`refs/`), HTML card kits (`kits/`) |
+| [`shared/`](shared/) | Tools: Codex image worker, cold reader, compositor (captures, logos, cards, perspective warp, patching), card renderer, frame grabber, brief-card, gallery and style-library builders, Lucide icon inliner, an optional mascot pose checker, and `export.mjs` (HTML-template bakes) |
 | [`templates/02-terracotta-zine/`](templates/02-terracotta-zine/) | HTML interiors for style S01 |
+| [`templates/01-graph-paper-cream/`](templates/01-graph-paper-cream/) | HTML interiors for style S06 |
 | [`carousels/2026-10-14-claude-video-free/`](carousels/2026-10-14-claude-video-free/) | The worked example, with its own README |
 
 ## Cost and time
@@ -142,7 +152,9 @@ hooks, storyboard, cold reader) take most of the thinking and none of the image 
 
 ## Limits
 
-- The style library is small. New styles are a separate design session, not part of a deck.
+- The style library is a starting set. New styles are a separate design session, not part of a deck.
+- No mascot ships. Styles that suit a character take your own (composited as a PNG, never painted);
+  never use a licensed one.
 - You supply the real material: screenshots, screen recordings, logos. The pipeline won't invent them.
 - Codex draws key zones a little wider than asked, and sometimes adds a margin note nobody asked for.
   The compositor's focus boxes and the QA pass exist for exactly this.

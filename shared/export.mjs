@@ -16,8 +16,11 @@
  * exportName replaces the slide-NN part). templates/ and carousels/ are resolved from the repo root,
  * whatever the working directory.
  *
- * Exit: 0 ok · 1 usage or missing file · 2 a visible <img> on a slide failed to load (every slide is
- * still written so you can look; each broken image is named with its slide and src).
+ * Exit: 0 ok · 1 usage or missing file, or a template's render() threw (its fit pass names the slide)
+ * · 2 a visible <img> on a slide failed to load (every slide is still written so you can look; each
+ * broken image is named with its slide and src) · 3 a template reported a fit/copy failure in
+ * window.fitReport[idx] or window.qa() issues (templates that define them); every slide is still
+ * written, with the template's own red banner visible, and each failure is named.
  * A deck slide that still shows {{BRAND}} or {{MONTH_YEAR}} gets a warning (the exit code is unchanged).
  */
 
@@ -81,6 +84,7 @@ console.log(`Output:   ${native ? 'native 2x' : 'downsampled to the slide\'s CSS
 const browser = await chromium.launch();
 const broken = [];
 const unreplaced = new Set();
+const fitFails = [];
 let total = 0;
 try {
   const context = await browser.newContext({
@@ -150,8 +154,21 @@ try {
       size = `${w}x${h}`;
     }
 
+    // Template fit checks: a fit pass that leaves errors in window.fitReport, or a qa() that returns issues.
+    const fit = await page.evaluate((idx) => {
+      const r = window.fitReport && window.fitReport[idx];
+      const errs = Array.isArray(r) ? r : r ? [String(r)] : [];
+      if (typeof window.qa === 'function') {
+        const q = window.qa();
+        const issues = Array.isArray(q) ? q : (q && Array.isArray(q.issues) ? q.issues : []);
+        errs.push(...issues.map(String));
+      }
+      return errs;
+    }, i);
+    for (const e of fit) fitFails.push({ slide: base, name: meta.name, e });
+
     for (const src of bad) broken.push({ slide: base, name: meta.name, src });
-    console.log(`${bad.length ? '✗' : '✓'} ${fileName}  ${size}  (${meta.name})${bad.length ? `  BROKEN IMAGE ${bad.join(', ')}` : ''}`);
+    console.log(`${bad.length ? '✗' : '✓'} ${fileName}  ${size}  (${meta.name})${bad.length ? `  BROKEN IMAGE ${bad.join(', ')}` : ''}${fit.length ? `  FIT ${fit.join('; ')}` : ''}`);
   }
 } finally {
   await browser.close();
@@ -165,5 +182,10 @@ if (broken.length) {
   console.error(`\n${broken.length} visible image(s) failed to load (src is relative to ${rel(path.dirname(sourceHtml))}/):`);
   for (const b of broken) console.error(`  ${b.slide} (${b.name}): ${b.src}`);
   process.exit(2);
+}
+if (fitFails.length) {
+  console.error(`\n${fitFails.length} fit/copy failure(s): rewrite the copy (or fix the slide data), then bake again:`);
+  for (const f of fitFails) console.error(`  ${f.slide} (${f.name}): ${f.e}`);
+  process.exit(3);
 }
 console.log(`\nDone. ${total} PNGs in ${rel(outDir)}`);

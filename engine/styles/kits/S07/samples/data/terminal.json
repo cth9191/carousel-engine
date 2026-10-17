@@ -1,0 +1,3 @@
+{ "layout": "terminal", "plate": "samples/plates/parts.png", "footer": ["YOUR BRAND", "swipe →"], "counter": "07 / 09", "label": "06 — steal this",
+  "headline": "The *one prompt* I reuse", "body": "Paste it into any new chat.", "title": "copy this",
+  "lines": "# placeholder prompt for the kit sample\nBefore you answer, open the Orbit graph.\nFind the 5 notes closest to my question.\nQuote them, then answer in under 200 words.\n$ orbit ask \"what did we decide on pricing?\"\n✓ 5 notes found · 3 links followed" }

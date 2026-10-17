@@ -1,0 +1,70 @@
+{
+  "id": "01-graph-paper-cream",
+  "name": "Graph Paper Cream",
+  "version": "1.1.0",
+  "used_by": "style S06 (engine/styles/S06-statue-graph-paper.prompt.md): interiors bake from this template, Codex paints only the statue cover plate",
+  "vibe": "Editorial / list-y / value-stack on warm cream graph paper",
+  "when_to_use": [
+    "Top-N lists",
+    "Tool/skill roundups",
+    "Framework comparisons",
+    "Anything where each item has a GitHub repo or product screenshot"
+  ],
+  "brand": {
+    "cream": "#F5EBE0",
+    "ink": "#0E0E0E",
+    "terracotta": "#D97757",
+    "headline_font": "Inter (Google Fonts), substitute for Söhne",
+    "subtitle_font": "Didone-style italic serif (cover only, kits/S06/cover.html)"
+  },
+  "placeholders": {
+    "{{BRAND}}": "CTA handle pill (ctaHandle and its fallback); replace with your handle or brand from engine/brand.json when the template is copied into a deck"
+  },
+  "assets": {
+    "files": ["assets/cover.png", "assets/hero-placeholder.png"],
+    "note": "cover.png is the template's sample statue cover (preview only; a deck sets coverImg to its own final/slide-01.png). hero-placeholder.png marks where a capture goes; replace every use before the bake"
+  },
+  "structure": {
+    "total_slides": "variable (cover + N value + CTA); the sample is 5",
+    "slot_types": {
+      "cover": {
+        "type": "codex-plate + composite",
+        "render": "static-image",
+        "source": "S06 Codex statue plate (SYSTEM + COVER + KEYING), the real logo tile composited into its cyan slot with shared/composite.py, type from kits/S06/cover.html",
+        "aspect_native": "4:5 (1080x1350)",
+        "field": "coverImg on slides[0], e.g. final/slide-01.png"
+      },
+      "value": {
+        "type": "html-layered",
+        "fields": ["headlineHTML", "heroBg", "repoCard", "body"],
+        "repo_card": "Custom HTML (white, light theme), no avatar",
+        "card_pos_per_slide": ["cardX", "cardY", "cardW", "tilt", "cardOn"]
+      },
+      "single": {
+        "type": "html-single-image",
+        "fields": ["headlineHTML", "heroImg", "body"]
+      },
+      "cta": {
+        "type": "html-cta",
+        "fields": ["ctaKeyword", "ctaDeliverable", "ctaHeadline", "ctaHandle"],
+        "legacy": "without ctaKeyword, ctaActions renders a Save / Share / Follow list",
+        "fit": "the keyword shrinks to fit (never under 96 px); a keyword or deliverable that can't fit makes export.mjs exit 3"
+      }
+    }
+  },
+  "tweaks": {
+    "global": ["bgKind", "bgSize", "bgOpacity", "accent", "headSize"],
+    "per_slide": ["cardOn", "cardX", "cardY", "cardW", "tilt", "headline", "body", "repoDesc"],
+    "engine": "localStorage keys namespaced by the page path + JSON export, synced by hand into slides[] defaults before the bake"
+  },
+  "export": {
+    "command": "node shared/export.mjs --carousel <id>",
+    "viewport": "1080x1350",
+    "scale": 2,
+    "out_resolution": "1080x1350",
+    "out_resolution_native": "2160x2700 with --native",
+    "format": "PNG",
+    "out_files": "carousels/<id>/exports/slide-NN-YYYY-MM-DD.png",
+    "platform_native_aspect": "4:5 (IG carousel)"
+  }
+}

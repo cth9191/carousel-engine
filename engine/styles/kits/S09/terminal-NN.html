@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S09 Terminal Card</title>
+<!--
+  S09 Charcoal Studio: the exact prompt or command in a dark terminal window (the peak slide's save-this card).
+  The plate's terminal is ONE magenta rectangle; this card is the whole window, title bar included.
+  Copy to $D/cards/terminal-NN.html and edit only the JSON in <script id="data">.
+
+    title      grey mono caps in the title bar ("prompt 1 of 4 · design"), 40 characters or fewer
+    text       the exact prompt or command, copied from the source and run once; 110 words or fewer; \n for lines.
+               A line starting "$ " gets a yellow prompt mark.
+    highlight  up to 3 phrases of the text to set in bold acid yellow (each must occur in text)
+  Mono 26 px, fitting down to 18 px (render with --min-px 18: save-and-zoom text, the only S09 card below 20).
+
+  Render at the zone's --zones-only out bbox x2:
+    node shared/render-card.mjs $D/cards/terminal-08.html $D/cards/terminal-08.png --w 936 --h 420 --scale 2 --bg "#0E0E0F" --min-px 18
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script id="data" type="application/json">
+{
+  "title": "prompt 1 of 3 · sketch",
+  "text": "Design a one-page landing site for a habit tracker. Generate three website mockup images, each a different art direction: headline, nav, one hero visual and a call to action. Show me all three and wait for my pick before writing any code.",
+  "highlight": ["Generate three website mockup images", "wait for my pick"]
+}
+</script>
+</head>
+<body>
+<script src="kit.js"></script>
+<script>
+KIT.ready((d) => {
+  const E = KIT.esc, hl = d.highlight || [];
+  KIT.limit(String(d.title || '').length <= 40, 'title-over-40-chars');
+  KIT.limit(KIT.words(d.text) <= 110, 'text-over-110-words');
+  KIT.limit(hl.length <= 3 && hl.every((h) => String(d.text).includes(h)), 'highlight-missing-or-over-3');
+  let html = String(d.text).split('\n').map((l) => /^\$ /.test(l) ? `<span class="p">$</span>${E(l.slice(1))}` : E(l)).join('\n');
+  for (const h of hl) html = html.split(E(h)).join(`<span class="hl">${E(h)}</span>`);
+  document.body.insertAdjacentHTML('beforeend', `
+    <div class="panel term">
+      <div class="bar"><i></i><i></i><i></i><span>${E(d.title || '')}</span></div>
+      <pre data-fit data-min="18">${html}</pre>
+    </div>`);
+});
+</script>
+</body>
+</html>

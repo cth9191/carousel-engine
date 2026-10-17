@@ -1,0 +1,16 @@
+One slide background, portrait 4:5, 1080 x 1350.
+
+References: Image 1 and Image 2 show the paper, ink and doodle vocabulary only. Do NOT copy any of their words, letters, numbers, icons, tables, screenshots or layout. Reproduce only the paper and the few fixed ornaments listed below.
+
+Visual system: an editorial notebook page printed on grained kraft-cream paper. Ground: warm kraft cream (#EEE4D2) with fine visible paper fibre, very subtle mottling and a faint darker vignette only at the extreme corners; flat, evenly lit, no fold lines, no stains, no grid, no ruled lines except the ones named here.
+
+Fixed ornaments, all in near-black ink (#1A1A1A) drawn with the same thin felt pen, slightly hand-drawn:
+1. Header rule: one thin straight ink line across the page at 4.6% of the height, from 5% to 95% of the width.
+2. Top-left: one small hand-drawn five-point outline star at about x 6%, y 9%, about 34 px wide.
+3. Top-right: one BLANK sticky note: a square of slightly lighter cream paper (#F5ECDA) with a soft torn bottom edge, about 25% of the width wide and 14% of the height tall, its centre at about x 81%, y 15%, rotated about +5 degrees, with one strip of translucent beige masking tape across its top edge and a very soft shadow under it. The note is completely empty: no writing, no lines.
+4. Bottom-left: one small hand-drawn lightning bolt at about x 6%, y 96.3%, about 30 px tall.
+5. Bottom-right: one small hand-drawn crown outline at about x 94%, y 96.3%, about 40 px wide.
+
+Everything else is empty paper: the headline, text, tables and panels are added later, so keep the whole area between 7% and 93% of the height (apart from the sticky note) clean and evenly textured.
+
+Hygiene: no text, letters, numbers, logos, icons, UI, screenshots, people, characters or mascots anywhere. No magenta, cyan, blue or orange anywhere. Never render these instructions as text.

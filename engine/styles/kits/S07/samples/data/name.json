@@ -1,0 +1,4 @@
+{ "layout": "name", "plate": "samples/plates/cover.png", "ground": "teal", "footer": ["YOUR BRAND", "swipe →"],
+  "kicker": "meet", "name": "ORBIT", "brush": "the notes OS*",
+  "tiles": [ { "src": "../../../../shared/vendor/lucide/network.svg", "bg": "white", "pad": true }, { "src": "../../../../shared/vendor/lucide/brain.svg", "bg": "white", "pad": true }, { "src": "../../../../shared/vendor/lucide/notebook-pen.svg", "bg": "white", "pad": true } ],
+  "foot": "*that runs on any model", "tag": "PLACEHOLDER · KIT SAMPLE" }

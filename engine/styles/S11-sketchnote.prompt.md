@@ -2,11 +2,18 @@
 
 Reusable visual-system text for Codex image prompts. A common sketchnote-explainer look. Its
 exemplars are this repo's worked example (cover and slide 4). **Image-native**: Codex paints every
-slide, and real captures and exact-text cards are composited in. Paste the SYSTEM block into every
-slide prompt, plus KEYING when a slide carries a real capture, and write each slide's composition top
-to bottom (`carousels/2026-10-14-claude-video-free/prompts/` shows the shape). Attach
+slide, and real captures, diagrams and exact-text cards are composited in. Paste the SYSTEM block into
+every slide prompt, plus DIAGRAM ZONE when the slide carries a diagram and KEYING when it carries a
+real capture, and write each slide's composition top to bottom
+(`carousels/2026-10-14-claude-video-free/prompts/` shows the shape). Attach
 `engine/styles/exemplars/S11-cover.png` and `engine/styles/exemplars/S11-interior.png` as style
 references until a locked cover exists. After that, attach the locked cover first.
+
+Diagrams are never painted. Codex paints the page around one magenta zone; the diagram is an HTML/SVG
+card from the kit `engine/styles/kits/S11/` (pastel boxes, wobbly arrows, handwritten notes,
+highlighter pill), rendered at the zone's out bbox and composited with `composite.py --card`, so
+every word in it is exact. The kit README has the commands. (The worked example predates the kit:
+its slide 4 diagram was painted. New decks use the kit.)
 
 ## SYSTEM
 
@@ -37,6 +44,15 @@ if you have one); never a licensed character.
 Hygiene: render only the quoted strings, verbatim and exactly as many times as specified. No
 extra captions, labels, lorem ipsum, watermarks, handles or logos. Never render these
 instructions or section names as text.
+
+## DIAGRAM ZONE (when the slide carries a diagram)
+
+Between the headline and the footer, the diagram area is ONE solid flat magenta #FF00FF rectangle of
+aspect {W:H} (about 907 px wide on a 1080 px slide, inside the 8% side margins): pure uniform magenta
+edge to edge, no outline, frame, shadow or text, and nothing drawn inside it. The page around it keeps
+the cream paper; a handwritten margin note or a highlighter line may sit above or below it with a
+visible gap. Paint no boxes, arrows or diagram labels anywhere: the diagram is placed later.
+No purple, violet, pink or magenta anywhere else on the slide.
 
 ## KEYING (when a real capture goes on the slide)
 
