@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Template 07 — Split Band</title>
+<!-- Style S17 Split-Band Before/After. Spec: engine/styles/S17-split-band-before-after.prompt.md (tokens + Copy). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared/tweak-panel.css">
+<style>
+  :root {
+    --cream:#F5EBE0; --seam:#EFE4D7; --white:#FFFFFF; --ink:#0E0E0E; --terracotta:#D9551F;
+    --orange:#D9551F; --apricot:#F8CFA8; --sel-text:#3A1808; --counter:#6B635B; --placeholder:#CFC7BD;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { background:#1a1a1a; font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; height:100%; overflow:hidden; }
+  .stage { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; }
+  .slide-wrap { width:1080px; height:1350px; transform-origin:center; }
+
+  .slide { width:1080px; height:1350px; position:relative; overflow:hidden; background:var(--white); color:var(--ink); }
+  .band-before { position:absolute; left:0; top:0; width:1080px; height:668px; background:var(--cream); }
+  .seam { position:absolute; left:0; top:668px; width:1080px; height:7px; background:var(--seam); }
+  /* the white band is the slide ground (y 675-1350) */
+
+  /* type */
+  .label { position:absolute; left:86px; width:908px; font-family:'JetBrains Mono',monospace; font-weight:400;
+    font-size:62px; line-height:62px; letter-spacing:-.01em; white-space:nowrap; }
+  .stmt, .head, .deliv, .byname { font-family:'Inter',sans-serif; font-weight:650; font-variation-settings:'opsz' 32; font-optical-sizing:none; }
+  .stmt { position:absolute; left:86px; width:908px; letter-spacing:-.035em; text-align:left; }
+  .line { display:block; width:max-content; white-space:nowrap; }
+  .line.wrap { width:auto; white-space:normal; }
+  .head { position:absolute; left:86px; width:908px; text-align:center; letter-spacing:-.035em; white-space:nowrap; z-index:1; }
+  .head.plain { z-index:3; }
+  .head .sel { margin:0 auto; }
+  .deliv { position:absolute; left:86px; width:908px; letter-spacing:-.03em; }
+  .count { position:absolute; left:86px; width:908px; text-align:center; font-family:'JetBrains Mono',monospace; font-size:46px; line-height:46px; letter-spacing:-.01em; white-space:nowrap; }
+  .counter { position:absolute; right:86px; top:1274px; font-family:'JetBrains Mono',monospace; font-size:30px; line-height:30px; color:var(--counter); white-space:nowrap; }
+
+  /* selection: apricot multiplied over the band, orange edge bars, handle dots, deep-brown text */
+  .sel { position:relative; display:block; width:max-content; padding:6px 28px; color:var(--sel-text); }
+  .sel::before { content:''; position:absolute; inset:0; background:var(--apricot); mix-blend-mode:multiply; z-index:0; }
+  .sel > .t { position:relative; z-index:2; }
+  .sel .bar { position:absolute; top:0; bottom:0; width:3px; background:var(--orange); z-index:1; }
+  .sel .bar.l { left:0; } .sel .bar.r { right:0; }
+  .sel .dot { position:absolute; width:20px; height:20px; border-radius:50%; background:var(--orange); z-index:3; }
+  .sel .dot.l { left:-8.5px; top:-10px; } .sel .dot.r { right:-8.5px; bottom:-10px; }
+
+  /* tiles + byline */
+  .tiles { position:absolute; left:86px; width:908px; display:flex; justify-content:center; gap:12px; }
+  .tile { width:80px; height:80px; border-radius:18px; overflow:hidden; flex:0 0 80px; display:flex; align-items:center; justify-content:center; }
+  .tile.white { background:#fff; box-shadow:0 2px 10px rgba(14,14,14,.08); }
+  .tile.ink { background:var(--ink); }
+  .tile img.mark { width:70%; height:70%; object-fit:contain; display:block; }
+  .tile img.full { width:100%; height:100%; object-fit:cover; display:block; }
+  .tile.blank { background:#fff; box-shadow:0 2px 10px rgba(14,14,14,.08); }
+  .tile.blank.ink { background:var(--ink); }
+  .byline { position:absolute; left:86px; width:908px; top:1218px; height:48px; display:flex; align-items:center; justify-content:center; gap:14px; }
+  .avatar { width:48px; height:48px; border-radius:50%; overflow:hidden; background:var(--placeholder); flex:0 0 48px; }
+  .avatar img { width:100%; height:100%; object-fit:cover; display:block; }
+  .byname { font-size:32px; line-height:48px; letter-spacing:-.02em; }
+
+  /* proof strip + command chip */
+  .strip { position:absolute; left:86px; width:908px; height:220px; border:2px solid var(--ink); overflow:hidden; background:#fff; }
+  .strip img { position:absolute; display:block; max-width:none; }
+  .strip.empty { background:repeating-linear-gradient(135deg,#f3eee8 0 14px,#fff 14px 28px); display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:22px; color:var(--counter); }
+  .chip { position:absolute; left:86px; top:1149px; width:908px; height:106px; border-radius:16px; background:var(--ink); color:var(--cream);
+    display:flex; align-items:center; padding:0 40px; font-family:'JetBrains Mono',monospace; font-size:40px; letter-spacing:-.01em; white-space:nowrap; overflow:hidden; }
+  .chip .dollar { color:var(--orange); margin-right:24px; }
+
+  /* loud failure: a copy limit or fit floor was broken. Visible in the export on purpose. */
+  .fitfail { display:none; position:absolute; left:0; right:0; top:0; z-index:50; background:#E0001B; color:#fff;
+    font:700 22px/1.3 'JetBrains Mono',monospace; padding:14px 20px; white-space:pre-wrap; }
+  .fitfail.on { display:block; }
+
+  /* === UI chrome (hidden on export) === */
+  .ui { position:fixed; bottom:18px; left:50%; transform:translateX(-50%); background:rgba(20,20,20,.92); color:#fff;
+    padding:8px 12px; border-radius:999px; display:flex; gap:12px; align-items:center; font-size:13px; z-index:100; }
+  .ui button { background:#2a2a2a; color:#fff; border:none; padding:6px 12px; border-radius:99px; cursor:pointer; font-size:13px; }
+  .ui .label2 { font-family:'JetBrains Mono',monospace; min-width:220px; text-align:center; }
+  .ui .num { color:var(--orange); font-weight:700; }
+  :fullscreen .ui { display:none !important; }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="slide-wrap" id="slideWrap">
+    <div class="slide" id="slide">
+      <div class="band-before"></div><div class="seam"></div>
+      <div id="content"></div>
+      <div class="counter" id="counter"></div>
+      <div class="fitfail" id="fitFail"></div>
+    </div>
+  </div>
+</div>
+
+<div class="ui">
+  <button id="prev">←</button>
+  <span class="label2"><span class="num" id="num">1/1</span> &nbsp; <span id="name">Cover</span></span>
+  <button id="next">→</button>
+  <button id="fs">Fullscreen (F)</button>
+</div>
+
+<button class="tw-toggle" id="twToggle">⚙ Tweaks</button>
+<div class="tw-panel" id="twPanel">
+  <h3>Tweaks <button class="close" id="twClose">×</button></h3>
+  <div class="tw-section">
+    <div class="section-title">GLOBAL</div>
+    <div class="tw-row"><span class="lbl">Accent (bars, dots, $)</span><input type="color" id="twAccent"></div>
+    <div class="tw-row"><span class="lbl">Before label</span><input type="text" id="twLabelBefore"></div>
+    <div class="tw-row"><span class="lbl">After label</span><input type="text" id="twLabelAfter"></div>
+  </div>
+  <div class="tw-section">
+    <div class="section-title">PER-SLIDE: <span class="name" id="vSlideName">—</span></div>
+    <div class="tw-row"><span class="lbl">Before statement (| = line break)</span><input type="text" id="twBefore"></div>
+    <div class="tw-row"><span class="lbl">After statement (| = line break)</span><input type="text" id="twAfter"></div>
+    <div class="tw-row"><span class="lbl">Statement max size <span class="val" id="vSize"></span></span><input type="range" id="twSize" min="96" max="126" step="2"></div>
+    <div class="tw-row"><span class="lbl">Command (chip) / keyword (CTA)</span><input type="text" id="twCmd"></div>
+    <div class="tw-row"><span class="lbl">Deliverable (CTA, | = break)</span><input type="text" id="twDeliv"></div>
+  </div>
+  <button class="tw-reset" id="twReset">Reset slide to defaults</button>
+  <button class="tw-reset" id="twExport" style="background:#0E0E0E;color:#fff;margin-top:6px;">📋 Export tweaks (copy JSON)</button>
+  <pre id="twExportOut" style="display:none;margin-top:10px;padding:10px;background:#f5f5f5;border-radius:6px;font-size:10px;white-space:pre-wrap;word-break:break-all;max-height:240px;overflow:auto;"></pre>
+</div>
+
+<script>
+  // ============ CONTENT ============
+  // One label pair per deck (Copy: each <= 3 words plus the colon, <= 20 characters).
+  const DECK = { labelBefore:'Old habit:', labelAfter:'New habit:' };
+
+  // layout: 'cover' | 'flip' | 'flipProof' | 'twinProof' | 'cta'
+  // Statements: '|' forces a line break (break by meaning). Proof: { src, focus:[x,y,w,h] in image px, fit:'cover'|'contain', bg }.
+  // Tiles: { src, ground:'white'|'ink'|'asset' } — 'asset' = a full tile PNG with its own ground; white/ink = a mark at 70%.
+  const slides = [
+    { name:'Cover', layout:'cover',
+      subject:'Claude Code', beforePhrase:'by hand', afterPhrase:'delegated',
+      countLine:'5 habits · Oct 2026',
+      beforeTile:null,                                   // a tile only when the old way is a tool
+      tiles:[ { blank:'white' }, { blank:'white' }, { blank:'ink' } ],   // replace: { src:'assets/x.png', ground:'white'|'ink'|'asset' }
+      avatar:null,                                       // 'assets/avatar.png' (your square profile photo, circle-cropped); null = grey placeholder
+      byline:'{{BRAND}}' },
+    { name:'Why', layout:'flip',
+      before:'You wrote every|line yourself', after:'Claude writes it,|you review it',
+      defaults:{ size:126 } },
+    { name:'Item 1 — chip', layout:'flipProof',
+      before:'You lost the thread|every new session', after:'You resume it',
+      chip:'claude --continue',
+      defaults:{ size:126 } },
+    { name:'Item 2 — capture', layout:'flipProof',
+      before:'You pasted the same|prompt every day', after:'A skill runs it',
+      proof:{ src:'', focus:null },                      // { src:'assets/x.png', focus:[x,y,w,h] } from shots.py
+      defaults:{ size:126 } },
+    { name:'Twin proof', layout:'twinProof',
+      before:'One long prompt', after:'One /hooks run',
+      beforeProof:{ src:'' }, afterProof:{ src:'' },
+      defaults:{ size:126 } },
+    { name:'CTA', layout:'cta',
+      before:'You still do it|by hand', keyword:'HABITS', deliverable:'The 5-habit setup|I run every single day',
+      defaults:{ size:126 } },
+  ];
+
+  // ============ LIMITS (the prompt block's Copy section) ============
+  const LIM = { label:20, stmtWords:7, stmtLines:3, proofAfterChars:15, coverChars:13, countChars:30,
+    ctaWords:6, keyword:10, delivLine:24, delivLines:2, cmd:34, size:126, floor:96, coverSize:130, coverFloor:96, delivSize:74, delivFloor:56 };
+
+  // Font metrics (em) used to place cap tops exactly on the token y values.
+  const INTER = { asc:0.96875, desc:0.2421875, cap:0.727 };
+  const JBM = { asc:1.02, desc:0.30, cap:0.73 };
+  // top of a line box (height lh px) whose cap top lands on capTop, for font size s
+  const capTopOffset = (m, s, lh) => (lh - (m.asc + m.desc) * s) / 2 + (m.asc - m.cap) * s;
+  const baselineOffset = (m, s, lh) => (lh - (m.asc + m.desc) * s) / 2 + m.asc * s;
+
+  // ============ STATE ============
+  const TOTAL = slides.length;
+  let i = 0;
+  const G_KEY = 'split-band-global-v1';
+  const sKey = (name) => `split-band-slide-${name}-v1`;
+  const GLOBAL_DEFAULTS = { accent:'#D9551F', labelBefore:DECK.labelBefore, labelAfter:DECK.labelAfter };
+  function loadGlobal(){ try { return { ...GLOBAL_DEFAULTS, ...(JSON.parse(localStorage.getItem(G_KEY)||'{}')) }; } catch { return { ...GLOBAL_DEFAULTS }; } }
+  function saveGlobal(g){ try { localStorage.setItem(G_KEY, JSON.stringify(g)); } catch {} }
+  function loadSlide(name){ try { return JSON.parse(localStorage.getItem(sKey(name))||'{}'); } catch { return {}; } }
+  function saveSlide(name,s){ try { localStorage.setItem(sKey(name), JSON.stringify(s)); } catch {} }
+
+  function eff(idx){
+    const b = slides[idx], d = b.defaults || {}, o = loadSlide(b.name), g = loadGlobal();
+    return { ...b,
+      labelBefore: b.labelBefore ?? g.labelBefore, labelAfter: b.labelAfter ?? g.labelAfter,
+      before:o.before ?? b.before, after:o.after ?? b.after,
+      chip:o.cmd ?? b.chip, keyword:(b.layout === 'cta' ? (o.cmd ?? b.keyword) : b.keyword),
+      deliverable:o.deliverable ?? b.deliverable,
+      size:o.size ?? d.size ?? LIM.size };
+  }
+
+  // ============ HELPERS ============
+  const esc = (t) => String(t ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const plain = (t) => String(t ?? '').replace(/\|/g,' ').replace(/\s+/g,' ').trim();
+  const words = (t) => plain(t).split(' ').filter(Boolean).length;
+  // '|' = the author's line breaks (break by meaning); no '|' = the browser wraps inside 908 px.
+  const linesHTML = (t) => String(t ?? '').includes('|')
+    ? String(t).split('|').map(l => `<span class="line">${esc(l.trim())}</span>`).join('')
+    : `<span class="line wrap">${esc(String(t ?? '').trim())}</span>`;
+  const pad = (n) => String(n).padStart(2,'0');
+  function selHTML(text){
+    return `<span class="sel"><span class="bar l"></span><span class="bar r"></span><span class="dot l"></span><span class="dot r"></span><span class="t">${esc(text)}</span></span>`;
+  }
+  function tileHTML(t){
+    if (!t) return '';
+    if (t.blank) return `<div class="tile blank ${t.blank === 'ink' ? 'ink' : 'white'}"></div>`;
+    if (t.ground === 'asset') return `<div class="tile"><img class="full" src="${esc(t.src)}" alt=""></div>`;
+    return `<div class="tile ${t.ground === 'ink' ? 'ink' : 'white'}"><img class="mark" src="${esc(t.src)}" alt=""></div>`;
+  }
+  function stripHTML(p, top){
+    if (!p || !p.src) return `<div class="strip empty" style="top:${top}px">908 × 220 capture slot</div>`;
+    const bg = p.bg ? `background:${esc(p.bg)};` : '';
+    return `<div class="strip" style="top:${top}px;${bg}"><img src="${esc(p.src)}" alt="" data-fit-img='${esc(JSON.stringify({ focus:p.focus || null, fit:p.fit || 'cover' }))}'></div>`;
+  }
+  // Crop a capture into the 904x216 inner strip: keep the focus box fully visible, fill the strip,
+  // centre on the focus box, clamp to the image. fit:'contain' letterboxes on the strip bg instead.
+  function placeStripImg(img){
+    const cfg = JSON.parse(img.getAttribute('data-fit-img') || '{}');
+    const W = 904, H = 216, iw = img.naturalWidth, ih = img.naturalHeight;
+    if (!iw || !ih) return;
+    let s, cx, cy;
+    if (cfg.fit === 'contain') { s = Math.min(W/iw, H/ih); cx = iw/2; cy = ih/2; }
+    else {
+      const cover = Math.max(W/iw, H/ih);
+      const f = cfg.focus || [0, 0, iw, ih];
+      s = cfg.focus ? Math.max(cover, Math.min(W/f[2], H/f[3])) : cover;
+      cx = f[0] + f[2]/2; cy = f[1] + f[3]/2;
+    }
+    const w = iw*s, h = ih*s;
+    let x = W/2 - cx*s, y = H/2 - cy*s;
+    if (cfg.fit !== 'contain') { x = Math.min(0, Math.max(W - w, x)); y = Math.min(0, Math.max(H - h, y)); }
+    Object.assign(img.style, { width:w+'px', height:h+'px', left:x+'px', top:y+'px' });
+  }
+
+  // ============ RENDER ============
+  const slideEl = document.getElementById('slide');
+  const content = document.getElementById('content');
+  const counterEl = document.getElementById('counter');
+  const failEl = document.getElementById('fitFail');
+
+  function labelHTML(text, capTop){
+    return `<div class="label" style="top:${(capTop - capTopOffset(JBM, 62, 62)).toFixed(1)}px">${esc(text)}</div>`;
+  }
+
+  function render(idx){
+    const e = eff(idx);
+    const g = loadGlobal();
+    slideEl.style.setProperty('--orange', g.accent);
+    const errs = [];
+    const L = e.layout;
+
+    if (L === 'cover') {
+      const top = (e.beforeTile ? tileHTML(e.beforeTile) : '');
+      content.innerHTML = `
+        ${e.beforeTile ? `<div class="tiles" style="top:169px">${top}</div>` : ''}
+        <div class="head plain" id="h1a">${esc(e.subject)}</div>
+        <div class="head" id="h1b">${selHTML(e.beforePhrase)}</div>
+        <div class="count" id="countLine" style="top:${(614 - baselineOffset(JBM, 46, 46)).toFixed(1)}px">${esc(e.countLine)} ↓</div>
+        <div class="tiles" style="top:756px">${(e.tiles || []).map(tileHTML).join('')}</div>
+        <div class="head plain" id="h2a">${esc(e.subject)}</div>
+        <div class="head" id="h2b">${selHTML(e.afterPhrase)}</div>
+        <div class="byline"><div class="avatar">${e.avatar ? `<img src="${esc(e.avatar)}" alt="">` : ''}</div><div class="byname">${esc(e.byline || '{{BRAND}}')}</div></div>`;
+      if (plain(e.subject).length > LIM.coverChars) errs.push(`subject > ${LIM.coverChars} chars`);
+      if (plain(e.beforePhrase).length > LIM.coverChars) errs.push(`before phrase > ${LIM.coverChars} chars`);
+      if (plain(e.afterPhrase).length > LIM.coverChars) errs.push(`after phrase > ${LIM.coverChars} chars`);
+      if (plain(e.countLine).length > LIM.countChars) errs.push(`count line > ${LIM.countChars} chars`);
+      if ((e.tiles || []).length > 5) errs.push('more than 5 after tiles');
+      if (document.getElementById('countLine').scrollWidth > 908) errs.push('count line wider than 908 px');
+      fitCover(errs);
+    } else {
+      const b = (L === 'twinProof') ? 1 : LIM.stmtLines;
+      let html = labelHTML(e.labelBefore, 136) + `<div class="stmt" id="sB">${linesHTML(e.before)}</div>` + labelHTML(e.labelAfter, 778);
+      let aLines = LIM.stmtLines;
+      if (L === 'flip') {
+        html += `<div class="stmt" id="sA">${linesHTML(e.after)}</div>`;
+      } else if (L === 'flipProof') {
+        if (e.chip) {
+          aLines = 2;
+          html += `<div class="stmt" id="sA">${linesHTML(e.after)}</div><div class="chip" id="chip"><span class="dollar">$</span><span>${esc(e.chip)}</span></div>`;
+          if (plain(e.chip).length > LIM.cmd) errs.push(`command > ${LIM.cmd} chars`);
+        } else {
+          aLines = 1;
+          html += `<div class="stmt" id="sA">${linesHTML(e.after)}</div>` + stripHTML(e.proof, 1035);
+          if (plain(e.after).length > LIM.proofAfterChars) errs.push(`proof after statement > ${LIM.proofAfterChars} chars`);
+        }
+      } else if (L === 'twinProof') {
+        aLines = 1;
+        html += `<div class="stmt" id="sA">${linesHTML(e.after)}</div>` + stripHTML(e.beforeProof, 392) + stripHTML(e.afterProof, 1035);
+        if (plain(e.before).length > LIM.proofAfterChars) errs.push(`twin before statement > ${LIM.proofAfterChars} chars`);
+        if (plain(e.after).length > LIM.proofAfterChars) errs.push(`twin after statement > ${LIM.proofAfterChars} chars`);
+      } else if (L === 'cta') {
+        aLines = 1;
+        html += `<div class="stmt" id="sA"><span class="line">Comment</span></div><div class="stmt" id="sK">${selHTML(e.keyword)}</div>` +
+          `<div class="deliv" id="dv">${linesHTML(e.deliverable)}</div>`;
+        if (words(e.before) > LIM.ctaWords) errs.push(`CTA before statement > ${LIM.ctaWords} words`);
+        if (plain(e.keyword).length > LIM.keyword) errs.push(`keyword > ${LIM.keyword} chars`);
+        const dl = String(e.deliverable || '').split('|');
+        if (dl.length > LIM.delivLines) errs.push(`deliverable > ${LIM.delivLines} lines`);
+        if (dl.some(l => l.trim().length > LIM.delivLine)) errs.push(`deliverable line > ${LIM.delivLine} chars`);
+      }
+      content.innerHTML = html;
+      for (const [k, t] of [['before label', e.labelBefore], ['after label', e.labelAfter]])
+        if (plain(t).length > LIM.label) errs.push(`${k} > ${LIM.label} chars`);
+      if (words(e.before) > LIM.stmtWords) errs.push(`before statement > ${LIM.stmtWords} words`);
+      if (L !== 'cta' && words(e.after) > LIM.stmtWords) errs.push(`after statement > ${LIM.stmtWords} words`);
+      fitStatements(e, b, aLines, errs);
+      if (L === 'cta') fitDeliverable(errs);
+    }
+
+    // proof images: crop on load (and now, if cached)
+    content.querySelectorAll('img[data-fit-img]').forEach(img => {
+      if (img.complete) placeStripImg(img); else img.addEventListener('load', () => placeStripImg(img), { once:true });
+    });
+
+    counterEl.textContent = `${pad(idx + 1)} / ${pad(TOTAL)}`;
+    failEl.textContent = errs.length ? 'FIT/COPY: ' + errs.join(' · ') : '';
+    failEl.classList.toggle('on', errs.length > 0);
+    if (errs.length) console.error(`[split-band] slide ${idx + 1} (${e.name}): ${errs.join('; ')}`);
+    (window.fitReport = window.fitReport || {})[idx] = errs;
+    document.getElementById('num').textContent = `${idx + 1}/${TOTAL}`;
+    document.getElementById('name').textContent = e.name;
+    syncTweakUI();
+  }
+
+  // Statement fit pass: both statements share one size, from the slide's max (126) down to the
+  // floor (96) in 2 px steps, until each fits 908 px and its line budget. Under the floor = rewrite.
+  function fitStatements(e, beforeLines, afterLines, errs){
+    const sB = document.getElementById('sB'), sA = document.getElementById('sA'), sK = document.getElementById('sK');
+    const els = [[sB, beforeLines, 233], [sA, afterLines, 875]];
+    let size = Math.min(e.size, LIM.size), ok = false;
+    for (; size >= LIM.floor; size -= 2) {
+      const lh = Math.round(size * 115 / 126);
+      ok = true;
+      for (const [el, maxL, capTop] of els) {
+        el.style.fontSize = size + 'px'; el.style.lineHeight = lh + 'px';
+        el.style.top = (capTop - capTopOffset(INTER, size, lh)).toFixed(1) + 'px';
+        const lines = [...el.querySelectorAll('.line')];
+        const tooWide = lines.some(l => l.offsetWidth > 908 || l.scrollWidth > 908) || el.scrollWidth > 908;
+        const n = lines.reduce((a, l) => a + Math.max(1, Math.round(l.offsetHeight / lh)), 0);
+        if (tooWide || n > maxL) ok = false;
+      }
+      if (sK) {
+        sK.style.fontSize = size + 'px'; sK.style.lineHeight = lh + 'px';
+        layoutSel(sK.querySelector('.sel'), size, lh - 12);
+        sK.style.top = (875 + lh - 6 - capTopOffset(INTER, size, lh - 12)).toFixed(1) + 'px';
+        if (sK.scrollWidth > 908) ok = false;
+      }
+      if (ok) break;
+    }
+    if (!ok) errs.push(`statement does not fit at the ${LIM.floor} px floor (908 px, line budget ${beforeLines}/${afterLines}): rewrite`);
+    // a one-line after statement must clear the strip / chip below it
+    const zone = document.querySelector('.strip[style*="1035"], .chip');
+    if (ok && zone && sA) {
+      const s = parseFloat(sA.style.fontSize), lh = parseFloat(sA.style.lineHeight);
+      const n = Math.round(sA.offsetHeight / lh);
+      const desc = 875 + INTER.cap * s + (n - 1) * lh + INTER.desc * s;
+      if (zone.offsetTop - desc < 24) errs.push('after statement runs into the proof zone');
+    }
+  }
+
+  // Selection box geometry: tight like an editor selection (11 px above the caps, 13 px below the
+  // baseline); a phrase with descenders grows at the bottom so the box still holds them.
+  function layoutSel(sel, size, contentH){
+    if (!sel) return;
+    const t = sel.querySelector('.t');
+    t.style.display = 'block'; t.style.lineHeight = contentH + 'px'; t.style.whiteSpace = 'nowrap';
+    const hasDesc = /[gjpqy,;]/.test(t.textContent);
+    const descBottom = 6 + baselineOffset(INTER, size, contentH) + 0.22 * size; // from the box top
+    sel.style.paddingBottom = (hasDesc ? Math.max(6, descBottom + 6 - 6 - contentH) : 6).toFixed(1) + 'px';
+  }
+
+  // Cover: two centred headlines at 130 px (shrinks to fit 908 incl. selection padding, floor 96).
+  function fitCover(errs){
+    const ids = ['h1a','h1b','h2a','h2b'].map(id => document.getElementById(id));
+    let size = LIM.coverSize, ok = false;
+    for (; size >= LIM.coverFloor; size -= 2) {
+      const k = size / 130;
+      const boxH = Math.round(118 * k), contentH = boxH - 12;
+      for (const [n, el] of ids.entries()) {
+        el.style.fontSize = size + 'px';
+        const capTop = n < 2 ? 283 : 885;
+        if (n % 2 === 0) {
+          el.style.lineHeight = size + 'px';
+          el.style.top = (capTop - capTopOffset(INTER, size, size)).toFixed(1) + 'px';
+        } else {
+          const sel = el.querySelector('.sel');
+          el.style.lineHeight = 'normal';
+          layoutSel(sel, size, contentH);
+          // box top sits 9 px under the first line's baseline
+          const firstBase = capTop + INTER.cap * size;
+          el.style.top = (firstBase + 9 * k).toFixed(1) + 'px';
+        }
+      }
+      ok = ids.every(el => el.scrollWidth <= 908 && (el.querySelector('.sel') ? el.querySelector('.sel').offsetWidth <= 908 : true));
+      if (ok) break;
+    }
+    if (!ok) errs.push(`cover headline does not fit 908 px at ${LIM.coverFloor} px: shorten the subject or phrase`);
+  }
+
+  function fitDeliverable(errs){
+    const dv = document.getElementById('dv');
+    let size = LIM.delivSize, ok = false;
+    for (; size >= LIM.delivFloor; size -= 2) {
+      const lh = Math.round(size * 84 / 74);
+      dv.style.fontSize = size + 'px'; dv.style.lineHeight = lh + 'px';
+      dv.style.top = (1140 - capTopOffset(INTER, size, lh)).toFixed(1) + 'px';
+      const lines = [...dv.querySelectorAll('.line')];
+      ok = lines.every(l => l.offsetWidth <= 908) && lines.length <= LIM.delivLines && (dv.offsetTop + dv.offsetHeight) <= 1302;
+      if (ok) break;
+    }
+    if (!ok) errs.push('deliverable does not fit (908 px, 2 lines) at the floor');
+  }
+
+  // ============ NAV ============
+  document.getElementById('prev').addEventListener('click', () => { i=(i-1+TOTAL)%TOTAL; render(i); });
+  document.getElementById('next').addEventListener('click', () => { i=(i+1)%TOTAL; render(i); });
+  document.addEventListener('keydown', (ev) => {
+    if (ev.target.matches('input, textarea')) return;
+    if (ev.key === 'ArrowLeft'){ i=(i-1+TOTAL)%TOTAL; render(i); }
+    if (ev.key === 'ArrowRight'){ i=(i+1)%TOTAL; render(i); }
+    if (ev.key === 'f' || ev.key === 'F') document.getElementById('fs').click();
+  });
+  window.goSlide = (idx) => { i=idx; render(idx); };
+  window.totalSlides = () => TOTAL;
+  document.getElementById('fs').addEventListener('click', () => {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen();
+  });
+  function fitStage(){ const wrap=document.getElementById('slideWrap'); const m=80;
+    const sx=(innerWidth-m)/1080, sy=(innerHeight-m)/1350; wrap.style.transform=`scale(${Math.min(sx,sy)})`; }
+  addEventListener('resize', fitStage); fitStage();
+
+  // ============ TWEAK PANEL ============
+  const twPanel = document.getElementById('twPanel');
+  document.getElementById('twToggle').addEventListener('click', () => twPanel.classList.toggle('open'));
+  document.getElementById('twClose').addEventListener('click', () => twPanel.classList.remove('open'));
+  const $ = (id) => document.getElementById(id);
+  const ctrls = { accent:$('twAccent'), labelBefore:$('twLabelBefore'), labelAfter:$('twLabelAfter'),
+    before:$('twBefore'), after:$('twAfter'), size:$('twSize'), cmd:$('twCmd'), deliv:$('twDeliv') };
+  function syncTweakUI(){
+    const g = loadGlobal(), s = slides[i];
+    ctrls.accent.value = g.accent; ctrls.labelBefore.value = g.labelBefore; ctrls.labelAfter.value = g.labelAfter;
+    $('vSlideName').textContent = s.name;
+    const e = eff(i), cover = s.layout === 'cover';
+    for (const k of ['before','after','size','cmd','deliv']) ctrls[k].disabled = cover;
+    if (cover) return;
+    ctrls.before.value = e.before || ''; ctrls.after.value = e.after || '';
+    ctrls.size.value = e.size; $('vSize').textContent = e.size + 'px';
+    ctrls.cmd.value = (s.layout === 'cta' ? e.keyword : e.chip) || '';
+    ctrls.deliv.value = e.deliverable || '';
+  }
+  ctrls.accent.addEventListener('input', () => { const g=loadGlobal(); g.accent=ctrls.accent.value; saveGlobal(g); render(i); });
+  ctrls.labelBefore.addEventListener('input', () => { const g=loadGlobal(); g.labelBefore=ctrls.labelBefore.value; saveGlobal(g); render(i); });
+  ctrls.labelAfter.addEventListener('input', () => { const g=loadGlobal(); g.labelAfter=ctrls.labelAfter.value; saveGlobal(g); render(i); });
+  function upd(key, val){ const s=slides[i]; if (s.layout==='cover') return; const cur=loadSlide(s.name); cur[key]=val; saveSlide(s.name,cur); render(i); }
+  ctrls.before.addEventListener('input', () => upd('before', ctrls.before.value));
+  ctrls.after.addEventListener('input', () => upd('after', ctrls.after.value));
+  ctrls.size.addEventListener('input', () => upd('size', +ctrls.size.value));
+  ctrls.cmd.addEventListener('input', () => upd('cmd', ctrls.cmd.value));
+  ctrls.deliv.addEventListener('input', () => upd('deliverable', ctrls.deliv.value));
+  $('twReset').addEventListener('click', () => { try { localStorage.removeItem(sKey(slides[i].name)); } catch {} render(i); });
+  $('twExport').addEventListener('click', async () => {
+    const out = { global:loadGlobal(), perSlide:{} };
+    slides.forEach(s => { const o=loadSlide(s.name); if (Object.keys(o).length) out.perSlide[s.name]=o; });
+    const text = JSON.stringify(out, null, 2);
+    try { await navigator.clipboard.writeText(text); } catch {}
+    const box = $('twExportOut'); box.textContent = text; box.style.display='block';
+  });
+
+  render(0);
+  document.fonts && document.fonts.ready.then(() => render(i));
+</script>
+</body>
+</html>

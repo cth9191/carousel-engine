@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S25 page 08: rows</title>
+<!-- S25 Soft-UI Step Guide, layout: rows. Sample strings: replace every one from storyboard strings[].
+     Render: node shared/render-card.mjs $D/cards/page-08.html $D/exports/slide-08-YYYY-MM-DD.png --w 1080 --h 1350 --scale 1 --min-px 22 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=block" rel="stylesheet">
+<link rel="stylesheet" href="s25.css">
+<script src="icons.js"></script>
+<script src="s25.js"></script>
+</head>
+<body>
+<div class="hdr"><img src="../logos/avatar.png" alt=""><span>{{BRAND}}</span></div>
+<div class="count">08 / 10</div>
+<svg class="traces" viewBox="0 0 1080 1350" aria-hidden="true">
+  <path class="tr" d="M1080 300 H1040 a18 18 0 0 0 -18 18 V560"/><circle class="node" cx="1022" cy="560" r="5"/>
+  <path class="tr" d="M0 1000 H40 a18 18 0 0 1 18 18 V1180"/><circle class="node" cx="58" cy="1180" r="5"/>
+</svg>
+<div class="main rows-page with-foot" data-fit>
+  <div class="kickrow"><span class="kicker">Daily use</span></div>
+  <h1 class="hl" data-fit data-max="112" data-min="96">Four habits that save hours</h1>
+  <div class="rows">
+    <div class="row"><span class="n">1</span><span class="tx">Run <code class="c">/init</code> once per repo so every session starts knowing your stack.</span></div>
+    <div class="row"><span class="n">2</span><span class="tx">Press <code class="c">Shift+Tab</code> to cycle into plan mode before a big change.</span></div>
+    <div class="row"><span class="n">3</span><span class="tx">Type <code class="c">/clear</code> between tasks so old context stops leaking in.</span></div>
+    <div class="row"><span class="n">4</span><span class="tx">Run <code class="c">claude --continue</code> to pick up where you left off.</span></div>
+  </div>
+</div>
+<div class="foot" style="top:1190px; height:88px">
+  <span class="chip"><span class="ic"><i data-lucide="list-checks"></i></span>Plan mode</span>
+  <span class="chip"><span class="ic"><i data-lucide="brain"></i></span>Memory</span>
+  <span class="chip"><span class="ic"><i data-lucide="repeat"></i></span>Resume</span>
+</div>
+<script>
+// Fit pass: every [data-fit][data-max] steps down 2 px at a time (floor data-min) until its box stops
+// overflowing. Whatever still overflows (or any [data-fit] box) makes render-card exit 2: shorten the copy.
+window.cardReady = (async () => {
+  await document.fonts.ready;
+  S25.prep();
+  const over = (el) => el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1;
+  for (const el of document.querySelectorAll('[data-fit][data-max]')) {
+    let px = +el.dataset.max;
+    const min = +el.dataset.min;
+    el.style.fontSize = px + 'px';
+    while (over(el) && px > min) { px -= 2; el.style.fontSize = px + 'px'; }
+  }
+})();
+</script>
+</body>
+</html>

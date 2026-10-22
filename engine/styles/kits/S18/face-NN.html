@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>S18 Medallion Face</title>
+<!--
+  S18 Folder-Tab Field Guide, logo decks only: one medallion face, the entry's real mark on a flat disc.
+  Copy to $D/cards/face-NN.html (NN = entry number) and edit only the JSON in <script id="data">.
+
+    mark   the real mark (PNG with alpha, or SVG), path relative to this file, e.g. "../logos/github.png".
+           Use a mark trimmed to its own alpha so "scale" means what it says.
+    disc   "cobalt" #3D7DC8 | "ochre" #E3A33B | "sage" #7DAA5A | "orange" #D9551F.
+           Neighbours on one tab page take different discs.
+    tone   "cream" (mark flattened to cream #F5EBE0) | "ink" (#0E0E0E) | "original" (its own colours).
+           Pick the one that reads on the disc: never an orange mark on the orange disc.
+    scale  the mark's longest side as a share of the disc diameter (0.55 default, 0.45-0.65).
+
+  The disc fills the viewport's shorter side; everything outside it is transparent, so render with NO --bg:
+    node shared/render-card.mjs $D/cards/face-01.html $D/faces/01.png --w 300 --h 300 --scale 2
+  then paste it into each medallion's cyan face: composite.py --logo N=faces/01.png@1.0
+  (one face set per deck, rendered once, pasted on the cover, the tab pages and the EXTRA page).
+-->
+<style>
+  :root { --disc: #3D7DC8; --scale: 0.55; }
+  html, body { margin: 0; width: 100%; height: 100%; background: transparent; overflow: hidden; }
+  body { display: flex; align-items: center; justify-content: center; }
+  .disc {
+    width: min(100vw, 100vh);
+    height: min(100vw, 100vh);
+    border-radius: 50%;
+    background: var(--disc);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .disc img {
+    display: block;
+    width: calc(min(100vw, 100vh) * var(--scale));
+    height: calc(min(100vw, 100vh) * var(--scale));
+    object-fit: contain;
+  }
+  .disc img.tone-cream { filter: url(#tone-cream); }
+  .disc img.tone-ink { filter: url(#tone-ink); }
+  .LIMIT { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: hidden; visibility: hidden; }
+  .LIMIT i { display: block; width: 50px; height: 50px; }
+</style>
+</head>
+<body>
+<script id="data" type="application/json">
+{
+  "mark": "../S25/logos/claude-orange.png",
+  "disc": "cobalt",
+  "tone": "cream",
+  "scale": 0.55
+}
+</script>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="tone-cream" color-interpolation-filters="sRGB">
+    <feFlood flood-color="#F5EBE0" result="c"/><feComposite in="c" in2="SourceAlpha" operator="in"/>
+  </filter>
+  <filter id="tone-ink" color-interpolation-filters="sRGB">
+    <feFlood flood-color="#0E0E0E" result="c"/><feComposite in="c" in2="SourceAlpha" operator="in"/>
+  </filter>
+</svg>
+<div class="disc"><img alt=""></div>
+<script>
+  const D = JSON.parse(document.getElementById('data').textContent);
+  const DISCS = { cobalt: '#3D7DC8', ochre: '#E3A33B', sage: '#7DAA5A', orange: '#D9551F' };
+  const violations = [];
+  function violate(rule) {
+    violations.push(rule);
+    const el = document.createElement('div');
+    el.setAttribute('data-fit', '');
+    el.className = 'LIMIT ' + rule.replace(/[^A-Za-z0-9/.-]+/g, '_');
+    el.innerHTML = '<i></i>';
+    document.body.appendChild(el);
+  }
+  if (!DISCS[D.disc]) violate(`disc-"${D.disc}"-must-be-cobalt/ochre/sage/orange`);
+  const scale = D.scale == null ? 0.55 : Number(D.scale);
+  if (!(scale >= 0.45 && scale <= 0.65)) violate(`scale-${D.scale}-must-be-0.45-to-0.65`);
+  const tone = D.tone || 'cream';
+  if (!['cream', 'ink', 'original'].includes(tone)) violate(`tone-"${tone}"-must-be-cream/ink/original`);
+  if (tone === 'original' && D.disc === 'orange' && /orange/i.test(D.mark || '')) violate('orange-mark-on-orange-disc');
+  document.documentElement.style.setProperty('--disc', DISCS[D.disc] || '#3D7DC8');
+  document.documentElement.style.setProperty('--scale', String(scale));
+  const img = document.querySelector('.disc img');
+  if (tone !== 'original') img.className = 'tone-' + tone;
+  img.src = D.mark;
+  window.cardReady = (async () => {
+    if (!img.complete) await img.decode().catch(() => null);
+    if (!img.naturalWidth) violate(`mark-"${D.mark}"-did-not-load`);
+    window.cardInfo = { disc: D.disc, tone, scale, mark: D.mark, natural: [img.naturalWidth, img.naturalHeight], violations };
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S28 page 09: cta</title>
+<!-- S28 Alpine Product Window, layout: cta. Sample strings: replace every one from storyboard strings[].
+     Plate: fitted/cta.png (studio, the toolbox shut). Render:
+     node shared/render-card.mjs $D/cards/page-09.html $D/exports/slide-09-YYYY-MM-DD.png --w 1080 --h 1350 --scale 1 --min-px 20 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;600;800;900&family=JetBrains+Mono:wght@500&family=Anton&family=Caveat+Brush&display=block" rel="stylesheet">
+<link rel="stylesheet" href="s28.css">
+<script src="icons.js"></script>
+</head>
+<body class="cta">
+<div class="ml tl">{{BRAND}}</div>
+<div class="ml tr">Claude Code<br>OCT 2026</div>
+<div class="ml bl">09 / 09</div>
+<div class="cta-stack" data-fit>
+  <div class="glyph"><i data-lucide="message-square"></i></div>
+  <div class="cm">COMMENT</div>
+  <div class="kw" data-fit data-max="190" data-min="120">TOOLBOX</div>
+  <div class="dl">I'll send all five links and my setup notes.</div>
+</div>
+<script>
+// Fit pass. [data-fit][data-max] steps down 2 px (floor data-min) until neither it nor its closest
+// [data-box] overflows; a [data-wrap] element may then wrap to a second line at the floor. Whatever
+// still overflows (or any [data-fit] box) makes render-card exit 2: shorter copy.
+window.cardReady = (async () => {
+  await document.fonts.ready;
+  if (window.lucide) window.lucide();
+  const over = (el) => el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1;
+  for (const el of document.querySelectorAll('[data-fit][data-max]')) {
+    const box = el.closest('[data-box]') || el;
+    let px = +el.dataset.max;
+    const min = +el.dataset.min;
+    el.style.fontSize = px + 'px';
+    while ((over(el) || over(box)) && px > min) { px -= 2; el.style.fontSize = px + 'px'; }
+    if (over(el) && 'wrap' in el.dataset) el.style.whiteSpace = 'normal';
+  }
+  // the chip row fits 952 px or drops chips from the end (3 at least)
+  for (const row of document.querySelectorAll('.chips')) {
+    while (row.scrollWidth > row.clientWidth + 1 && row.children.length > 3) row.lastElementChild.remove();
+  }
+})();
+</script>
+</body>
+</html>

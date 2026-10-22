@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S04 Table Card</title>
+<!--
+  S04 Brutalist Mascot Poster: the ruled comparison table (e.g. SKILLS / MCP / PLUGINS).
+  For what / model / parts / paper / verdict slides. Copy to $D/cards/table-NN.html (NN = slide), edit only the JSON.
+
+    rows    2-4 rows: { "term": Anton caps, 10 characters or fewer,
+                        "does": the plain-words line, 44 characters or fewer (two lines at most),
+                        "accent": true on exactly one row, the one the slide is about (orange term) }
+
+  Sheet-white face, 3 px ink outline, 16 px radius, transparent outside the corners. Render without --bg at the
+  zone's --zones-only out bbox x2 (sample: 928x480), paste with --card N=… --ground fill:
+    node shared/render-card.mjs $D/cards/table-02.html $D/cards/table-02.png --w 928 --h 480 --scale 2 --min-px 22
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@700;800;900&family=JetBrains+Mono:wght@500;700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script id="data" type="application/json">
+{
+  "rows": [
+    { "term": "Notes", "does": "Hold what you wrote down." },
+    { "term": "Tags", "does": "Group notes by topic." },
+    { "term": "Links", "does": "Connect one note to the next one.", "accent": true }
+  ]
+}
+</script>
+</head>
+<body>
+<script src="kit.js"></script>
+<script>
+KIT.ready((d) => {
+  const rows = d.rows || [];
+  KIT.limit(rows.length >= 2 && rows.length <= 4, 'rows-not-2-to-4');
+  KIT.limit(rows.filter((r) => r.accent).length === 1, 'accent-not-exactly-one-row');
+  rows.forEach((r) => {
+    KIT.limit(String(r.term).length <= 10, 'term-over-10-chars');
+    KIT.limit(String(r.does).length <= 44, 'does-over-44-chars');
+  });
+  document.body.insertAdjacentHTML('beforeend', `
+    <div class="face tbl">${rows.map((r) => `
+      <div class="row${r.accent ? ' accent' : ''}">
+        <div class="term" data-fit data-min="40">${KIT.esc(r.term)}</div>
+        <div class="div"></div>
+        <div class="does" data-fit data-min="26">${KIT.esc(r.does)}</div>
+      </div>`).join('')}
+    </div>`);
+});
+</script>
+</body>
+</html>

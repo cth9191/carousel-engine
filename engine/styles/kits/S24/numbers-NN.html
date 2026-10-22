@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S24 Numbers Strip</title>
+<!--
+  S24 Spotlight Dossier: the numbers strip on a Dossier slide (the wide magenta panel under the star-rule).
+  Copy to $D/cards/numbers-NN.html (NN = slide) and edit only the JSON in <script id="data">.
+
+    label  orange tracked caps row, "{name} · {our own label}", 40 characters or fewer
+           (never a reference deck's panel label)
+    cells  3 or 4 cells: { value (7 characters or fewer, Newsreader 56 px, fits down to 32 px),
+           caption (14 characters or fewer, Inter) }. Values pulled on posting day and saved in the deck:
+           total stars, weekly delta, language, licence (spines.md: verified data)
+    star   index of the cell that carries the amber four-point star (default 0, the stars cell)
+
+  Render at the zone's --zones-only out bbox x2 (about 928x250, 3.7:1; a 4:1 zone is 928x232):
+    node shared/render-card.mjs $D/cards/numbers-02.html $D/cards/numbers-02.png --w 928 --h 250 --scale 2 --bg "#121212"
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script id="data" type="application/json">
+{
+  "label": "playwright-mcp · on oct 16",
+  "cells": [
+    { "value": "21.4K", "caption": "total stars" },
+    { "value": "+1,208", "caption": "this week" },
+    { "value": "TS", "caption": "language" },
+    { "value": "Apache", "caption": "licence" }
+  ],
+  "star": 0
+}
+</script>
+</head>
+<body>
+<script src="kit.js"></script>
+<script>
+const STAR = '<svg class="star" viewBox="-1 -1 2 2"><path fill="currentColor" d="M0 -1 C0.08 -0.3 0.3 -0.08 1 0 C0.3 0.08 0.08 0.3 0 1 C-0.08 0.3 -0.3 0.08 -1 0 C-0.3 -0.08 -0.08 -0.3 0 -1Z"/></svg>';
+KIT.ready((d) => {
+  KIT.limit(String(d.label).length <= 40, 'label-over-40-chars');
+  KIT.limit(d.cells.length >= 3 && d.cells.length <= 4, 'cells-not-3-or-4');
+  KIT.limit(d.cells.every((c) => String(c.value).length <= 7), 'value-over-7-chars');
+  KIT.limit(d.cells.every((c) => String(c.caption).length <= 14), 'caption-over-14-chars');
+  const star = d.star ?? 0;
+  document.body.insertAdjacentHTML('beforeend', `
+    <div class="panel numbers">
+      <div class="label" data-fit>${KIT.esc(d.label)}</div>
+      <div class="cells">${d.cells.map((c, i) => `
+        <div class="c"><div class="v" data-fit data-min="32">${KIT.esc(c.value)}</div><div class="k">${KIT.esc(c.caption)}</div>${i === star ? STAR : ''}</div>`).join('')}
+      </div>
+    </div>`);
+});
+</script>
+</body>
+</html>

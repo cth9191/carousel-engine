@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S20 serif fallback text card</title>
+<!--
+  S20 Slate Family Tree, serif fallback: a cover row name or family name that garbled on two Codex rolls.
+  Re-roll or edit the plate with ONE flat magenta zone where the string sat, then paste this card there with
+  composite.py --card M1=cards/serif-text.png --ground fill (transparent; render WITHOUT --bg). Size it to that zone's
+  --zones-only out bbox, e.g. a family name about 760 x 116, a cover row name about 497 x 100.
+    node shared/render-card.mjs cards/serif-text.html cards/serif-text.png --w 760 --h 116 --scale 2
+  Edit the JSON: text (verbatim, sentence case), align "center" (family, mix, CTA) or "left" (cover rows),
+  px (optional fixed size; default = 78% of the card height, shrunk to fit the width down to 55%).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<style>
+  .serif {
+    position: absolute; inset: 0; display: flex; align-items: center; overflow: hidden;
+    font: 400 80px/1 "Instrument Serif", Georgia, serif; color: var(--cream); white-space: nowrap;
+  }
+  .serif.center { justify-content: safe center; }
+  .serif.left { justify-content: flex-start; }
+</style>
+</head>
+<body>
+<script id="data" type="application/json">
+{ "text": "Subagents", "align": "center" }
+</script>
+<div class="serif" data-fit></div>
+<script>
+  window.cardReady = (async () => {
+    const d = JSON.parse(document.getElementById('data').textContent);
+    const el = document.querySelector('.serif');
+    el.classList.add(d.align === 'left' ? 'left' : 'center');
+    el.textContent = d.text;
+    await document.fonts.ready;
+    const H = window.innerHeight;
+    let px = d.px || H * 0.78;
+    const floor = d.px || H * 0.55;
+    el.style.fontSize = px + 'px';
+    while (px > floor && el.scrollWidth > el.clientWidth + 0.5) { px -= 0.5; el.style.fontSize = px + 'px'; }
+    const serif = [...document.fonts].some(f => f.family.replace(/"/g, '') === 'Instrument Serif' && f.status === 'loaded');
+    window.cardInfo = { serif_px: px, serif_font: serif ? 'Instrument Serif' : 'fallback' };
+  })();
+</script>
+</body>
+</html>

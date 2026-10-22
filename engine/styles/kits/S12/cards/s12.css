@@ -1,0 +1,123 @@
+/* S12 Voxel Costume Explainer: tokens + components for every page of the kit.
+   Spec: engine/styles/S12-voxel-costume-explainer.prompt.md. Canvas 1080 x 1350, 1 CSS px = 1 final px. */
+:root {
+  --ground: #FAF9F7;       /* near-white, never cream */
+  --ink: #111111;
+  --grey: #5C5852;         /* body */
+  --soft: #8A847C;         /* chrome, captions */
+  --rule: #E6E1DA;
+  --orange: #D9551F;       /* accent orange: headline line 2, accents, icons */
+  --tag: #FBE9DF;          /* step-tag fill */
+  --card: #FFFFFF;
+  --shadow: 0 18px 40px rgba(17, 17, 17, .10), 0 2px 6px rgba(17, 17, 17, .06);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1350px; overflow: hidden; }
+body {
+  background: var(--ground); color: var(--ink); position: relative;
+  font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+}
+b, .acc { font-weight: 700; }
+.acc { color: var(--orange); }
+
+/* ---- chrome: step tag (counter + label) ------------------------------------------------------ */
+.tag { position: absolute; left: 64px; top: 60px; display: flex; align-items: center; gap: 18px; height: 52px; }
+.tag .num {
+  font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 26px; color: var(--orange);
+  background: var(--tag); border-radius: 10px; padding: 8px 14px; letter-spacing: .02em;
+}
+.tag .lbl { font-size: 26px; font-weight: 600; color: var(--soft); white-space: nowrap; }
+
+/* ---- headline: bold sans, line 2 in orange ----------------------------------------------------- */
+.hl { position: absolute; left: 64px; width: 952px; font-weight: 800; letter-spacing: -0.035em; line-height: 1.0; }
+.hl .l2 { color: var(--orange); display: block; }
+.hl .l1 { display: block; }
+
+.body { position: absolute; left: 64px; width: 860px; font-size: 34px; line-height: 1.38; color: var(--grey); font-weight: 500; }
+.body b { color: var(--ink); }
+.body .acc { color: var(--orange); }
+
+/* ---- capture windows (real screenshots only) ------------------------------------------------ */
+.win {
+  position: absolute; background: var(--card); border: 2px solid #E3DED7; border-radius: 18px;
+  box-shadow: var(--shadow); overflow: hidden; display: flex; flex-direction: column;
+}
+.win .bar { height: 34px; flex: none; background: #F2EFEA; border-bottom: 1px solid #E3DED7; display: flex; align-items: center; gap: 8px; padding-left: 14px; }
+.win .bar i { width: 11px; height: 11px; border-radius: 50%; background: #D3CDC5; display: block; }
+.win .bar i:first-child { background: #E8A08A; }
+.win .shot { flex: 1; width: 100%; min-height: 0; object-fit: cover; object-position: left top; display: block; }
+.win .cap {
+  position: absolute; left: 14px; bottom: 14px; font-size: 22px; font-weight: 700; color: var(--ink);
+  background: rgba(255, 255, 255, .94); border-radius: 8px; padding: 6px 12px; box-shadow: 0 2px 8px rgba(0,0,0,.12);
+}
+
+/* ---- pose + set piece: your own mascot's costume poses ($D/mascot/) and the deck's sets/ -------- */
+.pose, .set { position: absolute; display: block; }
+/* no mascot: the subject's real logo on a tile stands on the same feet line (square, data-w wide) */
+.pose.tile {
+  background: var(--card); border: 4px solid var(--ink); border-radius: 22%; padding: 14%;
+  box-shadow: 10px 10px 0 #F3D9CB; object-fit: contain;
+}
+/* kit samples only: a dashed box where your mascot (or a logo tile) goes; never left in a deck */
+.pose.slot {
+  border: 5px dashed var(--soft); border-radius: 28px; background: rgba(255, 255, 255, .55);
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 26px; line-height: 1.3;
+  color: var(--soft); text-transform: uppercase; letter-spacing: .06em;
+}
+.shadow { position: absolute; border-radius: 50%; background: radial-gradient(ellipse at center, rgba(17,17,17,.18) 0, rgba(17,17,17,.10) 45%, rgba(17,17,17,0) 72%); }
+
+/* ---- speech bubble (one line, Pixelify Sans) -------------------------------------------------- */
+.bubble {
+  position: absolute; background: #fff; border: 5px solid var(--ink); border-radius: 30px;
+  padding: 14px 26px 16px; font-family: 'Pixelify Sans', 'Inter', sans-serif; font-weight: 600; font-size: 36px;
+  line-height: 1.05; color: var(--ink); white-space: nowrap; box-shadow: 6px 6px 0 rgba(17,17,17,.12);
+}
+.bubble.mono { font-family: 'JetBrains Mono', monospace; font-size: 30px; font-weight: 700; }
+.bubble.mono .acc { color: var(--orange); }
+.bubble::after, .bubble::before { content: ''; position: absolute; width: 0; height: 0; border-style: solid; }
+/* tail: default points down-left; .tail-r points down-right */
+.bubble::before { left: 46px; bottom: -34px; border-width: 34px 30px 0 0; border-color: var(--ink) transparent transparent transparent; }
+.bubble::after  { left: 52px; bottom: -22px; border-width: 23px 19px 0 0; border-color: #fff transparent transparent transparent; }
+.bubble.tail-r::before { left: auto; right: 46px; border-width: 34px 0 0 30px; border-color: var(--ink) transparent transparent transparent; }
+.bubble.tail-r::after  { left: auto; right: 52px; border-width: 23px 0 0 19px; border-color: #fff transparent transparent transparent; }
+
+/* ---- icon rows -------------------------------------------------------------------------------- */
+.rows { position: absolute; display: flex; flex-direction: column; }
+.row { display: flex; gap: 22px; align-items: flex-start; padding: 22px 0; border-top: 2px solid var(--rule); }
+.row:first-child { border-top: 0; }
+.row .ic { flex: none; width: 46px; height: 46px; color: var(--orange); margin-top: 2px; }
+.row .ic svg { width: 46px; height: 46px; stroke-width: 2; }
+.row .tx { font-size: 30px; line-height: 1.32; color: var(--grey); font-weight: 500; }
+.row .tx b { color: var(--ink); }
+
+/* ---- cover pieces ----------------------------------------------------------------------------- */
+.promise {
+  position: absolute; background: var(--card); border: 3px solid var(--ink); border-radius: 26px;
+  box-shadow: 12px 12px 0 #F3D9CB; padding: 30px 36px; font-size: 44px; font-weight: 700; line-height: 1.15; letter-spacing: -0.02em;
+}
+.spark { position: absolute; width: 34px; height: 34px; color: var(--ink); }
+.spark.o { color: var(--orange); }
+.dots { position: absolute; display: flex; gap: 10px; }
+.dots i { width: 18px; height: 18px; border-radius: 50%; border: 3px solid var(--ink); display: block; }
+.dots i.on { background: var(--orange); border-color: var(--orange); }
+
+/* ---- callout pill / keyword box ----------------------------------------------------------------- */
+.pill {
+  position: absolute; display: flex; align-items: center; gap: 18px; background: var(--card); border: 2px solid var(--rule);
+  border-radius: 999px; padding: 18px 34px 18px 22px; box-shadow: var(--shadow); font-size: 30px; color: var(--grey); font-weight: 500; white-space: nowrap;
+}
+.pill .ic { width: 40px; height: 40px; color: var(--orange); }
+.pill .ic svg { width: 40px; height: 40px; }
+.keybox {
+  position: absolute; border: 5px solid var(--orange); border-radius: 30px; background: var(--card);
+  display: flex; align-items: center; justify-content: center; font-weight: 900; letter-spacing: -0.03em;
+}
+.keybox .kw { color: var(--orange); margin-left: .28em; }
+
+/* ---- code card: a prompt, command or config verbatim (peak / start pages) ---------------------- */
+.code {
+  position: absolute; background: #141414; color: #F5EBE0; border-radius: 20px; box-shadow: var(--shadow);
+  padding: 26px 32px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 30px; line-height: 1.4; white-space: pre-wrap;
+}
+.code .lbl { display: block; font-size: 22px; letter-spacing: .1em; text-transform: uppercase; color: var(--orange); margin-bottom: 12px; }

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S26 ink text card</title>
+<!--
+  S26 Whiteboard Doodle Showcase, ink text card: a prompt, command or config shown verbatim in the sketched
+  frame of a text-panel slide (peak, start, combo). It fills the frame's magenta capture zone edge to edge
+  with square corners (the zone mask trims them to the frame's inner radius). Frame inside on the item
+  layout is about 912 x 520; use the plate's measured --zones-only out bbox.
+    node shared/render-card.mjs cards/ink-card.html cards/ink-card.png --w 912 --h 520 --scale 2
+  Paste: python -I shared/composite.py plate out --card M2=cards/ink-card.png
+  Edit the label (optional, "" for none) and the text in <pre id="text"> verbatim (escape < > & as
+  &lt; &gt; &amp;). The fit pass picks the largest mono size from 22 to 40 px that fits; under 22 px
+  render-card exits 2 (cut the text).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<style>
+  .ink {
+    position: absolute; inset: 0; box-sizing: border-box; background: var(--ink-card);
+    padding: 1.1em 1.4em; overflow: hidden; font-size: 30px;
+    display: flex; flex-direction: column; justify-content: safe center;
+  }
+  .label { margin: 0 0 0.7em; font: 700 0.62em/1 "JetBrains Mono", monospace; letter-spacing: 0.22em; color: var(--counter); }
+  #text {
+    margin: 0; color: var(--cream);
+    font: 400 1em/1.5 "JetBrains Mono", Consolas, monospace;
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+</style>
+</head>
+<body>
+<div class="ink" data-fit>
+  <div class="label" id="label">PROMPT</div>
+<pre id="text">Use the Playwright MCP to open localhost:3000, sign up with a test email, and screenshot every step. If anything breaks, fix it and run the flow again until it passes.</pre>
+</div>
+<script>
+  window.cardReady = (async () => {
+    await document.fonts.ready;
+    const box = document.querySelector('.ink');
+    const label = document.getElementById('label');
+    if (!label.textContent.trim()) label.remove();
+    const fits = () => box.scrollHeight <= box.clientHeight + 0.5 && box.scrollWidth <= box.clientWidth + 0.5;
+    let lo = 22, hi = 40;
+    box.style.fontSize = hi + 'px';
+    if (!fits()) {
+      for (let i = 0; i < 20; i++) {
+        const mid = (lo + hi) / 2;
+        box.style.fontSize = mid + 'px';
+        if (fits()) lo = mid; else hi = mid;
+      }
+      hi = lo;
+    }
+    box.style.fontSize = hi + 'px';
+    const mono = [...document.fonts].some(f => f.family.replace(/"/g, '') === 'JetBrains Mono' && f.status === 'loaded');
+    window.cardInfo = { mono_px: +hi.toFixed(1), mono_font: mono ? 'JetBrains Mono' : 'fallback' };
+  })();
+</script>
+</body>
+</html>

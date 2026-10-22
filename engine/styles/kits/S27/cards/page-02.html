@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S27 page-02: carousel item (the tile, opened)</title>
+<!-- S27 Icon-Grid Cheat Sheet, layout: carousel item (the tile, opened). Sample strings: replace every one from storyboard strings[],
+     names / owner/repo / stars verified on posting day. Render:
+     node shared/render-card.mjs $D/cards/page-02.html $D/exports/slide-NN-YYYY-MM-DD.png --w 1080 --h 1350 --scale 1 --bg "#FBF8F3" --min-px 15 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=block" rel="stylesheet">
+<link rel="stylesheet" href="s27.css">
+</head>
+<body>
+<div class="it-top"><span class="badge">01</span><div class="minimap" style="grid-template-columns: repeat(3, 30px)"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></div></div>
+<div class="it-hero"><div class="icon mono">C</div><div class="txt"><div class="nm" data-fit data-max="88" data-min="56">Context7</div><div class="chip"><div class="gh"><img src="../logos/github-ink.png" alt=""></div><span class="or">upstash/context7</span><span class="star">&#9733; 63.1k</span></div></div></div>
+<div class="it-what" data-fit>Pulls current, version-specific library docs into Claude Code, so it stops guessing at APIs that changed.</div>
+<div class="it-shot"><img src="../shots/capture-a.png" alt=""></div>
+<div class="it-rows" data-fit>
+  <div class="it-row"><span class="lb">Replaces</span><span class="tx">Pasting docs pages into the chat by hand</span></div>
+  <div class="it-row"><span class="lb">Use it for</span><span class="tx">Any library that shipped a breaking change this year</span></div>
+</div>
+<div class="foot"><span class="avatar"></span><b>{{BRAND}}</b><span class="stamp">Oct 2026</span></div>
+<div class="counter">02 / 09</div>
+<script>
+// Fit pass: each [data-fit][data-max] steps down 2 px (floor data-min) until its box (itself, or the
+// closest [data-box]) stops overflowing. Anything still overflowing, or any [data-fit] tile, makes
+// render-card exit 2: shorten the copy or move to a layout with more room (4x2, 3 rows).
+window.cardReady = (async () => {
+  await document.fonts.ready;
+  const over = (el) => el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1;
+  for (const el of document.querySelectorAll('[data-fit][data-max]')) {
+    const box = el.closest('[data-box]') || el;
+    let px = +el.dataset.max;
+    const min = +el.dataset.min;
+    el.style.fontSize = px + 'px';
+    while ((over(box) || over(el)) && px > min) { px -= 2; el.style.fontSize = px + 'px'; }
+  }
+})();
+</script>
+</body>
+</html>

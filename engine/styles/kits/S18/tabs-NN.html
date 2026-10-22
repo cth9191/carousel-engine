@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>S18 Tab Row</title>
+<!--
+  S18 Folder-Tab Field Guide: the folder-tab row + 'NN / TT' counter for one interior page.
+  Copy to $D/cards/tabs-NN.html (NN = slide number) and edit only the JSON in <script id="data">.
+
+    tabs     3-5 labels. With 3 tabs: 8 characters or fewer ("02 BUILD"). With 4-5: the number alone ("04").
+    extra    true adds the EXTRA tab after the numbered ones.
+    lit      the lit (orange) tab: its 1-based position among the numbered tabs, or "EXTRA".
+    counter  "NN / TT" (this slide / total slides), ink, at the right end.
+
+  Render at the tab-row zone's --zones-only out bbox, 2x, on the plate cream sampled beside the strip:
+    node shared/render-card.mjs $D/cards/tabs-04.html $D/cards/tabs-04.png --w <bw> --h <bh> --scale 2 --bg "<cream>" --min-px 30
+  Fit pass: one label size for every tab, 40 px down to 34 px; the counter is 32 px. A rule break
+  (count, label length, lit tab) adds an overflowing [data-fit] .LIMIT element, so render-card exits 2
+  and prints the rule in the class name.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@700&family=Nunito:wght@900&display=block" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5EBE0;
+    --ink: #0E0E0E;
+    --cobalt: #3D7DC8;
+    --orange: #D9551F;
+    --gap: 6px;
+    --label: 40px;
+  }
+  html, body { margin: 0; width: 100%; height: 100%; background: transparent; overflow: hidden; }
+  .row { display: flex; align-items: stretch; width: 100%; height: 100%; }
+  .tabs { flex: 1; min-width: 0; display: flex; gap: var(--gap); }
+  .tab {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cobalt);
+    border-radius: min(28px, 38vh) min(28px, 38vh) 0 0;
+    padding: 6px 10px 0;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  .tab.lit { background: var(--orange); }
+  .tab span {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    font: 900 var(--label)/1.3 Nunito, sans-serif;
+    letter-spacing: 0.03em;
+    color: var(--cream);
+  }
+  .counter {
+    flex: none;
+    display: flex;
+    align-items: center;
+    padding: 4px 4px 0 22px;
+    font: 700 32px/1 Inter, sans-serif;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .LIMIT { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: hidden; visibility: hidden; }
+  .LIMIT i { display: block; width: 50px; height: 50px; }
+</style>
+</head>
+<body>
+<script id="data" type="application/json">
+{
+  "tabs": ["01 PLAN", "02 BUILD", "03 SHIP"],
+  "extra": true,
+  "lit": 2,
+  "counter": "04 / 08"
+}
+</script>
+<div class="row"><div class="tabs"></div><div class="counter"></div></div>
+<script>
+  const D = JSON.parse(document.getElementById('data').textContent);
+  const violations = [];
+  function violate(rule) {
+    violations.push(rule);
+    const el = document.createElement('div');
+    el.setAttribute('data-fit', '');
+    el.className = 'LIMIT ' + rule.replace(/[^A-Za-z0-9/.-]+/g, '_');
+    el.innerHTML = '<i></i>';
+    document.body.appendChild(el);
+  }
+
+  const tabs = Array.isArray(D.tabs) ? D.tabs : [];
+  if (tabs.length < 3 || tabs.length > 5) violate(`tabs-count-${tabs.length}-must-be-3-to-5`);
+  tabs.forEach((t, i) => {
+    const s = String(t);
+    if (tabs.length === 3 && s.length > 8) violate(`tab-${i + 1}-"${s}"-is-${s.length}-chars-max-8`);
+    if (tabs.length >= 4 && !/^\d{1,2}$/.test(s)) violate(`tab-${i + 1}-"${s}"-must-be-the-number-alone-with-4-5-tabs`);
+  });
+  if (!(D.lit === 'EXTRA' ? D.extra : Number.isInteger(D.lit) && D.lit >= 1 && D.lit <= tabs.length)) {
+    violate(`lit-${D.lit}-is-not-a-tab`);
+  }
+  if (!/^\d{2} \/ \d{2}$/.test(String(D.counter))) violate(`counter-"${D.counter}"-must-be-NN_/_TT`);
+
+  const wrap = document.querySelector('.tabs');
+  const labels = [...tabs, ...(D.extra ? ['EXTRA'] : [])];
+  labels.forEach((label, i) => {
+    const tab = document.createElement('div');
+    const isLit = D.lit === 'EXTRA' ? (D.extra && i === labels.length - 1) : i === D.lit - 1;
+    tab.className = 'tab' + (isLit ? ' lit' : '');
+    const span = document.createElement('span');
+    span.setAttribute('data-fit', '');
+    span.textContent = label;
+    tab.appendChild(span);
+    wrap.appendChild(tab);
+  });
+  document.querySelector('.counter').textContent = D.counter;
+
+  window.cardReady = (async () => {
+    await document.fonts.ready;
+    const root = document.documentElement;
+    const spans = [...document.querySelectorAll('.tab span')];
+    const fits = () => spans.every(s => s.scrollWidth <= s.clientWidth + 0.5);
+    let px = 40;
+    root.style.setProperty('--label', px + 'px');
+    while (!fits() && px > 34) { px -= 0.5; root.style.setProperty('--label', px + 'px'); }
+    window.cardInfo = { label_px: px, tabs: labels.length, lit: D.lit, counter: D.counter, violations };
+  })();
+</script>
+</body>
+</html>

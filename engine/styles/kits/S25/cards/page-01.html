@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S25 page 01: cover</title>
+<!-- S25 Soft-UI Step Guide, layout: cover. Sample strings: replace every one from storyboard strings[].
+     Render: node shared/render-card.mjs $D/cards/page-01.html $D/exports/slide-01-YYYY-MM-DD.png --w 1080 --h 1350 --scale 1 --min-px 22 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=block" rel="stylesheet">
+<link rel="stylesheet" href="s25.css">
+<script src="icons.js"></script>
+<script src="s25.js"></script>
+</head>
+<body class="on-plate">
+<div class="hdr"><img src="../logos/avatar.png" alt=""><span>{{BRAND}}</span></div>
+<div class="count">01 / 10</div>
+<div class="cv-stack" data-fit>
+  <div class="cn" data-fit data-max="56" data-min="50">How to set up</div>
+  <div class="gi" data-fit data-max="136" data-min="110">Claude Code</div>
+  <div class="cn hair" data-fit data-max="56" data-min="50">the right way</div>
+  <div class="last" data-fit data-max="84" data-min="72">in <em>3 steps</em></div>
+</div>
+
+<svg class="cv-wires" viewBox="0 0 1080 1350" aria-hidden="true">
+  <path d="M362 680 C420 680 420 695 466 695"/><circle cx="362" cy="680" r="5"/><circle cx="466" cy="695" r="5"/>
+  <path d="M614 695 C668 695 668 712 724 712"/><circle cx="614" cy="695" r="5"/><circle cx="724" cy="712" r="5"/>
+</svg>
+<div class="cv-hub"><img src="../logos/claude-orange.png" alt="Claude"></div>
+<div class="cv-chip" style="left:118px; top:638px; transform:rotate(-3deg)"><span class="gl"><i data-lucide="terminal"></i></span>Terminal</div>
+<div class="cv-chip" style="left:724px; top:670px; transform:rotate(3deg)"><img src="../logos/github-ink.png" alt="GitHub">GitHub</div>
+
+<div class="cv-card cv-ui" style="left:40px; top:846px; transform:rotate(-4deg)">
+  <div class="lb">Permission mode</div>
+  <div class="opt"><span class="rd"></span>default</div>
+  <div class="opt on"><span class="rd"></span>acceptEdits</div>
+  <div class="opt"><span class="rd"></span>plan</div>
+</div>
+<div class="cv-card cv-sticky" style="left:758px; top:850px; transform:rotate(3deg)">
+  <div class="it"><span class="ck"><i data-lucide="check"></i></span>Install it</div>
+  <div class="it"><span class="ck"><i data-lucide="check"></i></span>Plug in tools</div>
+  <div class="it"><span class="ck"><i data-lucide="check"></i></span>Run a real task</div>
+</div>
+<div class="cv-card cv-term" style="left:64px; top:1106px; width:auto; transform:rotate(-2deg)">
+  <div class="bar"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i></div>
+  <pre><span class="p">$</span> npm install -g @anthropic-ai/claude-code</pre>
+</div>
+
+<div class="cv-banner"><span class="ring"><img src="../logos/claude-orange.png" alt=""></span>
+  <span class="tx" data-fit data-max="32" data-min="28">From zero to your <b>first real edit</b> in one sitting.</span></div>
+<script>
+// Fit pass: every [data-fit][data-max] steps down 2 px at a time (floor data-min) until its box stops
+// overflowing. Whatever still overflows (or any [data-fit] box) makes render-card exit 2: shorten the copy.
+window.cardReady = (async () => {
+  await document.fonts.ready;
+  S25.prep();
+  const over = (el) => el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1;
+  for (const el of document.querySelectorAll('[data-fit][data-max]')) {
+    let px = +el.dataset.max;
+    const min = +el.dataset.min;
+    el.style.fontSize = px + 'px';
+    while (over(el) && px > min) { px -= 2; el.style.fontSize = px + 'px'; }
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S20 proof tree</title>
+<!--
+  S20 Slate Family Tree, proof tree. Zone proof band 8-92% x 61-88% = 907 x 365 (2.49:1) (CSS px on the 1080 x 1350 slide; use the plate's measured
+  --zones-only out bbox when it differs). Transparent: render WITHOUT --bg.
+    node shared/render-card.mjs cards/tree-proof.html cards/tree-proof.png --w 907 --h 365 --scale 2
+  Edit only the JSON below. See README.md for the limits.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+</head>
+<body>
+<script id="data" type="application/json">
+{
+  "variant": "proof",
+  "definition": "Plan mode reads the code and proposes steps before it edits anything.",
+  "children": [
+    {
+      "name": "Reads first",
+      "chips": [
+        "No edits yet",
+        "Maps the repo"
+      ]
+    },
+    {
+      "name": "Asks you",
+      "start": true,
+      "chips": [
+        "Approve plan",
+        "`Shift+Tab`"
+      ]
+    },
+    {
+      "name": "Then builds",
+      "chips": [
+        "Step by step",
+        "Checks tests"
+      ]
+    }
+  ]
+}
+</script>
+<script src="tree.js"></script>
+</body>
+</html>

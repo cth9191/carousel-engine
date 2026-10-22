@@ -9,7 +9,7 @@
     "topic": { "type": "string" },
     "spine": { "enum": ["A", "B", "C", "D"] },
     "style": { "type": ["string", "null"], "description": "Style card id from engine/styles (e.g. S03); null until the user picks" },
-    "format": { "enum": ["carousel", "single"], "default": "carousel", "description": "carousel (default): 5 slides or more. single: a one-image post with exactly one slide, for a style with a one-page layout; its gates are in engine/spines.md ('Format single'). The minimum-slides rule is relaxed for single only" },
+    "format": { "enum": ["carousel", "single"], "default": "carousel", "description": "carousel (default): 5 slides or more. single: a one-image post with exactly one slide, for a style with a one-page layout such as S27 Icon-Grid Cheat Sheet; its gates are in engine/spines.md ('Format single'). The minimum-slides rule is relaxed for single only" },
     "hook": {
       "type": "object",
       "required": ["main", "formula", "score"],
@@ -55,11 +55,7 @@
             "type": "array",
             "description": "Every visible string on the slide, verbatim, with placement and intended occurrence count",
             "items": { "type": "object", "required": ["text", "place"],
-              "properties": {
-                "text": { "type": "string" },
-                "place": { "type": "string", "description": "Where the string sits on the slide. Three values are reserved: \"headline\" (every line of the headline), \"counter\" (the NN / TT page counter) and \"chrome\" (the brand header or footer). They are handled specially: the cold reader prints the slide's headline field once and skips headline and counter strings, and shows a chrome string only on the first slide where it appears; the brief card leaves all three out of its \"everything else on the slide\" column. Any other value is free-form (eyebrow, body, caption, panel-label, ...)." },
-                "count": { "type": "integer", "default": 1 }
-              } }
+              "properties": { "text": { "type": "string" }, "place": { "type": "string", "description": "Where the string sits on the slide. Three values are reserved: \"headline\" (every line of the headline), \"counter\" (the NN / TT page counter) and \"chrome\" (the brand header or footer). They are handled specially: the cold reader prints the slide's headline field once and skips headline and counter strings, and shows a chrome string only on the first slide where it appears; the brief card leaves all three out of its \"everything else on the slide\" column. Any other value is free-form (eyebrow, body, caption, panel-label, ...)." }, "count": { "type": "integer", "default": 1 } } }
           },
           "evidence": {
             "type": "object",
@@ -74,11 +70,11 @@
           "logos": { "type": "array", "items": { "type": "string" } },
           "layout": {
             "type": "string",
-            "description": "The style card's layout for this slide (optional; the role still sets the job): one of the layout names in the style's engine/styles/<id>-*.prompt.md"
+            "description": "The style card's layout for this slide (optional; the role still sets the job). Values per style: S16 overview-cover | system-cover | explain | compare | proof | parts | inspector | uses | payoff | cta (its 'Layouts by role'). S20 cover | family | proof-family | mix | cta. S22 atlas (the template's layout:'atlas'; the role picks the layer, index, combo or CTA sheet). S23 before-after | capture | chart-audit | split | triptych | plain | cta. S24 cover | dossier | proof | verdict | cta. S25 cover | step | definition | rows | cta. S27 cover | item | combo | cta. S28 cover | item | before-after | combo | cta. Any other style: the layout names in its engine/styles/<id>-*.prompt.md"
           },
           "cards": {
             "type": "array",
-            "description": "HTML cards rendered with shared/render-card.mjs and pasted into this slide's zones (hybrid styles)",
+            "description": "HTML cards rendered with shared/render-card.mjs and pasted into this slide's zones (S23, S24 and other hybrid styles)",
             "items": {
               "type": "object",
               "required": ["zone", "html"],
@@ -89,7 +85,15 @@
               }
             }
           },
-          "star": { "type": "boolean", "description": "The item the cover payoff leans on. At most one per deck" }
+          "star": { "type": "boolean", "description": "The item the cover payoff leans on. At most one per deck; S23 needs exactly one" },
+          "beam": {
+            "description": "S24 stage-beam colour: one per item slide; cover and CTA list every item's colour in order",
+            "anyOf": [
+              { "$ref": "#/$defs/beam" },
+              { "type": "array", "items": { "$ref": "#/$defs/beam" }, "minItems": 1 }
+            ]
+          },
+          "graph": { "$ref": "#/$defs/graph" }
         }
       }
     },
@@ -108,9 +112,66 @@
       "then": { "properties": { "slides": { "minItems": 1, "maxItems": 1 } } },
       "else": { "properties": { "slides": { "minItems": 5 } } }
     },
-    { "properties": { "slides": { "contains": { "$ref": "#/$defs/starred" }, "minContains": 0, "maxContains": 1 } } }
+    { "properties": { "slides": { "contains": { "$ref": "#/$defs/starred" }, "minContains": 0, "maxContains": 1 } } },
+    {
+      "if": { "properties": { "style": { "const": "S23" } }, "required": ["style"] },
+      "then": { "properties": { "slides": { "contains": { "$ref": "#/$defs/starred" }, "minContains": 1, "maxContains": 1 } } }
+    }
   ],
   "$defs": {
-    "starred": { "type": "object", "required": ["star"], "properties": { "star": { "const": true } } }
+    "starred": { "type": "object", "required": ["star"], "properties": { "star": { "const": true } } },
+    "beam": { "enum": ["amber", "sage", "apricot", "kraft"], "description": "S24 beams: amber #E8A33D, sage #8FAF6E, apricot (from Claude orange #D9551F), kraft #B08A62" },
+    "graph": {
+      "type": "object",
+      "description": "S16 node pipeline: one source for the kit, the stopgap prompts and QA (count nodes, diamonds, branches and the loop against it). Every node label is also a strings[] entry, verbatim, and the labels go into evidence.describe for the cold reader",
+      "required": ["rows", "nodes"],
+      "properties": {
+        "rows": {
+          "type": "array",
+          "description": "Node ids top to bottom, one array per row, left to right (1-4 nodes a row; the layout caps rows and nodes). Badges run 1 to N in this reading order",
+          "items": { "type": "array", "items": { "type": "string" }, "minItems": 1, "maxItems": 4 },
+          "minItems": 1
+        },
+        "nodes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "label", "kind"],
+            "properties": {
+              "id": { "type": "string" },
+              "label": { "type": "string", "description": "3 words or fewer (2 on the image-native stopgap); never Input / Output / Process" },
+              "kind": { "enum": ["step", "decision", "tool"], "description": "step: circle · decision: diamond · tool: tool node carrying a real logo" },
+              "icon": { "type": "string", "description": "Lucide glyph name from shared/vendor/lucide/ (step and decision nodes)" },
+              "logo": { "type": "string", "description": "Real logo file for a tool node, e.g. logos/claude-white.png; never drawn" },
+              "state": { "enum": ["done", "live", "ghost"], "default": "done", "description": "Rail state on inspector/step slides: done, live (current, in the accent) or ghost (later)" },
+              "sub": { "type": "string", "description": "Optional sub-label (parts diagram), 8 words or fewer" }
+            }
+          }
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["from", "to"],
+            "properties": {
+              "from": { "type": "string" },
+              "to": { "type": "string" },
+              "kind": { "enum": ["taken", "ghost"], "default": "taken", "description": "taken: beaded connector · ghost: dashed path not taken" }
+            }
+          }
+        },
+        "loop": {
+          "type": "object",
+          "description": "At most one loop: a beaded arc on the right from a later node back to an earlier one",
+          "required": ["from", "to", "tag"],
+          "properties": {
+            "from": { "type": "string" },
+            "to": { "type": "string" },
+            "tag": { "type": "string", "description": "3 words or fewer, e.g. 'until it passes'" }
+          }
+        }
+      }
+    }
   }
 }

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S10 Cover</title>
+<!--
+  S10 Command-Press Blueprint: the cover, in HTML (exact text), matching templates/03-command-press.
+  Copy to $D/cover.html with kit.css and kit.js beside it, edit only the JSON, then render the slide:
+    node shared/render-card.mjs $D/cover.html $D/cover.png --w 1080 --h 1350 --scale 2 --bg "#ECE3D4" --min-px 16
+  Template 03's slides[0] = { cover:true, coverImg:'cover.png' } then bakes it as slide 1.
+
+    layout   "stack": 3-4 giant Anton lines, last line orange (type only, no Codex)
+             "fig":   2-3 Anton lines over FIG.0, a Codex drawing plate (S10 block, FIG PLATE) in fig.src.
+                      Required for spine D (the N parts as balloons 1..N) and the default for spine A / C.
+    chip     ink chip, top left, 16 characters or fewer (e.g. "OPEN SOURCE", "SKILL KIT")
+    eyebrow  mono caps line, 40 characters or fewer; wrap the accent phrase in *stars* (orange)
+    lines    the Anton headline, one string per line, 12 characters or fewer each; the last line is orange
+    fig      { "src": "fig-0.png" (fig layout only; a white-ground FIG plate, multiplied onto the grid),
+               "fit": "contain" (default: the whole 3:2 plate, about 710x474 in the 920x474 box) or "cover"
+                      (fills the box width and crops the plate's top and bottom: only for a drawing that keeps
+                      its middle 62% band, e.g. a left-to-right mechanism),
+               "caption": "FIG.0 — …" 46 characters or fewer, a plain fact, not a slogan }
+    cmd      the exact name a reader types, 22 characters or fewer ("/last30days"); a leading / turns orange
+    stat     one verified figure for the box's right end, 12 characters or fewer ("★ 54,000+"), or ""
+    sheet    "SHEET 01 / TT" with the real total
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script id="data" type="application/json">
+{
+  "layout": "fig",
+  "chip": "NOTE SYSTEM",
+  "eyebrow": "THE *4-PART* NOTES BUILD",
+  "lines": ["YOUR NOTES,", "LINKED."],
+  "fig": { "src": "samples/smoke-fig-0-plate.png", "fit": "contain", "caption": "FIG.0 — notes, tags, links, index" },
+  "cmd": "/link-notes",
+  "stat": "4 PARTS",
+  "sheet": "SHEET 01 / 08"
+}
+</script>
+</head>
+<body>
+<script src="kit.js"></script>
+<script>
+KIT.ready((d) => {
+  const fig = d.layout === 'fig';
+  const lines = d.lines || [];
+  KIT.limit(fig ? lines.length >= 2 && lines.length <= 3 : lines.length >= 3 && lines.length <= 4, 'lines-count-stack-3-4-fig-2-3');
+  KIT.limit(lines.every((l) => l.length <= 12), 'line-over-12-chars');
+  KIT.limit(String(d.chip).length <= 16, 'chip-over-16-chars');
+  KIT.limit(String(d.eyebrow).replace(/\*/g, '').length <= 40, 'eyebrow-over-40-chars');
+  KIT.limit(String(d.cmd).length <= 22, 'cmd-over-22-chars');
+  KIT.limit(String(d.stat || '').length <= 12, 'stat-over-12-chars');
+  KIT.limit(String((d.fig || {}).caption || '').length <= 46, 'fig-caption-over-46-chars');
+  if (fig) KIT.limit(!!(d.fig && d.fig.src), 'fig-layout-needs-fig-src');
+  const eb = KIT.esc(d.eyebrow).replace(/\*([^*]+)\*/g, '<span class="star">$1</span>');
+  const cmd = KIT.esc(d.cmd).replace(/^\//, '<span class="slash">/</span>');
+  // fill the height the layout gives the stack (lines are 0.9em): stack y 226-990, fig y 226-560
+  const maxPx = Math.floor(Math.min(fig ? 200 : 300, (fig ? 334 : 764) / (0.9 * Math.max(1, lines.length))));
+  document.body.insertAdjacentHTML('beforeend', `
+  <div class="cv ${fig ? 'fig' : 'stack'}">
+    <div class="frame"></div>
+    <div class="dim-top"></div><div class="dim-label">1080 PX</div>
+    <div class="xh" style="top:30px;left:30px"></div><div class="xh" style="top:30px;right:30px"></div>
+    <div class="xh" style="bottom:30px;left:30px"></div><div class="xh" style="bottom:30px;right:30px"></div>
+    <div class="chip">${KIT.esc(d.chip)}</div>
+    <div class="rev"><span>REV A</span><span class="tri"></span></div>
+    <div class="eyebrow">${eb}</div>
+    <div class="stackln" id="stack">${lines.map((l, i) => `<div class="ln${i === lines.length - 1 ? ' hot' : ''}">${KIT.esc(l)}</div>`).join('')}</div>
+    ${fig ? `<div class="figbox"><img src="${KIT.esc(d.fig.src)}" alt="" style="object-fit:${d.fig.fit === 'cover' ? 'cover' : 'contain'}"></div>` : ''}
+    <div class="underdim"></div>
+    <div class="figln">${KIT.esc((d.fig || {}).caption || '')}</div>
+    <div class="cmdbox"><span class="cmd">${cmd}</span>${d.stat ? `<span class="stat">${KIT.esc(d.stat)}</span>` : ''}</div>
+    <div class="sheet">${KIT.esc(d.sheet)}</div>
+    <div class="swipe">SWIPE <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg></div>
+  </div>`);
+  // Anton stack: one size for every line, the largest that keeps the widest line inside the margins
+  // measure only once Anton is in (a fallback face is wider and would shrink the stack)
+  const st = document.getElementById('stack');
+  const img = document.querySelector('.figbox img');
+  return document.fonts.load('100px Anton').then(() => {
+    let px = maxPx;
+    st.style.fontSize = px + 'px';
+    while (st.scrollWidth > 920 && px > 90) { px -= 2; st.style.fontSize = px + 'px'; }
+    KIT.limit(st.scrollWidth <= 920, 'headline-too-wide-at-90px');
+    window.cardInfo = { headlinePx: px };
+    return img ? img.decode().catch(() => KIT.limit(false, 'fig-src-did-not-load')) : null;
+  });
+});
+</script>
+</body>
+</html>

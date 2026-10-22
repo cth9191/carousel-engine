@@ -1,0 +1,49 @@
+{
+  "id": "06-landscape-specimen",
+  "name": "Landscape Specimen",
+  "version": "1.0.0",
+  "style": "S15",
+  "tagline": "A landscape plate per item with the name set giant in the sky as a two-font specimen, masthead row, BACK/NEXT nav.",
+  "whenToUse": [
+    "Top-N tools, plugins and repos listicles (spine C), one item per landscape",
+    "'Best X + Y pairings' decks (combo layout)",
+    "Not head-to-heads or how-it-works explainers"
+  ],
+  "production": "hybrid: a text-free Codex landscape plate per slide, fitted by composite.py; this overlay sets every word and all chrome",
+  "format": {
+    "width": 1080,
+    "height": 1350,
+    "ratio": "4:5"
+  },
+  "layouts": {
+    "cover": "cover set (Inter Black kicker, Playfair Display Black Italic hero, Inter Bold outcome) in 12-43%",
+    "item": "kicker, giant name, caption, use line, proof line in 12-52%",
+    "stake": "P3 giant number or two-word stake, kicker, caption in 12-52%",
+    "proof": "full stack in 11-44% (giant and caption one line), capture card on the horizon (46-88%)",
+    "combo": "kicker = tool A, giant = tool B, one-line caption flanked by two real app icons, use line",
+    "cta": "kicker 'comment' (Playfair italic), keyword in P3 caps (6 chars) else P2 caps, caption"
+  },
+  "pairings": {
+    "P1": "Playfair Display Italic 400 over Inter Black (-0.05em, own case), 10 characters",
+    "P2": "Instrument Serif 400 over Archivo wdth 62 wght 900 italic, 12 characters",
+    "P3": "Inter Medium over Archivo wdth 125 wght 900, 6 characters or two short words on two lines"
+  },
+  "fonts": "Google Fonts: Playfair Display (italic 400, 900), Instrument Serif, Archivo (variable wdth 62-125, italics), Inter, JetBrains Mono",
+  "palette": {
+    "ink": "#0E0E0E or #FFFFFF, whichever clears WCAG contrast on the plate (shared/sky-tone.mjs)",
+    "accent": "#D9551F orange: the nav pill only (ink bold number on it)",
+    "cream": "#F5EBE0 capture-card border"
+  },
+  "dataFlow": "One copy of overlay.html per slide as <deck>/cards/slide-NN.html ({{BRAND}} filled in); edit only its slide-data JSON. sky-tone.mjs stamps tone onto <body> data attributes.",
+  "tools": {
+    "tone": "node shared/sky-tone.mjs <deck>",
+    "render": "node shared/render-card.mjs <deck>/cards/slide-NN.html <deck>/final/slide-NN.png --w 1080 --h 1350 --scale 1"
+  },
+  "files": {
+    "overlay.html": "copy per slide to <deck>/cards/slide-NN.html, edit the slide-data JSON",
+    "recipe.md": "full how-to, data schema, pitfalls",
+    "preview.png": "cover / item / proof / CTA over the sample plates",
+    "samples/": "stand-in test plates (plates/), sample renders of every layout, slides.sample.json with their data"
+  },
+  "exportNaming": "copy final/slide-NN.png to exports/slide-NN-YYYY-MM-DD.png (date from the deck folder name)"
+}

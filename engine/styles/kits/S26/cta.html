@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S26 CTA card</title>
+<!--
+  S26 Whiteboard Doodle Showcase, CTA card. CTA text zone x 80-1000, y 64-830 = 920 x 766.
+    node shared/render-card.mjs cards/cta.html cards/cta.png --w 920 --h 766 --scale 2 --bg "#FBF8F3"
+  --bg = the plate ground sampled beside the zone (#FBF8F3 on a clean plate). Use the plate's measured
+  --zones-only out bbox for --w/--h. Paste: python -I shared/composite.py plate out --card MN=cards/cta.png
+  Edit only the JSON below. Fields: lines with {keyword} where the orange keyword goes (curly quotes added); keyword; counter.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shantell+Sans:wght@500;800&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+</head>
+<body data-card="cta">
+<script id="data" type="application/json">
+{
+  "counter": "08 / 08",
+  "keyword": "SKILLS",
+  "lines": [
+    "Comment {keyword}",
+    "and I'll DM you all 7",
+    "with install commands"
+  ]
+}
+</script>
+<script src="kit.js"></script>
+</body>
+</html>

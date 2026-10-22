@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S23 Output File</title>
+<!--
+  S23 Crop-Mark Proof Sheet: the output-file face on the right of a triptych (input -> skill -> output).
+  A command title row, the file it wrote, then icon + label rows. Folded orange corner top-right, as the plate.
+  Copy to $D/cards/file-NN.html together with icons.js and edit only the JSON in <script id="data">.
+
+    command  exact lowercase command, 18 characters or fewer
+    file     the output file it wrote, as named on disk (24 characters or fewer)
+    rows     3-5 rows, each { icon (a name in icons.js, from shared/vendor/lucide), label (14 characters or
+             fewer, mono caps), value (22 characters or fewer, from the real output) }
+
+  Render at the zone's --zones-only out bbox x2 (about 262x374, 0.7:1):
+    node shared/render-card.mjs $D/cards/file-06.html $D/cards/file-06.png --w 262 --h 374 --scale 2
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script src="icons.js"></script>
+<script id="data" type="application/json">
+{
+  "command": "/last30days",
+  "file": "notes/brief.md",
+  "rows": [
+    { "icon": "message-square", "label": "Reddit", "value": "214 threads, 9 subs" },
+    { "icon": "activity", "label": "X", "value": "1.2K posts scored" },
+    { "icon": "list", "label": "Hacker News", "value": "38 threads" },
+    { "icon": "git-branch", "label": "GitHub", "value": "12 repos trending" },
+    { "icon": "trending-up", "label": "Verdict", "value": "rising, 3 open asks" }
+  ]
+}
+</script>
+</head>
+<body>
+<script src="kit.js"></script>
+<script>
+KIT.ready((d) => {
+  KIT.limit(String(d.command).length <= 18, 'command-over-18-chars');
+  KIT.limit(d.command === String(d.command).toLowerCase(), 'command-not-lowercase');
+  KIT.limit(String(d.file).length <= 24, 'file-over-24-chars');
+  KIT.limit(d.rows.length >= 3 && d.rows.length <= 5, 'rows-not-3-to-5');
+  KIT.limit(d.rows.every((r) => r.label.length <= 14 && r.value.length <= 22), 'row-label-or-value-too-long');
+  KIT.limit(d.rows.every((r) => window.LUCIDE[r.icon]), 'icon-not-in-icons-js');
+  const icon = (n) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${window.LUCIDE[n] || ''}</svg>`;
+  document.body.insertAdjacentHTML('beforeend', `
+    <div class="file">
+      <div class="fold"></div>
+      <div class="f-title" data-fit>${KIT.esc(d.command)}</div>
+      <div class="f-out" data-fit>&rarr; <b>${KIT.esc(d.file)}</b></div>
+      <div class="f-rows">${d.rows.map((r) => `
+        <div class="f-row">${icon(r.icon)}<div><div class="f-lbl">${KIT.esc(r.label)}</div><div class="f-val">${KIT.esc(r.value)}</div></div></div>`).join('')}
+      </div>
+    </div>`);
+});
+</script>
+</body>
+</html>

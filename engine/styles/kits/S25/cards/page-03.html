@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S25 page 03: step (why, no pill)</title>
+<!-- S25 Soft-UI Step Guide, layout: step (why, no pill). Sample strings: replace every one from storyboard strings[].
+     Render: node shared/render-card.mjs $D/cards/page-03.html $D/exports/slide-03-YYYY-MM-DD.png --w 1080 --h 1350 --scale 1 --min-px 22 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=block" rel="stylesheet">
+<link rel="stylesheet" href="s25.css">
+<script src="icons.js"></script>
+<script src="s25.js"></script>
+</head>
+<body>
+<div class="hdr"><img src="../logos/avatar.png" alt=""><span>{{BRAND}}</span></div>
+<div class="count">03 / 10</div>
+<svg class="traces" viewBox="0 0 1080 1350" aria-hidden="true">
+  <path class="tr" d="M1080 548 H870 a18 18 0 0 0 -18 18 V700"/><circle class="node" cx="852" cy="700" r="5"/>
+  <path class="tr" d="M0 880 H32 a18 18 0 0 1 18 18 V1020"/><circle class="node" cx="50" cy="1020" r="5"/>
+</svg>
+<div class="main" data-fit>
+  <div class="kickrow"><span class="kicker">Why switch</span></div>
+  <h1 class="hl" data-fit data-max="112" data-min="96">Stop pasting code into chat</h1>
+  <p class="body" data-fit data-max="32" data-min="30"><b>Old way:</b> copy a snippet out, paste the fix back and hope it matches. <b>New way:</b> Claude Code reads the whole repo and makes the edit itself.</p>
+  <div class="modzone">
+    <div class="capture" style="width:900px; height:400px"><img class="shot" src="../shots/capture-b.png" alt=""></div>
+  </div>
+</div>
+<div class="foot">
+  <span class="callout"><span class="ic"><i data-lucide="sparkles"></i></span><span class="tx">One prompt in, <b>a reviewed diff</b> out</span></span>
+</div>
+<script>
+// Fit pass: every [data-fit][data-max] steps down 2 px at a time (floor data-min) until its box stops
+// overflowing. Whatever still overflows (or any [data-fit] box) makes render-card exit 2: shorten the copy.
+window.cardReady = (async () => {
+  await document.fonts.ready;
+  S25.prep();
+  const over = (el) => el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1;
+  for (const el of document.querySelectorAll('[data-fit][data-max]')) {
+    let px = +el.dataset.max;
+    const min = +el.dataset.min;
+    el.style.fontSize = px + 'px';
+    while (over(el) && px > min) { px -= 2; el.style.fontSize = px + 'px'; }
+  }
+})();
+</script>
+</body>
+</html>

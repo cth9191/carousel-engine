@@ -1,0 +1,86 @@
+/* S14 Scenic Painterly: tokens + components. Spec: engine/styles/S14-scenic-painterly.prompt.md.
+   Canvas 1080 x 1350, 1 CSS px = 1 final px, over a fitted text-free painted plate. Type tone comes from
+   shared/sky-tone.mjs (body data-mast / data-stack / data-nav / data-scrim*): "white" means cream here. */
+:root {
+  --cream: #F5EBE0;
+  --ink: #2A1E16;          /* warm ink for a pale sky */
+  --orange: #D9551F;
+  --paper: #F4ECDD;
+  --paper-edge: #E4D6BF;
+  --grey: #6E6257;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1350px; overflow: hidden; }
+body {
+  position: relative; background: #C9A46A center / 1080px 1350px no-repeat; color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+}
+.scrim { position: absolute; pointer-events: none; }
+
+/* ---- tone ----------------------------------------------------------------------------------- */
+.mast, .stack, .foot { color: var(--ink); }
+body[data-mast="white"] .mast,
+body[data-stack="white"] .stack,
+body[data-nav="white"] .foot { color: var(--cream); }
+body[data-stack="white"] .stack .hl { text-shadow: 0 2px 0 rgba(42,30,22,.18), 0 6px 22px rgba(42,30,22,.35); }
+body:not([data-stack="white"]) .stack .hl { text-shadow: 0 2px 18px rgba(245,235,224,.45); }
+body[data-mast="white"] .mast .count { border-color: rgba(245,235,224,.8); }
+.acc { color: var(--orange); }
+body[data-stack="white"] .acc { color: #E8662C; }   /* a touch lighter on dark skies, same orange family */
+
+/* ---- header row + footer mantra ------------------------------------------------------------- */
+.mast {
+  position: absolute; left: 104px; right: 104px; top: 46px; height: 44px; display: flex; justify-content: space-between; align-items: center;
+  font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 22px; letter-spacing: .1em; text-transform: uppercase;
+}
+.mast .count { border: 2px solid rgba(42,30,22,.7); border-radius: 8px; padding: 4px 12px; letter-spacing: .06em; }
+.foot {
+  position: absolute; left: 104px; right: 104px; bottom: 44px; text-align: center;
+  font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 22px; letter-spacing: .1em; text-transform: uppercase;
+}
+
+/* ---- headline: Didone, two lines --------------------------------------------------------------- */
+.stack { position: absolute; left: 104px; width: 872px; text-align: center; }
+.hl { font-family: 'Playfair Display', serif; font-weight: 800; letter-spacing: -0.015em; line-height: 1.0; }
+.hl span { display: block; }
+
+/* ---- paper list card ------------------------------------------------------------------------- */
+.list {
+  position: absolute; left: 80px; width: 920px; background: var(--paper); border-radius: 26px; padding: 30px 40px 26px;
+  box-shadow: 0 2px 0 var(--paper-edge), 0 22px 50px rgba(30,20,10,.32), 0 4px 12px rgba(30,20,10,.18);
+}
+.list .lab { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 22px; letter-spacing: .1em; color: var(--orange); text-transform: uppercase; margin-bottom: 8px; }
+.list .item { display: grid; grid-template-columns: 50px 1fr auto; column-gap: 14px; align-items: baseline; padding: 11px 0; border-top: 1.5px solid var(--paper-edge); }
+.list .item:first-of-type { border-top: 0; }
+.list .n { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 24px; color: var(--orange); }
+.list .nm { font-weight: 700; font-size: 29px; color: #1B140F; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: clip; }
+.list .wh { grid-column: 2 / 4; font-weight: 500; font-size: 24px; color: var(--grey); line-height: 1.25; }
+.list .pf { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 22px; color: #1B140F; white-space: nowrap; }
+
+/* ---- capture window (cover, proof) --------------------------------------------------------------- */
+.win { position: absolute; background: #fff; border-radius: 18px; overflow: hidden; border: 8px solid var(--paper);
+  box-shadow: 0 24px 50px rgba(30,20,10,.38); display: flex; flex-direction: column; transform: rotate(2deg); }
+.win .bar { height: 30px; flex: none; background: #EFE7DA; display: flex; align-items: center; gap: 8px; padding-left: 12px; }
+.win .bar i { width: 10px; height: 10px; border-radius: 50%; background: #CFC4B4; display: block; }
+.win .bar i:first-child { background: var(--orange); }
+.win img { flex: 1; min-height: 0; width: 100%; object-fit: cover; object-position: left top; display: block; }
+/* kit samples only: a dashed stand-in where the real capture goes */
+.win .ph { flex: 1; margin: 18px; border: 4px dashed #B9AC99; border-radius: 12px; display: flex; align-items: center;
+  justify-content: center; text-align: center; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 24px;
+  line-height: 1.35; letter-spacing: .06em; text-transform: uppercase; color: #8A7D6C; background: #FBF7F0; }
+
+/* ---- cover stack ---------------------------------------------------------------------------- */
+.cover .stack { text-align: left; }
+.big { font-family: 'Playfair Display', serif; font-weight: 900; line-height: .86; color: var(--orange); letter-spacing: -0.02em; }
+.big { text-shadow: 0 3px 0 rgba(42,30,22,.30), 0 10px 28px rgba(42,30,22,.30); }
+
+/* ---- optional mascot pose (your own transparent PNG) on the plate's clear spot ------------------ */
+.pose { position: absolute; display: block; }
+.shadow { position: absolute; border-radius: 50%; background: radial-gradient(ellipse at center, rgba(28,36,14,.42) 0, rgba(28,36,14,.22) 45%, rgba(28,36,14,0) 72%); }
+
+/* ---- CTA keyword card ------------------------------------------------------------------------- */
+.key { position: absolute; left: 110px; width: 860px; background: var(--paper); border-radius: 26px; text-align: center; padding: 36px 40px;
+  box-shadow: 0 22px 50px rgba(30,20,10,.32); }
+.key .q { font-family: 'Playfair Display', serif; font-weight: 800; font-size: 96px; line-height: 1; color: #1B140F; }
+.key .q .kw { color: var(--orange); }
+.key .sub { margin-top: 18px; font-weight: 600; font-size: 32px; color: var(--grey); }

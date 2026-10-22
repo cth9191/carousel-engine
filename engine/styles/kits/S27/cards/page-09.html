@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S27 page-09: carousel CTA</title>
+<!-- S27 Icon-Grid Cheat Sheet, layout: carousel CTA. Sample strings: replace every one from storyboard strings[],
+     names / owner/repo / stars verified on posting day. Render:
+     node shared/render-card.mjs $D/cards/page-09.html $D/exports/slide-NN-YYYY-MM-DD.png --w 1080 --h 1350 --scale 1 --bg "#FBF8F3" --min-px 15 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=block" rel="stylesheet">
+<link rel="stylesheet" href="s27.css">
+</head>
+<body>
+<div class="cta-grid" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr)">
+  <div class="tile"><div class="icon mono">C</div><div class="nm">Context7</div></div>
+  <div class="tile"><div class="icon"><img src="../logos/github-ink.png" alt=""></div><div class="nm">Spec Kit</div></div>
+  <div class="tile"><div class="icon mono">S</div><div class="nm">Superpowers</div></div>
+  <div class="tile"><div class="icon mono">P</div><div class="nm">Playwright MCP</div></div>
+  <div class="tile"><div class="icon mono">S</div><div class="nm">Serena</div></div>
+  <div class="tile"><div class="icon mono">c</div><div class="nm">ccusage</div></div>
+</div>
+<div class="cta-ask" data-fit><h1>Want all 6 links?</h1><div class="cm">Comment <span class="pill">STACK</span></div><div class="dl">I'll DM you every repo link plus my setup notes.</div></div>
+<div class="foot"><span class="avatar"></span><b>{{BRAND}}</b><span class="stamp">Oct 2026</span></div>
+<div class="counter">09 / 09</div>
+<script>
+// Fit pass: each [data-fit][data-max] steps down 2 px (floor data-min) until its box (itself, or the
+// closest [data-box]) stops overflowing. Anything still overflowing, or any [data-fit] tile, makes
+// render-card exit 2: shorten the copy or move to a layout with more room (4x2, 3 rows).
+window.cardReady = (async () => {
+  await document.fonts.ready;
+  const over = (el) => el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1;
+  for (const el of document.querySelectorAll('[data-fit][data-max]')) {
+    const box = el.closest('[data-box]') || el;
+    let px = +el.dataset.max;
+    const min = +el.dataset.min;
+    el.style.fontSize = px + 'px';
+    while ((over(box) || over(el)) && px > min) { px -= 2; el.style.fontSize = px + 'px'; }
+  }
+})();
+</script>
+</body>
+</html>

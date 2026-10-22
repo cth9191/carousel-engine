@@ -1,0 +1,32 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<title>S19 scene layout ref</title>
+<!-- S19 SCENE wireframe (engine/styles/S19-window-chrome-diary.prompt.md, "Authoring notes"): Image 1 for a SCENE job
+     until a result page is locked. Built from scratch in HTML: no third-party pixels.
+     Flat apricot page, empty top quarter, a plain grey laptop square to the camera between 25% and 92% of the height,
+     its screen ONE flat magenta #FF00FF 16:10 rectangle, a warm amber contact shadow. No text, no logos.
+     Render: node shared/render-card.mjs engine/styles/refs/src/s19-scene-layout.html engine/styles/refs/s19-scene-layout.png --w 1080 --h 1350 --scale 1 -->
+<style>
+  html, body { margin:0; width:1080px; height:1350px; overflow:hidden; background:#F5C9A0; }
+  .abs { position:absolute; }
+  /* lid: graphite bezel around a flat magenta 16:10 screen */
+  .lid { left:150px; top:520px; width:780px; height:500px; background:#3C3C3E; border-radius:18px 18px 4px 4px; }
+  .screen { left:172px; top:542px; width:736px; height:460px; background:#FF00FF; }
+  /* hinge + base slab, silver-grey, square to camera */
+  .hinge { left:150px; top:1018px; width:780px; height:8px; background:#2E2E30; }
+  .base { left:96px; top:1026px; width:888px; height:30px; background:#B8B8BB; border-radius:3px 3px 0 0; }
+  .lip { left:96px; top:1056px; width:888px; height:16px; background:#9C9CA0; border-radius:0 0 22px 22px; }
+  .notch { left:470px; top:1026px; width:140px; height:10px; background:#A6A6AA; border-radius:0 0 8px 8px; }
+  /* warm amber / grey-brown contact shadow, never pink */
+  .shadow { left:70px; top:1050px; width:940px; height:70px; border-radius:50%;
+    background:radial-gradient(closest-side, rgba(120,78,40,.42), rgba(150,100,55,.18) 60%, rgba(150,100,55,0)); }
+</style></head>
+<body>
+  <div class="abs shadow"></div>
+  <div class="abs lid"></div>
+  <div class="abs screen"></div>
+  <div class="abs hinge"></div>
+  <div class="abs base"></div>
+  <div class="abs notch"></div>
+  <div class="abs lip"></div>
+</body></html>

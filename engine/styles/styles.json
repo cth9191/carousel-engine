@@ -1,6 +1,6 @@
 {
   "version": "v0",
-  "updated": "2026-10-17",
+  "updated": "2026-10-22",
   "notes": [
     "One entry per style id. Only styles with a prompt block (engine/styles/<id>-*.prompt.md) can go to Make, and every style here has one. Edit every field by hand.",
     "exemplars are repo-relative paths to one cover and one interior, 4:5. shared/build-gallery.mjs draws them as the style's tile and fails if a file is missing.",
@@ -80,7 +80,27 @@
         "Real logos only (your logo folder, e.g. assets/logos/, or simple-icons), composited into cyan zones by shared/composite.py; never generated marks",
         "One real UI capture per interior"
       ],
-      "template": null
+      "template": null,
+      "cooldown_group": [
+        {
+          "id": "two-logo-crown-cover",
+          "members": [
+            "S02",
+            "S27"
+          ],
+          "applies_to": "cover",
+          "cap_days": 14
+        },
+        {
+          "id": "orange-ground-app-tiles-cover",
+          "members": [
+            "S02",
+            "S28"
+          ],
+          "applies_to": "cover",
+          "cap_days": 14
+        }
+      ]
     },
     {
       "id": "S03",
@@ -114,6 +134,57 @@
         "Numbers and tables as HTML or verified text, never model-drawn"
       ],
       "template": null
+    },
+    {
+      "id": "S04",
+      "name": "Brutalist Mascot Poster",
+      "one_line": "Cream spec-sheet poster, Anton white-on-orange block line, a big cut-out hero (your mascot or the subject's logo tile) ringed by tag chips.",
+      "status": "card-v1",
+      "production": "hybrid",
+      "formats": {
+        "spines": [
+          "A",
+          "C",
+          "D"
+        ],
+        "notes": "Urgency / news-jack listicles and use cases (C), explainers (A) and system builds (D). Cover: ink line + cream-on-orange block line, one big cut-out hero in the middle (your own mascot pose, or the subject's logo tile with no mascot), four tag chips, outline kicker pill. Interiors: the same two-tier headline on every slide (question + answer reads best), then one of four layouts: table (what / model / parts / why), capture (why / how / use / item / step / day), prompt or steps (peak / start), CTA. Not for B (S03). Cover cap: group brutalist-poster-cover (S04, S22, S23), one cover a month; S04 interiors under another cover follow the usual 14 days."
+      },
+      "attributes": {
+        "ground": "Warm cream paper #F1EBE0, fine grain, faint relief, no grid; ink L-shaped corner brackets; header = deck label + hairline + NN / TT in mono; footer '{{BRAND}} · Swipe →'",
+        "type_pairing": "Anton-class condensed caps in two tiers: an ink line, then a cream line knocked out of a flat orange block with a hard grey offset shadow, ending in a period. Body and kicker in wide Inter ExtraBold / Black, sentence case. JetBrains Mono chrome and chips",
+        "panel": "Cover: none. Interiors: a ruled outlined table card, a white-framed capture with an orange tilted example chip, an orange-tabbed prompt card or numbered steps; all exact text as kits/S04 cards",
+        "character": "Optional: your own mascot (transparent PNG poses you made, never a licensed character), huge on the cover through a cyan slot, never painted; optional small cameo poses on at most 2 interiors, each prop commenting on its slide. With no mascot, the subject's real logo tile fills the cover slot",
+        "ornament": "Corner brackets, mono header and counter, four tilted tag chips (orange and ink) on the cover, outline pill with an orange triangle, orange triangle takeaway lines",
+        "palette": "Cream #F1EBE0 / ink #0E0E0E / orange #D9551F / sheet white #FBF8F3 cards"
+      },
+      "cooldown_days": 14,
+      "cooldown_group": {
+        "id": "brutalist-poster-cover",
+        "members": [
+          "S04",
+          "S22",
+          "S23"
+        ],
+        "applies_to": "cover",
+        "cap_days": 30
+      },
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S04-cover.png",
+        "interior": "engine/styles/exemplars/S04-interior.png",
+        "note": "Sample renders, not a posted deck: a smoke test on a placeholder topic (two Codex plates from the block, the interior with the kit's table card). The cover's cyan slot is shown as a dashed 'your mascot' placeholder.",
+        "sample": true
+      },
+      "requires": [
+        "Prompt block engine/styles/S04-brutalist-mascot-poster.prompt.md: Codex paints every plate (SYSTEM + COVER or one INTERIOR paragraph + KEYING), refs engine/styles/refs/s04-{cover,table,capture,prompt}.png (sanitized from the author's own S04 slides); the locked cover is Image 1 on interiors",
+        "Cover hero, never painted: your own mascot pose (optional; a transparent PNG with its prop, aspect measured with python -I shared/pose-check.py check), pasted with composite.py --logo C1=…@1.0,bottom into a slot of the pose aspect x 1.04, 27-30% of the height; never the same pose twice in a deck, never a licensed character. With no mascot: the subject's real logo tile in a cyan rounded-square slot",
+        "Exact text: engine/styles/kits/S04/ cards (table, prompt, steps) rendered without --bg at each magenta zone's out bbox x2, --min-px 22, pasted with --card … --ground fill; captures via --shot with a focus box; a garbled cover chip is patched with chip-NN.html + composite.py --paste …,erase",
+        "Letter-by-letter QA of the two headline tiers, the four chips and the CTA keyword against strings[]; a misspelling is an edit job",
+        "Real proof for every capture slide (README, run, app UI), faces scrubbed with shared/shots.py; commands and prompts verbatim from evidence.source",
+        "Cover-family cooldown group brutalist-poster-cover (S04, S22, S23; 30 days), shown by build-gallery"
+      ],
+      "template": null,
+      "prompt_block": "engine/styles/S04-brutalist-mascot-poster.prompt.md",
+      "kit": "engine/styles/kits/S04"
     },
     {
       "id": "S05",
@@ -223,7 +294,16 @@
       ],
       "template": null,
       "prompt_block": "engine/styles/S07-dark-network-hero.prompt.md",
-      "kit": "engine/styles/kits/S07"
+      "kit": "engine/styles/kits/S07",
+      "cooldown_group": {
+        "id": "black-and-glow",
+        "members": [
+          "S07",
+          "S16"
+        ],
+        "applies_to": "cover",
+        "cap_days": 14
+      }
     },
     {
       "id": "S08",
@@ -261,7 +341,16 @@
       ],
       "template": null,
       "prompt_block": "engine/styles/S08-bone-editorial.prompt.md",
-      "kit": "engine/styles/kits/S08"
+      "kit": "engine/styles/kits/S08",
+      "cooldown_group": {
+        "id": "cream-serif-dark-panes",
+        "members": [
+          "S08",
+          "S24"
+        ],
+        "applies_to": "any",
+        "cap_days": 14
+      }
     },
     {
       "id": "S09",
@@ -303,6 +392,47 @@
       "kit": "engine/styles/kits/S09"
     },
     {
+      "id": "S10",
+      "name": "Command-Press Blueprint",
+      "one_line": "Bone + ink grid, Anton '/SLASH-COMMAND' bleeding right, dimension lines, two-tone audit charts.",
+      "status": "card-v1",
+      "production": "html-native",
+      "formats": {
+        "spines": [
+          "A",
+          "C",
+          "D"
+        ],
+        "notes": "Skill and command roundups (C), system builds and levels (D: the fig cover draws the N parts as balloons 1..N), and code-heavy explainers (A: what = capture, why = before/after, model = FIG plate, how = capture, peak / start = prompt card, use = real chart). Before/after audits and contrarian takes. Not for B. Pick S10 over S23 when exact text matters more than texture; keep S10 and S23 interiors 14 days apart (hand check)."
+      },
+      "attributes": {
+        "ground": "Bone #ECE3D4 + faint ink grid + grain, ink frame, orange corner crosshairs",
+        "type_pairing": "Anton all-caps '/SLASH-COMMAND' (auto-fits, bleeds right) + JetBrains Mono chrome + Inter body with one orange accent phrase; cover = mono eyebrow, giant Anton stack with an orange last line, mono command box",
+        "panel": "Template 03 HTML heroes: before/after cards, video + retention, audit + chart (orange = good, ink = bad; real numbers only), framed captures, plus Codex FIG plates (isometric line drawings, numbered balloons) and kits/S10 prompt cards through the image hero",
+        "character": "None",
+        "ornament": "Dimension lines, frame, FIG / SHEET labels, REV triangle, orange corner crosshairs; FIG plates' balloons and dashed alignment lines",
+        "palette": "#ECE3D4 bone / #0E0E0E ink / #D9551F orange (FIG plates: ink and orange on white, multiplied onto the grid)"
+      },
+      "cooldown_days": 14,
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S10-cover.png",
+        "interior": "engine/styles/exemplars/S10-interior.png",
+        "interior_slide": 4,
+        "note": "Cover of a deck about a trending GitHub search skill; slide 4 of a deck about a code-reducing plugin (its 7-rung ladder as exact text)."
+      },
+      "requires": [
+        "templates/03-command-press command sheets (hero.type beforeafter | video | chart | image | none), baked with node shared/export.mjs --carousel <id>; layout:'atlas' is S22, never mixed in",
+        "Cover: engine/styles/kits/S10/cover.html (fig or stack) rendered to $D/cover.png with render-card --scale 2 --bg \"#ECE3D4\"; slides[0] = {cover:true, coverImg:'cover.png'}",
+        "FIG plates: Codex (FIG SYSTEM + FIG COVER / FIG INTERIOR + KEYING from the prompt block), 3:2, word-free, digits in balloons only, no reference image; FIG.0 on the cover, at most 2 interior FIGs (A model, D parts, C why) as image heroes with maxH 470. The first approved plate is Image 1 for the rest",
+        "Exact text: kits/S10/prompt-NN.html for prompts, commands, configs and the CTA deliverable stub, rendered at 920 x 360-460 --min-px 22 into $D/assets/ and shown as image heroes",
+        "Real proof: captures and thumbnails real (faces scrubbed with shared/shots.py); before/after text and chart points from a real run in evidence.source, never the template's sample curves",
+        "CTA sheet: headline = the keyword (no slash, headSize <= 240), one 'Comment KEYWORD' line, the ink stub card"
+      ],
+      "template": "templates/03-command-press",
+      "prompt_block": "engine/styles/S10-command-press-blueprint.prompt.md",
+      "kit": "engine/styles/kits/S10"
+    },
+    {
       "id": "S11",
       "name": "Sketchnote Diagram Explainer",
       "one_line": "Cream, heavy grotesk with a yellow highlighter pill, pastel flow-diagram boxes, hand-drawn arrows.",
@@ -336,6 +466,842 @@
       "template": null,
       "prompt_block": "engine/styles/S11-sketchnote.prompt.md",
       "kit": "engine/styles/kits/S11"
+    },
+    {
+      "id": "S12",
+      "name": "Voxel Costume Explainer",
+      "one_line": "Near-white, bold sans with line 2 in orange, your own mascot in one costume per slide (or a logo tile), side-by-side screenshots.",
+      "status": "test-wave",
+      "production": "hybrid",
+      "formats": {
+        "spines": [
+          "A",
+          "D"
+        ],
+        "notes": "A (default): one tool, skill or feature explained end to end, 8-10 slides. With a mascot, one costume per slide whose headwear names that slide's job (detective hat on why, graduation cap on model, hard hat on setup, chef hat on the peak recipe); without one, the subject's logo tile stands in the same slot. how slides put two real captures side by side (before / after, input / result); peak and start carry the exact command in a code card. D: a system build's step slides use the same split page with 'Step N: <action>' in the tag; the cover's N counts step slides. Not for B (no table or verdict vocabulary) or C (one cutout per slide reads as a parade over name-only items). Near-white with orange: keep it 14 days from another near-white, orange-accent deck by hand."
+      },
+      "attributes": {
+        "ground": "Near-white #FAF9F7, flat (not cream, no grid or grain)",
+        "type_pairing": "Inter 800 headline, line 2 in orange #D9551F ending with a period; Inter 500 body with bold and orange accent phrases; JetBrains Mono step tag, commands and code card; Pixelify Sans in speech bubbles",
+        "panel": "Real captures in light browser-window frames, two side by side on step slides; a dark code card for the exact command or prompt",
+        "character": "Optional: your own mascot (never a licensed character), one costume pose per slide pasted as an HTML cutout over a soft contact shadow, never drawn by a model, never repeated in a deck. With no mascot, the subject's real logo on a tile stands in the slot, or the slot is dropped",
+        "ornament": "Orange-tinted step tag with the NN / TT counter, one speech bubble per slide (4 words at most), Lucide icon rows, an old-way pill, four-point sparks and outline dots on the cover, optional voxel set pieces",
+        "palette": "#FAF9F7 near-white / #111111 ink / #5C5852 body grey / #D9551F orange / #FBE9DF tag tint; your mascot keeps its own colours"
+      },
+      "cooldown_days": 14,
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S12-cover.png",
+        "interior": "engine/styles/exemplars/S12-interior.png",
+        "note": "Sample renders from the kit (pages 01 and 03, placeholder topic and captures); a dashed box marks the mascot slot. No posted deck in this style yet.",
+        "sample": true
+      },
+      "requires": [
+        "Card kit engine/styles/kits/S12/ (README): copy cards/s12.css + s12.js into the deck; page-01 cover, page-02 what/why, page-03 step (two captures side by side), page-04 CTA, copied to $D/cards/page-NN.html and rendered with node shared/render-card.mjs at 1080x1350 --scale 1 --min-px 22 straight to exports/. Glyphs: node shared/lucide-icons.mjs $D/cards/icons.js --from $D/cards",
+        "Every dashed .slot replaced before render: your own mascot's costume pose as <img class=\"pose\"> from $D/mascot/ (transparent PNG, never a licensed character, never model-drawn), or the subject's real logo as <img class=\"pose tile\"> (your logo folder or simple-icons), or deleted",
+        "With a mascot: one costume per slide, each once per deck. A missing costume is one Codex job (the block's COSTUME section: your sprite as Image 1, headwear in units, the top edge left visible), cut with python -I shared/pose-check.py cut and checked (check --sprite <your sprite> --prop <box> if your mascot fits the check's shape, else by eye) before any page",
+        "Optional voxel set pieces (laptop, old machine, microwave): one Codex job each with engine/styles/refs/s12-ref-set.png, cut with pose-check.py cut into $D/sets/ (the kit's sets/laptop.png is reusable)",
+        "Real screenshots for every side-by-side panel (your browser tool or shots.py, faces scrubbed); a mock is EXPLAIN only",
+        "Originality: never trace, redraw or attach any reference deck's characters, stickers, words or CTA; only the layout vocabulary carries over"
+      ],
+      "template": null,
+      "prompt_block": "engine/styles/S12-voxel-costume-explainer.prompt.md",
+      "kit": "engine/styles/kits/S12"
+    },
+    {
+      "id": "S13",
+      "name": "Oversized-Serif Photo Editorial",
+      "one_line": "One dominant oversized serif word over a cinematic photo, fanned preview cards, giant numerals inside.",
+      "status": "test-wave",
+      "production": "hybrid",
+      "formats": {
+        "spines": [
+          "C"
+        ],
+        "notes": "Frameworks and 'N rules' decks, 6-9 slides: the cover (count in the kicker, one oversized serif word, the deck's own interiors fanned below), then one rule per slide alternating a photo page (a text-free Codex photo plate, the rule's metaphor as one lone object) and a quiet photocopy-grey text page (no plate), then a quiet CTA with the keyword as the giant serif word. Each rule page is spine C's item: numeral badge, a headline of 7 words or fewer, and about 40 words saying what to do, why, and one concrete use; proof, when a rule needs it, is one capture card on a quiet page. Also fits the C-variant findings listicle (rules drawn from a real corpus). Not for tool roundups (no logo or capture vocabulary on photo pages), head-to-heads or step-by-step builds. Cooldown group photo-editorial with S15."
+      },
+      "attributes": {
+        "ground": "Cinematic film-photo environments (sea, lake, tall grass, salt flat, fog) with heavy grain, one lone object as the rule's metaphor; quiet pages are photocopy grey #CFCDC8 with toner grain and streaks",
+        "type_pairing": "One oversized Instrument Serif word (grown to the full 872 px measure) between an Inter 800 kicker and trailing line; Inter 700 rule headlines and Inter 500 body at tight tracking; white-on-ink numeral badges; JetBrains Mono masthead",
+        "panel": "Fanned preview cards of the deck's own rendered interiors on the cover; interiors alternate a photo page with a quiet grainy text page",
+        "character": "None (one lone object or an anonymous figure from behind)",
+        "ornament": "Mono masthead row (month ©year · {{BRAND}} · role), numeral badge per rule, warm orange light-leak gradient at the cover's foot, a three-phrase row under the fan",
+        "palette": "Photo-native slate, grey-blue, straw and sage; ink #0E0E0E or white type chosen by sky-tone; orange #D9551F only as the cover's warm leak, one touch on a subject and the CTA keyword"
+      },
+      "cooldown_days": 14,
+      "cooldown_group": {
+        "id": "photo-editorial",
+        "members": [
+          "S13",
+          "S15"
+        ],
+        "applies_to": "any",
+        "cap_days": 14
+      },
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S13-cover.png",
+        "interior": "engine/styles/exemplars/S13-interior.png",
+        "note": "Sample renders from the kit (cover and photo page, placeholder topic, brand shown as YOUR BRAND) over two sample Codex plates. No posted deck in this style yet.",
+        "sample": true
+      },
+      "requires": [
+        "Overlay kit engine/styles/kits/S13/ (README): cards/s13.css + s13.js, slide-01 cover, slide-02 photo page, slide-03 quiet page, slide-04 CTA, each with a slide-data JSON block {layout, box}; copied to $D/cards/slide-NN.html ({{BRAND}} filled in) and rendered with node shared/render-card.mjs at 1080x1350 --scale 1 --min-px 22",
+        "One text-free Codex photo plate per photo page plus the cover (SYSTEM + the layout's Plate line; shared/codex-img.mjs), fitted with python -I shared/composite.py plates/slide-NN.png fitted/slide-NN.png. Quiet pages and the CTA have none, so a 7-slide deck needs about 4 plates. Refs: none for your first plate (text-only prompt); after that your deck's own approved photo plate (engine/styles/refs/s13-ref-photo.png, a sample plate, until then); never anyone else's slide",
+        "Tone pass: node shared/sky-tone.mjs $D picks ink or white per page from the card's box and stamps <body>; exit 4 means the calm zone is busy: edit the plate",
+        "The cover renders last: its three fan cards are the deck's own exports",
+        "Fonts: Instrument Serif, Inter 500/700/800, JetBrains Mono 700 (Google Fonts)",
+        "Originality: never copy any reference deck's subjects, handle, role line, words, hook or CTA phrasing; the cover fan shows only your own slides"
+      ],
+      "template": null,
+      "prompt_block": "engine/styles/S13-oversized-serif-photo-editorial.prompt.md",
+      "kit": "engine/styles/kits/S13"
+    },
+    {
+      "id": "S14",
+      "name": "Scenic Painterly",
+      "one_line": "A painted landscape per slide, cream Didone, paper list card, optionally your own mascot doing a different activity each slide.",
+      "status": "test-wave",
+      "production": "hybrid",
+      "formats": {
+        "spines": [
+          "C"
+        ],
+        "notes": "Collections and big lists grouped by job, 6-9 slides: a golden-hour cover (the count as a giant orange numeral, a capture of the full list, an optional cover pose), one item-group slide per job (a painted landscape, the job as a Didone headline, a paper list card of up to 6 items, an optional activity pose), an optional proof slide for the 1-2 strongest items, and a dusk CTA. Grouping is a declared deviation from spine C's one-item slides: log 'item slides group up to 6 items by job' in deviations[]. Every row still carries spine C's item contract in small form: the exact name, a what-it-does line of 8 words or fewer and one figure verified on posting day; a card of bare names fails G4. Not for single-item explainers, head-to-heads or builds."
+      },
+      "attributes": {
+        "ground": "A new hand-painted gouache-and-oil landscape per slide (meadow, river bank, hills, sea cliff, forest edge): a calm sky band over 0-34%, plain distant scenery behind the card, a foreground meadow (with a clear spot for a mascot, if you use one). Light arc: golden-hour cover, morning to sunset items, dusk CTA",
+        "type_pairing": "Playfair Display 800/900 Didone headlines with one orange line or word, cream #F5EBE0 on deep skies and warm ink #2A1E16 on bright ones (sky-tone decides); Inter list rows; JetBrains Mono header, labels, figures and footer",
+        "panel": "A cream paper list card (HTML) floating over the middle distance; a tilted cream-bordered capture window on the cover and proof slides",
+        "character": "Optional: your own mascot (never a licensed character) doing a different activity each slide, a transparent PNG pose pasted on the plate's clear spot over a painted-ground shadow, never painted, never repeated. With none, the plate's one small orange object stands alone",
+        "ornament": "Small mono header row with an outlined NN / TT box, a mono footer mantra repeated on every slide",
+        "palette": "Painted greens #5E8F2E / #8DB04A, warm earth #C9A46A, the layout's sky; cream #F5EBE0, paper #F4ECDD, orange #D9551F on the accent line, the numeral and one small object per plate"
+      },
+      "cooldown_days": 14,
+      "cooldown_group": [
+        {
+          "id": "landscape-grounds",
+          "members": [
+            "S14",
+            "S15",
+            "S28"
+          ],
+          "applies_to": "any",
+          "cap_days": 14
+        },
+        {
+          "id": "grouped-list-mascot",
+          "members": [
+            "S14",
+            "S22"
+          ],
+          "applies_to": "any",
+          "cap_days": 14
+        }
+      ],
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S14-cover.png",
+        "interior": "engine/styles/exemplars/S14-interior.png",
+        "note": "Sample renders from the kit (cover and item group, no mascot, placeholder figures and a dashed capture stand-in) over two sample Codex plates. No posted deck in this style yet.",
+        "sample": true
+      },
+      "requires": [
+        "Overlay kit engine/styles/kits/S14/ (README): cards/s14.css + s14.js, slide-01 cover, slide-02 item group, slide-03 CTA, each with a slide-data JSON block {layout, box}; copied to $D/cards/slide-NN.html and rendered with node shared/render-card.mjs at 1080x1350 --scale 1 --min-px 22. The list check fails the render past 6 rows, or when a row lacks its what line or figure",
+        "One text-free Codex landscape plate per slide (SYSTEM + the layout's Plate line; shared/codex-img.mjs; .png references only), Image 1 always engine/styles/refs/s14-ref-item.png (an approved sample plate: brushwork and light only), Image 2 the deck's first approved plate once there is one; fitted with python -I shared/composite.py plates/slide-NN.png fitted/slide-NN.png",
+        "Tone pass: node shared/sky-tone.mjs $D with each card's box; exit 4 means a busy sky: edit the plate",
+        "Optional mascot: your own transparent PNG poses (never a licensed character), one activity per slide, never repeated, placed on the plate's clear spot from $D/mascot/; cut new ones with python -I shared/pose-check.py cut. With no mascot, drop the Spot sentence from the plate prompts",
+        "Verified data per row (stars, installs or another figure) pulled on posting day and saved in the deck; a real capture of the full list for the cover (shots.py)",
+        "Fonts: Playfair Display 800/900, Inter 500/600/700, JetBrains Mono 700 (Google Fonts)"
+      ],
+      "template": null,
+      "prompt_block": "engine/styles/S14-scenic-painterly.prompt.md",
+      "kit": "engine/styles/kits/S14"
+    },
+    {
+      "id": "S15",
+      "name": "Landscape Specimen",
+      "one_line": "A cinematic landscape per item, the name set giant in the sky as a two-font specimen, masthead row, BACK/NEXT nav.",
+      "status": "test-wave",
+      "production": "hybrid",
+      "formats": {
+        "spines": [
+          "C"
+        ],
+        "notes": "Top-N tools, plugins, repos and 'best X + Y pairings' listicles, one item per landscape. Every item slide carries spine C's full item contract in about 30 words: the name, a caption on what it does and what it replaces, a mono use line with one concrete use, and a proof line verified on posting day. Proof slides add one real capture on the horizon. Not for head-to-heads (no table vocabulary) or how-it-works explainers. Shares a 14-day cooldown with S13 (cooldown_group photo-editorial) and with S14/S28 (landscape-grounds); build-gallery shows both."
+      },
+      "attributes": {
+        "ground": "A different full-bleed cinematic landscape photo per slide (wheat field, grassy hill, canola field, dune, night field): open sky above 44% of the height, horizon at 56-72%, fine film grain. Golden-hour cover, day and deep-blue items, dusk, night CTA",
+        "type_pairing": "A font-pairing 'specimen' stack set in the sky: a quiet kicker face (Didone italic, roman serif or grotesk) over a giant loud face (Inter Black, Archivo black condensed italic or Archivo extended black), chosen by the name's length. Below it a small semibold grotesk caption, then mono use and proof lines. Mono numerals in the nav",
+        "panel": "None on plain item slides. Proof slides float one cream-bordered, focus-cropped real capture on the horizon. The cover's monitor screen is a magenta-keyed real capture. Every word is an HTML overlay on a text-free plate",
+        "character": "Cover: a close, low-angle field desk whose monitor (at least 45% of the width) shows a real capture, beside an orange folding chair; you appear only from your own photos, if you opt in. Interiors: one small lone subject per landscape as the item's metaphor, carrying one orange touch. Optional: your own mascot as an overlay sprite (never a licensed character)",
+        "ornament": "A two-column masthead ({{BRAND}} | deck label · month), a BACK <-> NEXT rule with a numbered progress row (the current number in an orange pill), and mono use and proof lines",
+        "palette": "Photo-native skies (#8FB6D9 day blue, #1F5FA8 deep blue, #F3E3C8 golden hour, #1E2F52 over #E9A15A dusk, #0F1B33 night navy) and fields (#E8D320 canola, #D8B45A wheat). Type is ink #0E0E0E or white, whichever has the higher WCAG contrast. Orange #D9551F only on the subject and the nav pill. No magenta, violet or pink, and no cyan or turquoise outside key zones"
+      },
+      "cooldown_days": 14,
+      "cooldown_group": [
+        {
+          "id": "landscape-grounds",
+          "members": [
+            "S14",
+            "S15",
+            "S28"
+          ],
+          "applies_to": "any",
+          "cap_days": 14
+        },
+        {
+          "id": "photo-editorial",
+          "members": [
+            "S13",
+            "S15"
+          ],
+          "applies_to": "any",
+          "cap_days": 14
+        }
+      ],
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S15-cover.png",
+        "interior": "engine/styles/exemplars/S15-interior.png",
+        "note": "Sample renders from templates/06-landscape-specimen (cover and item, brand shown as YOUR BRAND) over S13's sample Codex photo plates used as stand-ins. No posted deck in this style yet.",
+        "sample": true
+      },
+      "requires": [
+        "HTML overlay kit: templates/06-landscape-specimen/overlay.html, copied per slide to cards/slide-NN.html ({{BRAND}} filled in) and rendered over the fitted plate with node shared/render-card.mjs at 1080x1350 --scale 1 (recipe.md). It holds the masthead, the specimen stack (P1-P3, cover set, name-length fit pass), caption, use and proof lines, capture card, combo icons and BACK/NEXT nav; tone arrives as <body> data attributes. Exit 2 means a copy rewrite",
+        "Tone pass: node shared/sky-tone.mjs carousels/<id> samples the masthead, stack and nav regions of fitted/slide-NN.png, picks ink or white by WCAG contrast, adds a 20/35/50% scrim when a region falls short, writes runs/tone/slide-NN.json and stamps each card's <body>. Exit 4 means a region is still short at 50%: edit the plate for a calmer sky",
+        "Plate aspect normalisation: every plate, keyed or not, goes through python -I shared/composite.py plates/slide-NN.png fitted/slide-NN.png (centre crop + Lanczos to 1080x1350) before the tone pass and overlay, so keyed and unkeyed slides crop the same way",
+        "One text-free Codex landscape plate per slide (shared/codex-img.mjs): a new terrain per item, a lone subject with one orange touch. No style refs ship: the first plates run on the text prompt alone, then lock grain, lens and haze (not the grade) with one approved plate per time of day (golden, day, dusk, night) and attach the nearest; never anyone else's slide",
+        "Cover: a close, low-angle field desk at 55-80% of the width with a magenta-keyed monitor screen at least 45% of the width (a real capture via composite.py --shot). A person appears only from 2-3 photos of yourself that you supply and opt into; no one else's likeness, no licensed IP",
+        "Proof for every item, verified on posting day (stars, price, licence), plus a concrete use line. Each proof slide and the cover monitor need one real capture, pre-cropped with shared/shots.py around a focus box so its key text is at least 1/45 of the slide height",
+        "Real app-icon PNGs for combo slides (your logo folder or simple-icons); never generated marks",
+        "Google Fonts: Playfair Display (italic 400 and 900), Instrument Serif, Archivo (variable wdth 62-125, with italics), Inter, JetBrains Mono"
+      ],
+      "template": "templates/06-landscape-specimen",
+      "prompt_block": "engine/styles/S15-landscape-specimen.prompt.md"
+    },
+    {
+      "id": "S16",
+      "name": "Neon Node Pipeline",
+      "one_line": "Pure black, glowing numbered icon-node pipelines, one colour per concept; the listicle cover is a grid of every diagram.",
+      "status": "test-wave",
+      "production": "html-native",
+      "formats": {
+        "spines": [
+          "C",
+          "D",
+          "A"
+        ],
+        "notes": "C first ('N agent patterns', 'N ways X is built', 'how N tools work inside'): an overview-grid cover, then one pipeline per item (3-6 items; six colours, so six at most), each in its own colour with a proof chip. D: system cover, then the inspector rail in build-up states so the system visibly grows. A: system cover; what and model as explain pipelines, why as compare, how/peak/use/start as inspector slides. A and D are all Claude orange. Not for head-to-heads: a pipeline explains, it doesn't prove."
+      },
+      "attributes": {
+        "ground": "Flat pure black #000000; one faint radial haze in the slide's colour behind the branch section only",
+        "type_pairing": "Glowing Inter ExtraBold name in the concept colour over a plain-gloss line in Inter Medium; Inter SemiBold node labels with a black halo; JetBrains Mono tags, sub-labels, footer and counter",
+        "panel": "Numbered vertical pipeline (4 rows or fewer with a proof band, 5 without): circle step nodes, diamond decision nodes, tool nodes holding real white logos; branch, merge and loop. Every item slide carries a proof chip with one real capture; build steps turn the pipeline into a horizontal rail over an inspector panel holding one real capture or exact-text card",
+        "character": "None by default; optional: your own mascot (transparent PNG poses you made, never a licensed character) on clear black beside the CTA output node, only when the pose comments",
+        "ornament": "Beaded glowing connectors on the path taken, faint dashed ghost paths, number badges tinted per colour (cream on orange), Claude-orange hairline under the cover headline",
+        "palette": "Black / near-white / Claude orange #D9551F for the hero item (and the whole deck on spines A and D) + white (dark-grey nodes), amber, lime, green, cobalt, one per item on spine C; no purple, pink, teal or cyan (keying-safe)"
+      },
+      "cooldown_days": 14,
+      "cooldown_group": {
+        "id": "black-and-glow",
+        "members": [
+          "S07",
+          "S16"
+        ],
+        "applies_to": "cover",
+        "cap_days": 14
+      },
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S16-cover.png",
+        "interior": "engine/styles/exemplars/S16-interior.png",
+        "note": "Sample renders from templates/05-node-pipeline's own sample slides (a Claude Code /command explainer with public docs captures): the system cover and a proof pipeline. No posted deck in this style yet.",
+        "sample": true
+      },
+      "requires": [
+        "Template: templates/05-node-pipeline renders each slide's graph JSON (circle, diamond and tool nodes, tinted badges, Lucide icons, beaded, ghost and loop connectors, branch haze, caption, proof band, inspector panel, overview grid, system cover) and bakes with node shared/export.mjs --carousel <id>; recipe.md has the layouts and fields. Its fit pass throws (exit 1, slide and rule named) on any copy cap or overflow",
+        "Each storyboard slide carries a graph (rows of node ids + nodes[] + edges[] + loop, the form recipe.md shows), pasted into slides[] verbatim. Feed node labels to the cold reader via slides[].evidence.describe",
+        "The cover-overview layout renders the item slides' own graphs at about 36%, so cover thumbnails match the interiors exactly and the usual cover-first order holds",
+        "Lucide (ISC) is vendored in shared/vendor/lucide/ and the template inlines the glyphs it uses: generic glyphs only. Never reuse a reference deck's node-to-icon pairings or drawings",
+        "White tool-node logos (#F5F5F5) in the deck's assets/ as <name>-white.png: claude-white.png ships with the template; make others from your logo folder or simple-icons, never drawn. Dark marks vanish on the #111111 face, teal, cyan and purple marks are banned hues, and an orange mark goes only on a non-orange slide",
+        "Every pipeline EXPLAINs: node names, order and branches checked against the real docs or repo. Every listicle item, why, how, use, build-step and payoff slide also PROVEs it with one real capture (proof chip, compare chip, inspector panel or use zone)",
+        "Originality: never copy any reference deck's topic, node names, node-to-icon pairings, words, art or signature palette; only the layout vocabulary carries over. Concept colours stay Claude orange, white, amber, lime, green and cobalt; the cover glow is white and the hairline Claude orange",
+        "Shares a 14-day cover cooldown with S07 Dark Network Hero (cooldown_group black-and-glow); build-gallery shows it",
+        "Optional image-native fallback (prompt block), only if the template can't carry a slide: Codex paints every plate, titles, node labels, badges and captions included (7 nodes or fewer, labels of 2 words or fewer); HTML cards carry only exact text (inspector prompts, commands, config); captures and logos are composited; the cover grid is composited from interior crops; Claude checks every label and badge number against strings[]. No refs ship: the first plates run text-only until the user's first approved plate becomes the reference"
+      ],
+      "template": "templates/05-node-pipeline",
+      "prompt_block": "engine/styles/S16-node-pipeline.prompt.md",
+      "kit": null
+    },
+    {
+      "id": "S17",
+      "name": "Split-Band Before/After",
+      "one_line": "Cream-over-white split on every slide, mono 'Before:' / 'After:' labels, huge bold grotesk statements, one orange text-selection highlight.",
+      "status": "test-wave",
+      "production": "html-native",
+      "formats": {
+        "spines": [
+          "C"
+        ],
+        "notes": "C only. `cover`: the native S17 cover; its count line carries the count plus a month stamp or a verified star figure. `why` (optional): a Flip, or Twin proof when the old way can be proved too. Every `item` and `combo`: Flip + proof. The before statement is the habit the item replaced, the after statement names the item in one line, and the strip is real proof verified on posting day, so the slide gives what it does, what it replaces, proof and use. If the cold reader (G8) can't recover the item from that, use another style. `cta`: the CTA flip. Log two deviations in storyboard.deviations[]: (1) flips carry no accent phrase, because the mirror replaces it; (2) a pure-flip opinion list waives spine C's item proof. Unproven items drift toward a list of names with no proof, so that deck must still pass G8. Not A (no layout for what, model, peak or use), not B (two tools side by side is S03's job), not D. Suits opinionated takes on how AI changed a job: the format draws arguments and shares."
+      },
+      "attributes": {
+        "ground": "Two flat full-bleed bands split at half height: warm cream (#F5EBE0) over white. Between them is a 7 px seam of barely darker cream (#EFE4D7, ΔE about 2.7), a soft step rather than a ruled line. No texture or grid.",
+        "type_pairing": "Big bold neo-grotesk statements (Inter Display at about 650, sentence case, tight tracking and leading) plus regular mono labels ending in a colon (JetBrains Mono at 62 px). Two weights only, including the byline and the CTA lines.",
+        "panel": "None on Flip slides. Flip + proof, mandatory on spine C items, puts one real 908×220 capture strip (about 4.1:1, square corners, 2 px ink outline) or one exact command chip in the after band. Twin proof adds a matching strip to the before band.",
+        "character": "None. The system is pure type.",
+        "ornament": "An editor text-selection box on the cover phrases and the CTA keyword: apricot fill multiplied over the band, orange edge bars, two handle dots, deep-brown selected text. Rounded real app-icon tiles on the cover (white, ink or the brand's own tile). A '{{BRAND}}' byline with your circle-cropped profile photo (optional). A small warm-grey mono counter.",
+        "palette": "Cream #F5EBE0 / seam #EFE4D7 / white / ink #0E0E0E / Claude orange #D9551F on apricot #F8CFA8 (about #EEBF94 over cream) / selected text #3A1808 / counter grey #6B635B"
+      },
+      "cooldown_days": 14,
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S17-cover.png",
+        "interior": "engine/styles/exemplars/S17-interior.png",
+        "note": "Sample renders from templates/07-split-band's own sample slides (blank tiles, placeholder avatar, YOUR BRAND byline): the cover and a Flip + proof slide with a command chip. No posted deck in this style yet.",
+        "sample": true
+      },
+      "requires": [
+        "Template: templates/07-split-band: bands and seam, mono labels, statement fit pass (126 to 96 px floor) with the Copy limits, selection span, tile row, byline, proof strip, command chip, counter, CTA. Copy slides.html into the deck with {{BRAND}} filled in; bake with node shared/export.mjs --carousel <id>, which exits 3 on a FIT/COPY failure",
+        "Codex style refs, only for the plate fallback: engine/styles/refs/s17-style-cover.png and s17-style-flip.png, layout mocks in this style's own colours rendered from engine/styles/refs/src/s17-ref-cover.html and s17-ref-flip.html (off-topic placeholder copy); copy both into <deck>/refs/. Never another creator's slides",
+        "One tile PNG per cover tile at <deck>/assets/<x>-tile.png (template) or <deck>/logos/<x>-tile.png (plate fallback), only tools the deck covers (0–1 before, 1–5 after, in item order): the brand's press-kit app icon, or a simple-icons mark at 70% on a white or ink 80 px tile (radius 18 px) rendered with transparent corners via `node shared/render-card.mjs <card> <png> --w 80 --h 80 --scale 4`. Never painted",
+        "Optional byline photo: your square profile photo, circle-cropped with transparent corners, at <deck>/assets/avatar.png (template) or <deck>/logos/avatar.png (composite.py --logo trims to alpha and contain-fits; a square photo would paste as a square in the cyan circle). Without one, the template shows a plain grey circle",
+        "Mirrored-pair copy per the prompt block's Copy section: one label pair per deck; statements ≤ 7 words (G4), ≤ 3 lines of ≈ 15 characters; proof-slide after statements one line of ≤ 15; cover lines ≤ 13; CTA deliverable lines ≤ 24. Log the flips' missing accent phrase in storyboard.deviations[]",
+        "Proof for every spine C item: a real capture (README, UI or a real run, verified on posting day) cropped to 908 × 220 (≈ 4.1:1) with shared/shots.py focus boxes, or an exact one-line command of ≤ 34 characters. Decks needing large screenshots belong in another style",
+        "Originality: never copy any reference deck's words, statements, cover phrase, tool row, marks, creator name or photo, item set or signature palette; only the layout vocabulary carries over. No 'before/after {tool}' cover phrase; cover tiles only the deck's tools. Palette: cream #F5EBE0 top band; selection Claude orange on apricot #F8CFA8; selected text #3A1808"
+      ],
+      "template": "templates/07-split-band",
+      "prompt_block": "engine/styles/S17-split-band-before-after.prompt.md",
+      "kit": null
+    },
+    {
+      "id": "S18",
+      "name": "Folder-Tab Field Guide",
+      "one_line": "Orange-framed map cover pinned to round medallions; folder-tab interiors with three scene bands.",
+      "status": "test-wave",
+      "production": "hybrid",
+      "formats": {
+        "spines": [
+          "C",
+          "D"
+        ],
+        "notes": "C (default): 6-9 entries in 3 chapters, one tab each, up to 3 bands per tab page (e.g. skills by stage: plan / build / ship). A band is a caps name, a 'where it lives' line with a number verified on posting day (install source plus stars), and 'does X; replaces Y' in 20 words or fewer, keeping a three-band page inside the ~100-word structured budget. The concrete use goes on the deep-dive (the strongest entry), the combo on EXTRA. 7-8 slides: cover, deep-dive or why (8 with both), 3 tab pages, EXTRA, CTA. Spine C wants one item per slide and G1 counts slides, so every S18 C deck logs storyboard deviations[] '3 items per slide' and 'G1 count = bands, not slides' and checks G1 as pins = medallions = bands across the tab pages. Cover: the count in title line 2, the month or a verified star figure in the stamp. D (3-5 steps): one cover district, pin and medallion per step (that step's part); one tab per step plus an optional EXTRA; each step page is the deep-dive layout (one band with the step and what you build, the real panel in the capture zone, the prompt or command in a small ink card under it), so G1 holds as written. D length: cover, optional what/why, N step pages, optional day, CTA. What no other style has: persistent chapter tabs tying a pinned overview cover to each interior, three entries per page."
+      },
+      "attributes": {
+        "ground": "Cover and CTA: a cream panel inset about 2.5% in a full-bleed Claude-orange ground, so the orange reads as a thin frame. Interiors: a cream top strip over three full-width painted scene bands at about 55% brightness. Each band deepens under a heavy gradient into a soft-edged flat ink pool behind its text",
+        "type_pairing": "Chunky rounded display title (Nunito Black class) in cobalt with a pale sand sticker offset, plus an ink kicker pill. Interiors: Inter Black caps entry name, an Inter Bold pin line and an Inter Regular cream body, all as HTML cards",
+        "panel": "Cover: an invented long, narrow sage island running diagonally, split into numbered districts, with orange pins and thin leader lines out to 6-9 ring medallions in two sizes. Interiors: 3 stacked bands per tab, the medallion alternating left/right/left and the text in a flat ink pool",
+        "character": "None by default. The medallions are the collectibles, and every face is pasted from one set per deck: Codex-painted job emblems from a locked emblem sheet, or real logos on coloured face cards, never mixed. Optional: your own mascot (transparent PNG poses you made, never a licensed character) in an explorer pose holding a map on the cover, composited, never drawn",
+        "ornament": "Folder-tab row (3-5 numbered tabs plus EXTRA) with the current tab lit orange and the counter at its right end; orange teardrop pins; notched ink medallion rims; an ochre compass-dial stamp beside title line 2; a cobalt 'start at tab 01' pill with three triangles",
+        "palette": "Cream #F5EBE0 / Claude orange #D9551F / ink #0E0E0E / cobalt #3D7DC8 / sage #7DAA5A territory / ochre #E3A33B accents. Scenes use amber, ochre, deep green, slate #4A5560 and navy #2A3A55, never cobalt or teal"
+      },
+      "cooldown_days": 14,
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S18-cover.png",
+        "interior": "engine/styles/exemplars/S18-interior.png",
+        "note": "Sample renders from the kit, no posted deck in this style yet: the kit's tab row, band cards and logo faces laid out on flat grounds. On a real deck the cover map and the interior scene bands are Codex-painted.",
+        "sample": true
+      },
+      "requires": [
+        "HTML card kit engine/styles/kits/S18/ (README has the commands). cards/tabs-NN.html: one kit file whose data sets 3-5 numbered tabs, an optional EXTRA, the lit tab and the counter. Cobalt #3D7DC8 tabs with rounded top corners and 6 px cream gaps, the lit tab Claude orange #D9551F; Nunito 900 cream labels at 34 px or more, 8 characters or fewer with 3 tabs ('02 BUILD'), the number alone with 4-5; the 'NN / TT' counter in ink Inter 700 at 30 px or more at the right end. cards/band-NN.html, all text cream #F5EBE0: an Inter 900 caps name at 48 px (data-fit down to 40 px; names 14 characters or fewer), an orange pin plus an Inter 700 'where it lives' line at 30 px or more, an Inter 400 body at 30 px or more: 'does X; replaces Y' in 20 words or fewer, the concrete use in 22 on a deep-dive, what you build in 18 on a D step. In an emblem deck the card shows the entry's real mark as an <img> beside the name. cards/face-NN.html (logo decks): the real mark at about 55% on a flat cobalt, ochre, sage or orange disc. Tabs and bands render with shared/render-card.mjs at each zone's --zones-only out bbox (2x), --bg sampled from the plate beside the zone; face cards with no --bg",
+        "No reference images ship with this style: Codex jobs run text-only (SYSTEM + the layout sub-block + KEYING) until the user approves a first plate; the locked cover and the locked first three-band page then become the references",
+        "Codex never receives a third-party slide, masked or not.",
+        "One face set per deck, made before the cover. Emblem deck: one locked emblem sheet (Codex, SYSTEM + EMBLEM SHEET), disc-cropped with a circular alpha into emblems/NN.png, via a shared/shots.py \"discs\": \"auto\" spec entry. Logo deck: faces/NN.png rendered from cards/face-NN.html. Every medallion face on every slide is pasted from this set through cyan, never repainted",
+        "Originality: never copy any reference deck's characters, art, words, hook, CTA phrasing, item set or signature palette; only the layout vocabulary carries over. Medallions carry Codex-painted job emblems or real logos; the map is an invented island",
+        "Real logos (your logo folder, simple-icons SVG or official marks): the subject mark for the cover's cyan slot, and each entry's mark (in its band card in an emblem deck, on its face card in a logo deck)",
+        "A verified 'where it lives' line per entry (install source plus stars, checked on posting day), and the cover stamp: the month or a verified star figure",
+        "One real capture (README, UI or terminal run) for the deep-dive page and each D step page; the exact prompt for the EXTRA card and the exact command for each D step",
+        "Spine C decks: storyboard.json deviations[] for '3 items per slide' and 'G1 count = bands, not slides'",
+        "A locked cover and a locked first three-band page, attached as reference #1 for every later slide so band heights, rims and pools stay fixed",
+        "Only if a cover label, numeral or stamp fails text QA: composite.py --paste cards/fix.png@x,y,w,h,erase to patch the string with a render-card label card. Never regenerate the cover",
+        "Optional mascot: your own explorer pose holding a map (a transparent PNG you made, never a licensed character), pasted through a cyan slot on the cover, never drawn by the model; with no mascot, no slot"
+      ],
+      "template": null,
+      "prompt_block": "engine/styles/S18-folder-tab-field-guide.prompt.md",
+      "kit": "engine/styles/kits/S18"
+    },
+    {
+      "id": "S19",
+      "name": "Window-Chrome Build Diary",
+      "one_line": "An app window as the frame, condensed white serif over real artboards, cut-outs breaking out over the chrome; apricot caption pages between.",
+      "status": "test-wave",
+      "production": "hybrid",
+      "formats": {
+        "spines": [
+          "D",
+          "A"
+        ],
+        "notes": "Build diaries ('build your X in N steps', 'how I built X with Claude Code'). Spine D: cover → chrome cover, the N parts as painted icons breaking out of the grid; what/day → apricot result page; why → process row (old way raw → new way result); parts → parts row; step → stage slide, process row, command slide or cream zoom page; cta → CTA page. Spine A: what/use → result page; why → process row; model → parts row; how/start → stage slide; peak → command slide; cta → CTA page. Rhythm (storyboard only, never in a prompt): chrome slides and caption pages alternate, never two caption pages in a row, two chrome slides may run back to back for consecutive steps; the cover is chrome, the CTA a caption page. It is the one style that shows the work inside the tool's own window and has a raw-to-refined process row."
+      },
+      "attributes": {
+        "ground": "Two grounds that alternate: a flat graphite canvas (#575757) inside a window frame (your own HTML window kit, or the subject app's real window), and flat apricot (#F5C9A0) / cream (#F5EBE0) caption pages",
+        "type_pairing": "Instrument Serif (Google Fonts, set in HTML): white on graphite, deep rust (#7A2C14) on the tints. Only the named accent words take the italic cut, never a colour. Inter Medium for the chrome labels and the footer",
+        "panel": "Square-cornered artboards on the canvas holding real captures (a 2x2 grid of finished outputs; one or two stage panels). The process row puts raw-input captures over free cut-out pieces of the real result, with no artboards. Caption pages carry one tall zoomed UI crop or a device-on-seamless scene",
+        "character": "None by default. Your own mascot (optional; transparent PNG poses you made, never a licensed character) goes in the break-out layer only when its pose comments on the slide, e.g. dragging a finished slide out of the cover grid",
+        "ornament": "The window chrome itself: traffic lights, file tabs, a stage label or breadcrumb, a counter pill, and a single-column activity rail with an orange active marker. A break-out layer above the frame holds real UI cut-outs and grain-textured spot illustrations, crossing artboard edges and the rail. An orange selection box with square handles is drawn in HTML on captures. '{{BRAND}}' in the title bar and the caption-page footer",
+        "palette": "Graphite #575757 / chrome #4A4A4A / white / Claude orange #D9551F (UI accents and illustrations only) / apricot #F5C9A0 / cream #F5EBE0 / rust #7A2C14; illustration extras: muted blue #7E9BD0, sage #7FA772, butter #F0C75E"
+      },
+      "cooldown_days": 14,
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S19-cover.png",
+        "interior": "engine/styles/exemplars/S19-interior.png",
+        "note": "Sample renders from templates/08-window-chrome with the kit frame, public Claude Code docs captures and exact-text cards as artboards (no cut-outs): the chrome cover and a stage slide. No posted deck in this style yet.",
+        "sample": true
+      },
+      "requires": [
+        "Template: templates/08-window-chrome: kit frame or real-frame mode, graphite canvas, Instrument Serif + Inter, caption pages, break-out layer, HTML selection boxes and a qa() overlap check. One slides.html per deck ({{BRAND}} filled in), baked by node shared/export.mjs --carousel <id> (exit 3 on qa issues); recipe.md has the slides[] fields",
+        "Real-frame mode, the default for a deck about one app: the frame is a 4:5 capture of the app's real window (VS Code or Terminal for Claude Code; the real Cursor or n8n window). frame.canvas gives its editor rect; the template lays the graphite canvas over it (no alpha cut) and floats the stage and counter pills on top. Capture with side panels closed; crop the right and bottom edges off; keep the chrome above 15% of the height and any side bar inside 12% of the width; scrub personal info (shared/shots.py)",
+        "Real captures (shared/shots.py) for every artboard and zoom crop, plus the raw 'before' inputs for process rows (rough prompt, transcript, sketch or first draft)",
+        "Cut-outs as transparent PNGs, placed by the template with x, y, scale and rotation, from three sources: single elements cropped from that slide's own capture (scaled, never edited); exact-text pieces from shared/render-card.mjs, transparent outside the card; Codex CUT-OUT jobs (shared/codex-img.mjs) with the background removed (any background-removal tool, or a flood fill of the flat ground). Never through composite.py --card, which flattens alpha onto white",
+        "SCENE plates: Codex, then composite.py --shot / --card into the magenta screens and page faces, then the caption page's full-bleed background under HTML type. Image 1 is engine/styles/refs/s19-scene-layout.png (from engine/styles/refs/src/s19-scene-layout.html) until a result page is locked. Never attach another creator's slides or a rendered frame",
+        "CUT-OUT jobs run text-only until the user's first approved cut-out becomes Image 1",
+        "Selection boxes drawn in HTML over the capture (the artboard's select box), never painted",
+        "Optional mascot: your own transparent PNG poses (never a licensed character, never painted) for the break-out layer; a new pose needs a sprite you made first. With no mascot, the break-out layer holds only cut-outs",
+        "Originality: never copy any reference deck's characters, figures, objects, art, product brand, file names, words or signature palette, and never a third-party design app's UI (toolbars, swatches, setting pills). No third-party product name, logo or setting pills in kit chrome; real logos only inside real frames and captures, as logo files on the canvas, or in a SCENE cyan slot. Caption pages are apricot/cream with rust type, never pink or maroon"
+      ],
+      "template": "templates/08-window-chrome",
+      "prompt_block": "engine/styles/S19-window-chrome-diary.prompt.md",
+      "kit": null
+    },
+    {
+      "id": "S20",
+      "name": "Slate Family Tree",
+      "one_line": "Chalk slate, index cover of overhead paint-tin icons, light serif names, 'A + B' pill formulas, branching chip trees.",
+      "status": "test-wave",
+      "production": "hybrid",
+      "formats": {
+        "spines": [
+          "C"
+        ],
+        "notes": "Spine C taxonomy decks: N base parts and what's built on each (Claude Code building blocks, agent patterns, model families, prompt formulas). The cover is the index and legend; one family slide per item, in cover order. The proof family slide (header row, real capture, short tree) is the default, since C items need real proof; the hero family slide is for concept decks, which log the missing per-item proof in deviations[]. Spine A can borrow the hero layout for its `model` slide (≤ 4 children, each defined by its chips in ≤ 8 words). Not spine D: a build step needs its command and stable step numbers, and the tree has no slot for either."
+      },
+      "attributes": {
+        "ground": "Matte neutral chalk slate with a soft diagonal falloff (about #343434 at upper left, #2F2F2F in the middle, #262626 at the right edge, #292929 along the bottom), gentle mottling and chalk-dust grain. Eraser clouds and scratches stay in the outer band, and the slate stays calm around every zone",
+        "type_pairing": "Light sentence-case display serif (like Instrument Serif) for the title and names; uppercase medium grotesk in outlined formula pills; Inter for the definition line and child names; Inter Italic chips; JetBrains Mono for the rare code token",
+        "panel": "Cover = index rows (tin + serif name + 'A + B' pill formula). Interiors = the same tin as a top-centre hero (or as a header row over a framed real capture), a centred name and formula, then an HTML card: a one-sentence definition over a parent-to-children tree of outlined chip stacks",
+        "character": "None. One identical overhead paint tin with a stir stick per item, and only the paint colour changes (or real logo tiles for product families). No mascot by default: the tins are shot straight overhead, so a front- or side-view mascot beside them reads as a perspective error. Only your own top-down mascot pose (a transparent PNG you made, never a licensed character) may go in a cyan slot under the CTA tin row, never inside it",
+        "ornament": "Thin cream rule with chevron drops, outlined pills and chips, one optional filled orange START HERE tag on a drop, muted footer label + NN / TT",
+        "palette": "Slate #343434→#262626 / chalk cream #F5EBE0 / Claude orange #D9551F (lead tin, START HERE, CTA pill); other tins ochre #E0A526, moss #6E8F4E, brick #A93A2A, cobalt #4672C4, cream #EDE3D0"
+      },
+      "cooldown_days": 14,
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S20-cover.png",
+        "interior": "engine/styles/exemplars/S20-interior.png",
+        "note": "Sample renders from the kit, no posted deck in this style yet: kit tree cards and a serif title on a synthetic slate ground (interior: tree-family-4 pasted with composite.py --ground fill). On a real deck the slate, tins and display type are Codex-painted.",
+        "sample": true
+      },
+      "requires": [
+        "Per-deck object sheet, generated and locked before the cover: N identical overhead paint tins with stir sticks in the card's colours (no other objects, props or reference photos). Logo-mode decks skip it",
+        "Tree bands and recipe zones keyed magenta. Cards render without --bg and paste with python -I shared/composite.py ... --card M1=cards/x.png --ground fill, which erases the zone with nearest-ground fill and matched grain and keeps the card's transparency (--card C1= for a cyan band)",
+        "HTML tree-card kit: engine/styles/kits/S20/ (kit.css, tree.js; family 3/4/5, proof, mix, CTA, recipe and serif-text cards). README has the zone sizes and commands; 5-child chips fit from 30 down to 26 px",
+        "No layout reference images ship with this style: cover and interior jobs are text-only apart from the deck's own object sheet until the user approves a first plate; the locked cover and slide 2 then become the references. Third-party slides never go to a job",
+        "Originality: never copy any reference deck's characters, art, words, hook, CTA phrasing, item set or signature palette; only the layout vocabulary carries over",
+        "Real captures for proof family slides (shared/shots.py), cut to the capture zone's aspect with a focus box",
+        "Logo-mode decks: real app icons in logos/, each with its own tile",
+        "Serif fallback: a transparent Instrument Serif HTML text card, pasted like a tree card, for a cover row or family name that garbled on two rolls, on a plate re-rolled or edited with a flat zone where that string sat"
+      ],
+      "template": null,
+      "prompt_block": "engine/styles/S20-slate-family-tree.prompt.md",
+      "kit": "engine/styles/kits/S20"
+    },
+    {
+      "id": "S21",
+      "name": "Circled-Count Tip Stack",
+      "one_line": "Cream, lowercase count hook with a hand-circled orange number; three white app-window cards per slide under a theme headline, one finding each.",
+      "status": "test-wave",
+      "production": "html-native",
+      "formats": {
+        "spines": [
+          "C"
+        ],
+        "notes": "Declared Spine C deviation ('C-variant: findings listicle', engine/spines.md): N findings, rules or tips from a corpus you actually went through, three numbered windows per stack slide. Conditions: (1) each stack slide has a theme headline of 7 words or fewer naming the ONE lesson its windows share, plus the item range ('01–03'), so G5/G8 have a headline; (2) each caption carries the corpus count ('in 41 of 120'), the PROVE layer that pays off 'I analyzed N'; (3) at most 3 stack slides (M ≤ 9); (4) storyboard.json deviations[] logs 'M counts numbered windows 01–M, not slides', and a proof slide shows the cover's N (G1). Tools, repos and skills stay one per slide in a proof window. Not for diagrams or head-to-heads."
+      },
+      "attributes": {
+        "ground": "Flat cream (#F5EBE0): no grain, no grid",
+        "type_pairing": "Heavy lowercase grotesk (Inter ExtraBold) for tips, hooks and stack headlines; regular grotesk captions; JetBrains Mono counter, item numbers and title-bar labels. Identifiers (CLAUDE.md, /compact, model names) keep their real case",
+        "panel": "White app-window cards (a 52 px warm-grey title bar, red-amber-green dots, a mono item number and a hard flat offset shadow), three per slide at a fixed height under a theme headline. Each has a one-line caption beneath carrying the corpus count. Proof, terminal, before/after and CTA windows cover single items",
+        "character": "None by default. The cover hero is an ink document folder spilling window cards. Optional, template path only: your own mascot (transparent PNG poses you made, never a licensed character) sitting on the card heap or peeking out of the folder. Your square profile photo goes only in the byline circle",
+        "ornament": "Hand-drawn Claude-orange ellipse around the key number (and the CTA keyword), orange marker swipe arrow, mono NN / TT counter, mono item range beside each stack headline, a '{{BRAND}}' byline with a role line",
+        "palette": "Cream / white / ink / warm grey. Claude orange #D9551F goes only on the arrow, the ellipse, one accent number or word per slide, and the strike on a 'before' tip. The traffic-light dots are the only other hues (no blue folder, no red accent, no orange folder)"
+      },
+      "cooldown_days": 14,
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S21-cover.png",
+        "interior": "engine/styles/exemplars/S21-interior.png",
+        "note": "Sample renders from templates/09-window-stack's own sample slides (placeholder copy and counts, not a real corpus; placeholder avatar, YOUR BRAND byline): the cover and the first stack slide. No posted deck in this style yet.",
+        "sample": true
+      },
+      "requires": [
+        "Template: templates/09-window-stack: fixed-height window component; stack, proof, terminal, before/after and CTA layouts; SVG ellipse and strike paths; ink-folder hero; byline circle. Copy slides.html into the deck with {{BRAND}} filled in; bake with node shared/export.mjs --carousel <id>, which exits 3 on a FIT/COPY failure",
+        "A real corpus: you (or an agent run you can show) went through N items, list saved in the deck folder. Its capture is the proof slide (G1: the cover's N must be shown); the breakdown doubles as the CTA deliverable",
+        "A Spine C deviation in storyboard.json deviations[] ('M counts numbered windows 01–M, not slides; 3 stack slides max'), read with the 'C-variant: findings listicle' note in engine/spines.md",
+        "Hook formula F13 'I analyzed N' is in engine/hooks.md; flag it as untested on the brief card until it has run once",
+        "Your square profile photo (or your brand mark) for the byline circle, at <deck>/assets/avatar.png: embedded or composited, never painted, never another creator's photo. Without one, the template shows a neutral circle",
+        "No style refs ship: the plate fallback runs text-only prompts (SYSTEM plus the layout) until the user's first approved plate becomes the reference",
+        "Originality: never copy any reference deck's photo, name, self-title, words, hook, CTA phrasing, item set or signature palette; only the layout vocabulary carries over. Palette: an ink (or kraft) folder, never blue (sky blues pass composite.py's cyan key test and would break a logo slot); Claude orange, never red; your own byline",
+        "Real captures (shared/shots.py) for proof windows; real logo files for the folder-front or title-bar slots",
+        "Optional mascot (template path): your own transparent PNG pose as an <img>, never Codex-drawn; it sits on the card heap or peeks out of the folder"
+      ],
+      "template": "templates/09-window-stack",
+      "prompt_block": "engine/styles/S21-circled-count-tip-stack.prompt.md",
+      "kit": null
+    },
+    {
+      "id": "S22",
+      "name": "Layered Parts Atlas",
+      "one_line": "Bone blueprint sheet: Anton 'LAYER n/N' line over an orange count banner, a detail box with your mascot (or a logo tile), parts list numbered across the deck.",
+      "status": "test-wave",
+      "production": "html-native",
+      "formats": {
+        "spines": [
+          "C"
+        ],
+        "notes": "For big grouped lists: 20-36 skills / MCPs / plugins in 4-6 layers, one layer per slide, numbered 01 to N through the deck, with 3-6 rows per layer (6 one-line rows, or 5 if any row needs two lines). Cover + optional index + layers + optional combo + CTA is 10 slides or fewer. Gate readings, logged in storyboard.json deviations[]: (1) spine C's one item per slide becomes one layer per slide; every row still says what its item does, and each layer proves its start-here item, not every item. (2) G1 passes when the cover count equals the last row number and the kicker's layer count equals the layer slides. (3) G3 allows several names per slide, each defined by its own 'does' line in plain words a cold viewer understands (no 'OKLCH', no '4px grids'); G8 must still pass on those lines. Cooldown: the cover is in group brutalist-poster-cover with S04 and S23 (same big cut-out hero and ink-line-over-orange-block headline), one cover a month across the group; the format is coupled with S14 (same grouped-list format, same figure-per-category device), so an S14 or S22 post within 14 days cools the other. Not for one-skill-per-slide proof decks (S10 / S23)."
+      },
+      "attributes": {
+        "ground": "Bone #ECE3D4 + Template 03's faint ink grid and grain, orange plus-crosshairs in the four corners",
+        "type_pairing": "Anton caps: an ink 'LAYER n/N: CATEGORY' line (capped at a 64 px cap height), then the count line knocked out in cream from a full-width #D9551F banner. JetBrains Mono Bold for item names, Inter SemiBold for 'does' lines. Mono chrome is at least 22 px wherever it carries a fact",
+        "panel": "Left: a 'DETAIL' isometric wireframe box holding one figure (your mascot pose or a logo tile), one 'RUNNING TOTAL n / M' dimension line and a 2-line proof caption for the layer's start-here item. Right: a ruled parts list of 3-6 rows (balloon, name, 'does' line of 24 characters or fewer) whose numbers run 01 to N across the deck. Footer: an outline takeaway pill with an orange triangle",
+        "character": "Optional: your own mascot (transparent PNG poses you made, one prop per layer, never a licensed character, never painted), with an orange SVG leader from the prop to the start-here row's balloon. With no mascot, the start-here item's real logo tile sits in the detail box",
+        "ornament": "Plus-crosshairs. A top dimension line with the deck label and 'SHEET nn / TT'. Numbered balloons with one orange leader, one labelled dimension line, the takeaway pill and an orange SWIPE arrow. The cover is an exploded voxel slab stack (one slab per layer) or a knolled kit, with a 3-row title block",
+        "palette": "#ECE3D4 bone / #0E0E0E ink / #D9551F orange (banner and callouts only) / #F5EBE0 cream type on orange. Props use graphite #2A2A2A, brass #E3A92B or orange outer edges, with bone for inner details only. No magenta, pink or purple anywhere, and no cyan or teal outside the key slots"
+      },
+      "cooldown_days": 14,
+      "cooldown_group": [
+        {
+          "id": "brutalist-poster-cover",
+          "members": [
+            "S04",
+            "S22",
+            "S23"
+          ],
+          "applies_to": "cover",
+          "cap_days": 30
+        },
+        {
+          "id": "grouped-list-mascot",
+          "members": [
+            "S14",
+            "S22"
+          ],
+          "applies_to": "any",
+          "cap_days": 14
+        }
+      ],
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S22-cover.png",
+        "interior": "engine/styles/exemplars/S22-interior.png",
+        "note": "Sample renders from Template 03's atlas samples, not a posted deck: the index sheet stands in for the cover (the Codex cover plate has no sample yet) and layer 1 is the interior, its detail box showing the dashed 'your mascot' placeholder.",
+        "sample": true
+      },
+      "requires": [
+        "Atlas layout: layout:'atlas' in templates/03-command-press/slides.html (layer, index, combo and CTA sheets; derived numbering; fit pass throws on overflow), spec in templates/03-command-press/recipe.md 'atlas layout'. Existing Template 03 heroes render unchanged",
+        "Cover plate: Codex (SYSTEM + COVER + KEYING), Image 1 engine/styles/refs/s04-cover.png for the headline grammar only; no voxel-finish ref ships, so the first cover runs on the SYSTEM text and the first approved S22 cover becomes Image 2 for later decks",
+        "Detail-box figure, never painted: your own pose set (optional; transparent PNGs of your mascot, one per prop, checked with python -I shared/pose-check.py check, which prints aspect, prop_anchor and feet_y), or with no mascot the start-here item's real logo tile (aspect 1). A deck uses each pose at most once and never its cover pose inside",
+        "Cover hero via composite.py --logo <id>=…@1.0,bottom into a cyan slot of the pose aspect x 1.04 (or a 1:1 rounded square for a logo tile); bake with node shared/export.mjs --carousel <id>",
+        "Originality: never copy any reference deck's characters, art, words, hook, CTA phrasing, item set, item order, prop-to-layer pairings or signature palette; only the layout vocabulary carries over. Every chrome number is a real deck fact",
+        "Posting-day check: every item's name and 'does' line (it installs, the repo exists) and one proof fact per layer for its start-here item. Items run 01 to N, N equals the cover count, and the layer count equals the layer slides",
+        "A CTA deliverable (the full list with install commands; its first 3 rows appear on the CTA stub) and its comment keyword",
+        "Cooldown groups, shown by build-gallery: brutalist-poster-cover (S04, S22, S23 covers; 30 days) and grouped-list-mascot (S14, S22; 14 days)"
+      ],
+      "template": "templates/03-command-press",
+      "prompt_block": "engine/styles/S22-layered-parts-atlas.prompt.md",
+      "kit": null
+    },
+    {
+      "id": "S23",
+      "name": "Crop-Mark Proof Sheet",
+      "one_line": "Cream crop-mark proof sheet: orange mono chip, a giant width-fitted Anton '/COMMAND', one stacked-paper proof module per slide.",
+      "status": "test-wave",
+      "production": "image-native",
+      "formats": {
+        "spines": [
+          "C"
+        ],
+        "notes": "Skill and slash-command roundups: one typeable name per slide, each with real proof (before/after, capture, metric). Plugins, MCP servers and hooks fit too, by bare name with no slash. C's optional why and combo slides use the plain-headline layout. Not for spine D (its cover contract, named system + N-step build + the N parts as icons, needs S10 or S01), head-to-heads, or concept explainers with no named command. Cover cooldown: group brutalist-poster-cover (S04, S22, S23), one cover a month across the group. While it cools, run S23 interiors under another cover style and log it in deviations[]. S10 takes the same storyboard field for field (chip, /COMMAND, body, one hero) and its interiors read the same in the feed: pick S10 when exact text matters more than texture (a code-heavy deck), S23 otherwise, and keep S10 and S23 interiors 14 days apart (a hand check, since build-gallery counts covers only)."
+      },
+      "attributes": {
+        "ground": "Light cream paper #F5EBE0 with fine grain; crop-mark hairline frame with ink crosshairs and a header rule. No grid on interiors; the cover alone adds a very faint ink graph grid",
+        "type_pairing": "Anton-class condensed caps headline fitted to the frame width (cap height 14-19% of the slide; two equal lines at about 14-15%, broken at the hyphen, only when one line would fall below 14%); Inter Regular body, at least 1/42 of the height, in a column no wider than 58%, 30 words or fewer; JetBrains Mono chip, byline and cards; cover hook in sentence-case Anton, payoff in Inter Black",
+        "panel": "One proof module per slide, every card a stack of paper sheets: ink before-stack -> sheet-white after-stack, a real capture in a stacked frame, chart + audit cards, a capture beside the body with a type-line card (split), or an input -> skill -> output-file triptych",
+        "character": "Optional, cover only: your own mascot (a transparent PNG pose you made, never a licensed character) pasted through a cyan slot, landing on the oversized cover object to fix or assemble it. Without one, the object carries the cover. No mascot on interiors; the CTA comment avatar is your square profile photo, your mascot or the subject's logo tile",
+        "ornament": "Solid orange mono chip; '{{BRAND}} · NN / TT' + thin orange arrow top-right; short orange rule ending in a cursor block; hand-drawn orange arrows; hard offset shadow on the output file. Cover: orange frame over a faint grid, an ink registration mark with an orange centre dot, mono deck-label and counter corners, and an ink-outline payoff pill led by an orange triangle",
+        "palette": "#F5EBE0 cream / #0E0E0E ink / #D9551F orange / #FBF8F3 sheet white / #8A847C warm grey"
+      },
+      "cooldown_days": 14,
+      "cooldown_group": {
+        "id": "brutalist-poster-cover",
+        "members": [
+          "S04",
+          "S22",
+          "S23"
+        ],
+        "applies_to": "cover",
+        "cap_days": 30
+      },
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S23-cover.png",
+        "interior": "engine/styles/exemplars/S23-interior.png",
+        "note": "HTML mock-ups built from the kit's sample cards (file, before, after), not Codex plates and not a posted deck: the cover's 3D object is stood in by a stacked output-file card under a dashed 'your mascot' placeholder; the interior is the before/after layout.",
+        "sample": true
+      },
+      "requires": [
+        "Proof-card kit: engine/styles/kits/S23/ (before, after, audit, chart, file and type-line cards; kit.css lifts only the .card/.audit/.chart CSS from Template 03; README has the commands), rendered at each magenta zone's --zones-only out bbox x2",
+        "No reference images ship: the first deck's plates run text-only (SYSTEM + the layout paragraph + KEYING); the first approved cover is then Image 1 on every interior, and the first approved plate of each layout becomes its reference for later decks",
+        "Cover hero (optional): one of your own mascot poses (transparent PNG, aspect from python -I shared/pose-check.py check) that fixes or assembles the deck's cover object, never smashes it, via composite.py --logo C1=…@1.0,bottom; with no mascot, ask for no character slot. CTA avatar: your square profile photo, mascot or the subject's real logo tile",
+        "Real proof for every item slide, recorded in its evidence.source: the skill's README or SKILL.md, a terminal run, or the page or video it was built from. Chart series and before/after copy come from a real run, never an illustrative curve (spines.md: a mock is never shown as proof). Faces (third-party thumbnails, your own webcam bubble) are cropped or scrubbed with shared/shots.py",
+        "Originality: the storyboard supplies its own hook, keyword and CTA wording; never copy any reference deck's characters, art, words, hook, CTA phrasing, item set or signature palette",
+        "storyboard.json per slide: layout (before-after | capture | chart-audit | split | triptych | plain | cta), star (exactly one per deck) and cards[] {zone, html, size}, all in engine/storyboard.schema.json",
+        "Cover-family cooldown group brutalist-poster-cover (S04, S22, S23; 30 days), shown by build-gallery"
+      ],
+      "template": null,
+      "prompt_block": "engine/styles/S23-crop-mark-proof-sheet.prompt.md",
+      "kit": "engine/styles/kits/S23"
+    },
+    {
+      "id": "S24",
+      "name": "Spotlight Dossier",
+      "one_line": "Grained cream, a soft coloured stage beam lighting each item's real logo, a regular-weight serif 'name' headline, an ink numbers strip and a mono install card, with dossier and proof slides per item.",
+      "status": "test-wave",
+      "production": "image-native",
+      "formats": {
+        "spines": [
+          "C",
+          "A"
+        ],
+        "notes": "Repo, tool and skill roundups (C). One Dossier slide per item (logo under its beam, name, plain-word kicker, verified numbers strip, a 30-word body with what it does, what it replaces and one use) fills spine C's item role on its own; the strip is the stars proof. Proof slides (real capture, '{name}: {verified claim}' headline, exact install card) go only to the 1-2 strongest items. An optional Verdict table (your own take on each item, from real use) takes C's n-1 combo slot and is logged in deviations[]. 5 items = cover + 5 dossiers + 2 proofs + verdict + CTA = 10. Pairing every item with a proof (5 items, 13 slides) needs the user's go-ahead to raise the 10-slide default plus a deviations[] entry. Spine A for a single repo or skill: Dossier as what, Proof slides as how / use, the install card as start. Not for head-to-heads (S03), system builds (S01, S10) or concept explainers with no installable item."
+      },
+      "attributes": {
+        "ground": "Warm cream paper #F3EBDF with fine even grain, no grid; one soft coloured haze beam per slide falling from the top edge (diagonal from the upper sides on the cover, short beams over the CTA lineup)",
+        "type_pairing": "Regular-weight high-contrast transitional serif headlines (like Newsreader Display / Tiempos Headline), centred, one Claude-orange accent word; italic serif kicker; serif body with the item name in semibold; giant serif cover numeral beside a three-line hook plus one handwritten script line; JetBrains Mono counter and cards; tracked caps labels",
+        "panel": "Deep ink #121212 rounded panels: a numbers strip (3-4 outlined cells, big serif value over a grotesk caption), a mono install card, a dashed name/verdict table; captures in a thick black bezel. All exact content enters as HTML cards or real captures",
+        "character": "None by default: the beam lights the item's real logo tile. A costume-per-item variant may use your own mascot (optional; transparent PNG poses you made, never a licensed character), composited, never redrawn",
+        "ornament": "Star-rule divider (two orange hairlines around a solid four-point star) on every slide, '{{BRAND}} · NN / TT' mono counter, the cover's tracked caps kicker and script line, the CTA's orange-outlined keyword box over a smaller logo lineup",
+        "palette": "#F3EBDF cream / #111111 ink / #121212 panel ink / #8A847C warm grey / #D9551F Claude orange; beam hazes amber #E8A33D, sage #8FAF6E, apricot (from #D9551F), kraft #B08A62. No blue, purple or pink beams"
+      },
+      "cooldown_days": 14,
+      "cooldown_group": {
+        "id": "cream-serif-dark-panes",
+        "members": [
+          "S08",
+          "S24"
+        ],
+        "applies_to": "any",
+        "cap_days": 14
+      },
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S24-cover.png",
+        "interior": "engine/styles/exemplars/S24-interior.png",
+        "interior_slide": 2,
+        "note": "Cover and slide 2 of a deck ranking seven web-design skills for Claude Code."
+      },
+      "requires": [
+        "No reference images ship with this style: Codex jobs run text-only (SYSTEM + COVER or one INTERIOR paragraph + KEYING) until the user approves a first plate; the locked cover (and the first approved Dossier) then become the references",
+        "Card kit: engine/styles/kits/S24/ (numbers, install and verdict cards in Newsreader, Inter and JetBrains Mono; README), copied per deck to $D/cards/ and rendered with --bg '#121212' at the zone's --zones-only out bbox x2. An html-native template stays optional and unbuilt; ask the user before forking a new template",
+        "Verified data on posting day, saved in the deck: total stars, the weekly delta (from the GitHub API), language and licence for every numbers strip. Every proof headline figure comes from a real run or a cited source, and vendor benchmarks are labelled as the vendor's own in the body (spines.md: label who measured it).",
+        "Real logo tiles in $D/logos/ for every cyan slot: the org's GitHub avatar, the app icon, or a simple-icons mark rendered on a #FBF8F3 tile with render-card.mjs. Never painted, and never a mark the deck can't source.",
+        "A real capture for every Proof slide (README, demo, terminal run or source page) via shared/shots.py, with faces cropped or scrubbed, pasted with composite.py --shot --letterbox edge.",
+        "Originality: never copy any reference deck's characters, art, words, hook, CTA phrasing, item set or signature palette; only the layout vocabulary carries over: the kicker, panel labels, CTA question, follow line and keyword are the storyboard's own; the '{{BRAND}} · NN / TT' counter carries no handle; beams stay warm; logo tiles stand where a reference might put characters. A mascot only as your own composited pose whose costume or prop comments on that item, never a redrawn sprite.",
+        "storyboard.json per slide: layout (dossier | proof | verdict | cta), beam colour and cards[] {zone, html, size}, all in engine/storyboard.schema.json. Stage 4 route in .claude/skills/carousel/SKILL.md.",
+        "Cooldown group cream-serif-dark-panes with S08 (14 days), shown by build-gallery."
+      ],
+      "template": null,
+      "prompt_block": "engine/styles/S24-spotlight-dossier.prompt.md",
+      "kit": "engine/styles/kits/S24"
+    },
+    {
+      "id": "S25",
+      "name": "Soft-UI Step Guide",
+      "one_line": "Paper-white product-page tutorial: caps kicker and orange step pill, big sentence-case headline, one soft white UI module per slide, dashed margin traces; floating-card cover.",
+      "status": "test-wave",
+      "production": "html-native",
+      "formats": {
+        "spines": [
+          "A",
+          "D"
+        ],
+        "notes": "A (default): setup-guide explainers for a tool, skill or repo, 8-10 slides. what = Definition (a capture or a mock tagged explain, one verified stat card, a three-word chip strip previewing the steps, no component names); why = Step layout without the pill: old way vs new way with a real capture, never 'why X over others' (framing the subject against other products is banned on spine A); how and start = Step pages with the pill, one module each; peak and use = Rows (exact commands as inline code chips, up to ~100 words); cta. D: the pill numbers step slides only, and the cover sticky lists exactly those steps (G1). Not for B (no table or verdict vocabulary) or C (one module per slide tempts name-only items; S21 and S23 cover C). Manual brief-card check: keep S25 14 days from S12 (near-white with orange) and S21 (white window cards), since build-gallery's per-style cooldown doesn't catch look-alikes."
+      },
+      "attributes": {
+        "ground": "Paper white #F6F5F3 with a faint white glow top-left, no grid or grain on interiors; one or two dashed warm-grey traces (rounded L-runs ending in orange node dots) in the side margins, behind the cards. Cover: a Codex plate of the same ground holding one text-free hero device and an optional 8% engraved topic sketch top-right",
+        "type_pairing": "Plus Jakarta Sans 800 sentence-case headlines (104-120 px, tight tracking), alternating with 500-weight connective lines in the cover's centred stack; Inter grey body and letter-spaced grey caps kickers; JetBrains Mono for terminals and inline code chips. Every word is HTML",
+        "panel": "One soft white module card per slide (radius 28, long diffuse shadow): a dark terminal with traffic-light dots, a matted real capture, a 2x3 real-logo grid, a hub-and-spoke of logo tiles on dashed traces, or a command trio. Rows pages stack 3-5 numbered white row cards. Footer: one chip row, callout pill or quote card",
+        "character": "None. Cover A: a Codex-painted matte warm-white laptop whose magenta screen takes a real capture; Cover B (opt-in): the user, cut out from photos they supply. Byline: your square profile photo or your brand mark. Your own mascot (optional; transparent PNG poses you made, never a licensed character) only where a pose comments on that step; never drawn",
+        "ornament": "Orange-dot 'Step 0N' pill, grey caps kicker, NN / TT counter, dashed traces with orange nodes, chip rows with tinted icon circles, orange-quote card, callout pill. Cover: a hairline-flanked connective line, a dashed-ring logo hub joined to tilted logo chips, a taped butter sticky checklist of the N steps, a terminal card, a payoff pill banner with the subject's logo in a ring",
+        "palette": "Paper white #F6F5F3 / card white #FFFFFF / ink #111214 / body grey #5F646B / kicker grey #8C9097 / Claude orange #D9551F on tint #FBE9E1 / terminal #16181B / sticky butter #FFF4D6. No blue, cyan, teal, purple or pink in chrome; real logos keep their own colours inside white tiles"
+      },
+      "cooldown_days": 14,
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S25-cover.png",
+        "interior": "engine/styles/exemplars/S25-interior.png",
+        "note": "Sample renders from the kit, no posted deck in this style yet: kit pages 01 (the cover, over the kit's labelled placeholder plate) and 04 (Step 01), with {{BRAND}} filled in as YOUR BRAND and a placeholder avatar.",
+        "sample": true
+      },
+      "requires": [
+        "Per-deck card set, no template: start from the kit engine/styles/kits/S25/ (copy cards/*; README): $D/cards/s25.css (the tokens, chrome and components in the prompt block) plus one $D/cards/page-NN.html per slide with an inline window.cardReady fit pass, rendered by shared/render-card.mjs at 1080x1350 --scale 1 --min-px 22 straight to $D/exports/slide-NN-YYYY-MM-DD.png. Fill {{BRAND}} in every page. Ask the user before forking a templates/NN-soft-ui-guide template; when one ships, set template to its path. Glyphs: node shared/lucide-icons.mjs $D/cards/icons.js --from $D/cards. Bodies hold about 32 words",
+        "Stage 4 route in .claude/skills/carousel/SKILL.md: one Codex job (the cover plate), then cards, render-card, exports and the contact sheet",
+        "Cover A plate: shared/codex-img.mjs with SYSTEM + COVER plate + KEYING, text-only, no reference image until the user approves a cover; composite.py --zones-only must find one magenta zone with fill >= 0.97 (else an edit job, never a warp), then --shot with a focus box to $D/fitted/cover.png",
+        "Never attach a third-party slide to a Codex job",
+        "Real captures (shared/shots.py, focus box, key text >= 30 px) for the cover screen, the what and why slides and capture modules; terminal text copied from a real run, never an invented progress bar or success line; every stat-card number and star count verified on posting day",
+        "Real logos as <img> from your logo folder or simple-icons SVG for the hub, chips, logo grid and banner; never drawn or imitated in CSS",
+        "Your square profile photo (or your brand mark) as $D/logos/avatar.png for the byline (the kit's avatar.png is a grey placeholder); Cover B only with 2-3 photos the user supplies and opts into, cut out with a background remover",
+        "Originality: never copy any reference deck's characters, art, words, hook, CTA phrasing, item set or signature palette; only the layout vocabulary carries over; no creator handle or avatar, no redrawn subject wordmark (use the real file), and no accent other than Claude orange",
+        "storyboard.json: production 'html'; each slide's layout (step, definition, rows, cta) in slides[].layout and its module in strings[].place (e.g. 'module.terminal', 'footer.chips')"
+      ],
+      "template": null,
+      "prompt_block": "engine/styles/S25-soft-ui-step-guide.prompt.md",
+      "kit": "engine/styles/kits/S25"
+    },
+    {
+      "id": "S26",
+      "name": "Whiteboard Doodle Showcase",
+      "one_line": "Warm paper-white page: a handwritten item name over one orange marker underline, one real capture in a sketched ink frame, a handwritten caption, and a small ink doodle acting out what the item does.",
+      "status": "test-wave",
+      "production": "hybrid",
+      "formats": {
+        "spines": [
+          "C",
+          "A"
+        ],
+        "notes": "C (default), 7-10 slides: cover, optional why, 5-8 item slides, optional combo (text panel), CTA. One item per slide: the exact name in the head card, one real capture (repo page or README with stars visible, UI or terminal run, checked on posting day), a caption of 34 words or fewer saying what it does in plain words, what it replaces and one concrete use, and a doodle acting out that job. The cover's index cards on a string equal the item count, so G1 can be checked by eye. A (explainer): the same item layout carries what, why, how, use and start; peak and start take an exact-text card in the frame, and the model slide an HTML diagram card. Not for head-to-heads (no side-by-side or table layout). What sets it apart: handwriting is the only typeface, every slide's doodle explains the item's job with objects rather than a character, one capture per slide and lots of empty paper."
+      },
+      "attributes": {
+        "ground": "Flat warm paper white #FBF8F3 edge to edge: no grain, grid or vignette, so text cards paste seamlessly",
+        "type_pairing": "One handwriting family, Shantell Sans (Google Fonts): 800 for item names, hooks and the CTA in real case (identifiers keep their case), 500 for centred captions, and a small warm-grey 'NN / TT' counter. Every word is an HTML card; Codex paints none",
+        "panel": "One real capture per slide in a hand-drawn ink frame with soft corners, the full column width at about 16:9; exact-text cards (prompt, command, config) sit in the same frame. Cover and CTA have no frame",
+        "character": "None by default: the doodle's actor is an object, at most with one ink-outline hand reaching in. Optional: your own mascot (transparent PNG poses you made, never a licensed character) through a cyan slot on the cover and CTA only, where its spot comments (at the post that hung the item cards; beside the letterbox it posted through). With no mascot, the subject's real mark or no slot",
+        "ornament": "One Claude-orange SVG marker underline under the item name (on the cover, under the key line); a handwritten 'NN / TT' counter top-right; grey pencil hatch under each doodle; exactly one orange element per doodle (the thing that changes)",
+        "palette": "Paper #FBF8F3 / ink #1A1A1A-#1B1B1B / pencil grey #C9C4BC / counter grey #8A8178 / Claude orange #D9551F on the underline, the CTA keyword and one doodle element; no blue, green, yellow or red on the plate"
+      },
+      "cooldown_days": 14,
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S26-cover.png",
+        "interior": "engine/styles/exemplars/S26-interior.png",
+        "note": "Sample renders from the kit's cards (cover card; head, ink text card in the sketched frame, caption) on the paper ground. The doodle is a dashed placeholder box, since Codex paints it per slide. No posted deck in this style yet.",
+        "sample": true
+      },
+      "requires": [
+        "Per-deck HTML cards in $D/cards/ (copied from engine/styles/kits/S26/; README): head-NN.html (counter, exact name with data-fit 120->64 px, SVG orange underline), cap-NN.html, cover.html, cta.html, and ink-card.html (#141414, cream JetBrains Mono) for text-panel slides. Shantell Sans 800/500 from Google Fonts. Rendered with shared/render-card.mjs at 2x each zone's --zones-only out bbox, --bg sampled from the plate ground beside the zone, pasted with composite.py --card. About two cards per item slide (15-17 for an 8-slide deck); say so on the brief card. Captions fit about 160 characters in the 880x198 caption box",
+        "Layout-only refs: engine/styles/refs/S26-style-cover.png and S26-style-interior.png (builders in engine/styles/refs/src/): words as grey bars, the capture flat magenta in its sketched frame, the underline #D9551F, the ground #FBF8F3, the doodle area a dashed grey box. Once a cover is locked it is Image 1 and sets the doodle line weight",
+        "Real captures through shared/shots.py, one per item (repo page or README with stars visible, a UI or a terminal run), taken on posting day; focus box on the name and star count; dark captures pasted with --letterbox edge",
+        "Verified facts per item (stars or installs, what it replaces, one use) checked on posting day, plus the cover aside's star figure or month",
+        "Originality: never copy any reference deck's characters, art, words, hook, CTA phrasing, item set or signature palette; only the layout vocabulary carries over. Never draw a person, figure or mascot in the doodle: draw each doodle fresh from the SYSTEM's object vocabulary",
+        "Optional mascot: your own transparent PNG through a cyan slot (composite.py --logo N=$D/assets/mascot.png@1.0), cover and CTA only, never painted, never on item slides, never a licensed character. With no mascot, the subject's real mark (your logo folder or simple-icons) or no slot",
+        "Plate QA per slide: no letters, numbers, faces or figures in the doodle, exactly one orange element, nothing touching a zone. A miss is one edit job, never a full re-generation",
+        "No HTML template yet: it runs hybrid. A template fork (with Codex painting only cut-out doodle plates) would make it html-native; ask the user before forking a new template"
+      ],
+      "template": null,
+      "prompt_block": "engine/styles/S26-whiteboard-doodle-showcase.prompt.md",
+      "kit": "engine/styles/kits/S26"
+    },
+    {
+      "id": "S27",
+      "name": "Icon-Grid Cheat Sheet",
+      "one_line": "Warm-white one-page cheat sheet: two real logo tiles joined by '+', a heavy count hook with one orange pill, then a numbered grid of N repo tiles (icon, name, one line, owner/repo).",
+      "status": "test-wave",
+      "production": "html-native",
+      "formats": {
+        "spines": [
+          "C"
+        ],
+        "notes": "One system, two formats. (1) One-pager: a single image (storyboard format \"single\", gates in engine/spines.md 'Format single'). The grid is the whole post and saves are the mechanic; N runs from 6 to 12, and the caption carries 'Comment KEYWORD' for the links. Tile text is save-and-zoom size (18 px lines), below the usual 1/40 floor. (2) Carousel, spine C. The same page is the cover: the count hook plus the full grid as a preview, with no comment ask. Then comes one item slide per tile, in cover order: the tile opened, with icon, name, what, one real capture, replaces, use, and owner/repo plus stars verified on posting day. An optional combo slide (N of 7 or fewer) and the CTA close it. N is 8 or fewer, so the deck stays at 10 slides or fewer, and G1 holds because every cover tile gets its own slide. Use it for repos, skills, plugins, MCP servers and apps. Not for head-to-heads, explainers or system builds: the grid has no slot for a verdict, a diagram or a step order."
+      },
+      "attributes": {
+        "ground": "Flat warm white #FBF8F3; no grain, grid, gradient or texture",
+        "type_pairing": "Heavy geometric grotesk (Inter Black), title case, tracking -0.03em for the centred hook, tile names and item headlines; Inter Regular warm-grey tile lines; cream Inter Bold badge numerals; JetBrains Mono for owner/repo, the month stamp and the NN / TT counter",
+        "panel": "A grid of N identical white rounded tiles (3×2, 4×2 or 5×2; 9 and 12 use 3 rows with the icon left of the name). Each tile has an orange number badge, a real app icon, the name, one to three warm-grey lines and an inset GitHub chip with owner/repo. Two real logo tiles joined by a heavy ink '+' crown the page. Carousel interiors open one tile into a full page with one real capture",
+        "character": "None: no pose would comment on a grid of logos. The byline circle holds your square profile photo or your logo mark (a neutral placeholder circle in the kit). Item icons are always real marks or ink monograms, never character or creature art",
+        "ornament": "A solid Claude-orange capsule pill on the count phrase; orange circle number badges; the heavy ink '+'; on item slides, a mini grid map with the current cell orange and short orange label rules; a mono month stamp and counter",
+        "palette": "#FBF8F3 warm white / #FFFFFF tiles / #0E0E0E ink / #5E574F and #6E675E warm greys / #E6DED3 borders / #F4EEE6 chips / #D9551F Claude orange (pill, badges, one accent word, label rules). Brand colour comes only from the real logos. The pill is solid orange, never a gradient and never pink (pink is a banned key-adjacent hue)"
+      },
+      "cooldown_days": 14,
+      "cooldown_group": {
+        "id": "two-logo-crown-cover",
+        "members": [
+          "S02",
+          "S27"
+        ],
+        "applies_to": "cover",
+        "cap_days": 14
+      },
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S27-cover.png",
+        "interior": "engine/styles/exemplars/S27-interior.png",
+        "note": "Sample renders from the kit: the carousel cover (page-01, 6 tiles) and an item page (page-03), with YOUR BRAND and a placeholder avatar in the byline and a placeholder capture in the item's window. No posted deck in this style yet.",
+        "sample": true
+      },
+      "requires": [
+        "Per-deck page cards, no template. Write $D/cards/page-NN.html in Inter and JetBrains Mono (Google Fonts) with a [data-fit] pass. Render each with shared/render-card.mjs at --w 1080 --h 1350 --scale 1 --bg '#FBF8F3' --min-px 15, straight to exports/slide-NN-YYYY-MM-DD.png (date from the folder name; export.mjs is not involved). Start from engine/styles/kits/S27/cards/ (README) or the last S27 deck's cards with every string replaced. S27 needs no template; ask the user before forking a new one",
+        "Stage 4 route: no Codex job; Claude fills the cards from strings[], an independent QA agent reads every export against strings[] and the live repos (names, owner/repo, stars, letter by letter) and confirms each icon file belongs to its item, then the contact sheet",
+        "Real marks in $D/logos/, each with its source URL in the slide's evidence: the host mark from your logo folder or simple-icons (the kit has claude-orange.png and github-ink.png); and per item, the project's own README logo or its owner's GitHub avatar. With no mark, use a typographic ink monogram tile. Never a painted or generated icon",
+        "Byline: {{BRAND}} from engine/brand.json and your square profile photo as $D/logos/avatar.png (or your logo mark), plus a month stamp; no 'Follow … for more'",
+        "Posting-day verification for every item: repo name, owner/repo, star count and a one-line what. Write the line in your own words, never the README tagline verbatim and never a reference's blurb. Each carousel item slide adds one real capture (README, UI or terminal run via a browser screenshot tool, playwright-cli or shots.py) as its proof",
+        "Single-image format: format \"single\" in storyboard.json (engine/storyboard.schema.json allows exactly 1 slide), with the gate table in engine/spines.md 'Format single'",
+        "Originality: never copy any reference post's characters, art, words, hook, CTA phrasing, item set, order or blurbs, or signature palette; only the layout vocabulary carries over. Hooks come from the bank's count formulas (engine/hooks.md F5, F8 or F9); the pill is solid #D9551F",
+        "Cooldown group two-logo-crown-cover with S02 (covers, 14 days), shown by build-gallery. Never a grid of names alone: on a carousel every tile gets its own item slide"
+      ],
+      "template": null,
+      "prompt_block": "engine/styles/S27-icon-grid-cheat-sheet.prompt.md",
+      "kit": "engine/styles/kits/S27"
+    },
+    {
+      "id": "S28",
+      "name": "Alpine Product Window",
+      "one_line": "One bright alpine wallpaper behind every interior: a real app-icon tile over a heavy product name, warm feature chips, one dark window holding a real capture and a three-cell icon footer; Claude-orange studio cover with real icons rising from a cream toolbox.",
+      "status": "test-wave",
+      "production": "hybrid",
+      "formats": {
+        "spines": [
+          "C",
+          "A"
+        ],
+        "notes": "C first: N tools, skills, MCP servers, plugins or apps that each have a real UI or README to capture, one product page per item. Cover (studio, a toolbox of the items' real icons, count = item slides, month stamp in the corner label), optional why as a Before/after page, one Item page per item, optional Combo at n-1, CTA. Ten slides at most, so six items at most. Each Item page carries spine C's whole contract in about 45 words: the name as title, what it does in one 14-word line, README feature chips, a real capture as proof, and a footer with what it replaces, one concrete use and a posting-day proof figure. A: a single-tool deep dive in which every slide is a page of the same product, the subject's tile repeated, the title being the role's headline (7 words or fewer) and the window carrying that role's panel: what (chips preview the steps in plain words, no component names, G2), why as Before/after, model as an HTML diagram tagged explain, how and use as real captures, peak and start as exact-text mono. Not for B (no table or verdict vocabulary), D (no step-numbering device) or items with nothing to capture (prompts, concepts: use S21 or S27)."
+      },
+      "attributes": {
+        "ground": "Interiors: ONE photoreal alpine-valley plate reused on every interior: snow peaks in the side thirds framing a luminous hazy centre sky, pine slopes, a slate lake across the middle (mostly behind the window), a soft-focus white, yellow, cream and orange wildflower meadow with boulders, a blurred leafy branch top-left; HTML white veils behind the title band and the footer band. Cover and CTA: a seamless Claude-orange studio backdrop deepening to burnt sienna at the left and corners, one 3D cream toolbox as the hero",
+        "type_pairing": "Inter 800 product-name titles, centred, ink, tracking -0.045em, over an Inter 500 two-line subtitle; Inter 500 chip and footer labels; JetBrains Mono window source label. Cover: giant Inter 900 numeral, Inter 800 caps noun line, one Caveat Brush script word over a hand-drawn underline, Inter 300 closing line, tracked Inter 600 caps corner labels. CTA: Anton caps \"COMMENT\" with the keyword in ink on a cream block. Every word is HTML",
+        "panel": "One dark macOS-style window (#121418, traffic-light dots, mono source label in the bar) floating over the scenery at about 87% of the width and 43% of the height, its body ONE real capture; Before/after splits it into labelled without/with cells. Above it a real app-icon header tile (150 px) and a row of 3-5 warm-tint feature chips; below it a three-cell icon footer (replaces / use / proof)",
+        "character": "None by default: the cover's actor is an unattended cream toolbox with the items' real icons composited into cyan slots rising out of it; the CTA shows it shut. Your own mascot (optional; transparent PNG poses you made, never a licensed character) only where a pose comments on the slide, composited as an <img>, never painted",
+        "ornament": "Tracked-caps corner labels with short cream rules on cover and CTA ({{BRAND}}, deck label and month, counter); Lucide line icons in chips, footer and CTA; 1 px rules between footer cells; an optional small Claude-orange four-point spark on glyph tiles; a \"{{BRAND}} · NN / TT →\" counter over a short ink rule",
+        "palette": "Scene: sky #4A84C2 to #EEF3F8, pine #2F4A2E, slate lake #5E7B91, meadow greens, flowers white / #F2C230 / cream / orange. Cards: ink #0E0E0E, subtitle #2B2F36, window #121418, chips apricot #FBE3D6, butter #FFF1CC, sage #E2EDD9, sand #EFE5D8, stone #E9E7E3. Studio: #D9551F to #8F3414, cream #F5EBE0 type; Claude orange #D9551F as the one accent. Key-safe rules: water stays slate and the sky mid-blue, never green-blue (turquoise sits on the cyan key's hue); flowers are never pink (pink in an unkeyed plate trips composite.py's stray-magenta exit 3); chips stay warm, never lavender, pink or sky blue; UI accents are orange"
+      },
+      "cooldown_days": 14,
+      "cooldown_group": [
+        {
+          "id": "orange-ground-app-tiles-cover",
+          "members": [
+            "S02",
+            "S28"
+          ],
+          "applies_to": "cover",
+          "cap_days": 14
+        },
+        {
+          "id": "landscape-grounds",
+          "members": [
+            "S14",
+            "S15",
+            "S28"
+          ],
+          "applies_to": "any",
+          "cap_days": 14
+        }
+      ],
+      "exemplars": {
+        "cover": "engine/styles/exemplars/S28-cover.png",
+        "interior": "engine/styles/exemplars/S28-interior.png",
+        "note": "Sample renders from the kit: the cover page and an Item page over the kit's flat placeholder plates (labelled PLACEHOLDER PLATE; a real deck uses Codex plates), with YOUR BRAND in the chrome and placeholder captures in the window. No posted deck in this style yet.",
+        "sample": true
+      },
+      "requires": [
+        "Per-deck page cards, no template: $D/cards/s28.css (the prompt block's tokens) plus one $D/cards/page-NN.html per slide with the fitted plate as its CSS background (url(../fitted/scene.png | cover.png | cta.png), center / 1080px 1350px) and an inline window.cardReady fit pass, rendered with node shared/render-card.mjs at --w 1080 --h 1350 --scale 1 --min-px 20 straight to $D/exports/slide-NN-YYYY-MM-DD.png (date from the folder name). Exit 2 means shorter copy. Starter kit: engine/styles/kits/S28/ (pages, tile-NN.html for the --logo tiles; README); {{BRAND}} from engine/brand.json. Glyphs: node shared/lucide-icons.mjs $D/cards/icons.js --from $D/cards. S28 needs no template; ask the user before forking a new one",
+        "Three Codex plates per deck via shared/codex-img.mjs (SYSTEM + the layout's Plate paragraph, + KEYING for the cover), text-only prompts, 2 variants each, no reference image until a plate is approved: scene (every interior), cover (cyan slots), CTA. Scene and CTA go through python -I shared/composite.py plates/x.png fitted/x.png (centre crop + Lanczos to 1080x1350); exit 3 on those means stray magenta, usually a pink flower: edit job. Cover: --zones-only must find exactly N cyan zones (fill about 0.95 at the 22% corner radius; under 0.93 something overlaps: edit job), then --logo i=logos/x.png@1.0 per slot. An approved scene plate may be reused as-is on later S28 decks. The kit's fitted/*.png are placeholders, never shipped",
+        "A real capture in every Item, Combo and Before/after window: README, product UI or a Claude Code session using the tool, via a browser screenshot tool, playwright-cli or shared/shots.py with a focus box so key text renders at 30 px or more; faces scrubbed. Never a painted or HTML-faked product UI as proof. HTML mocks and diagrams only on spine A what/model pages, tagged evidence.kind: explain; peak/start windows hold exact text copied from a real run",
+        "Real logo tiles in $D/logos/ for the header tiles and the cover slots: the app icon, the org's GitHub avatar, or a simple-icons mark on a #111111 or #FFFFFF rounded tile rendered with render-card (transparent corners, the slot's 22% radius), each with its source URL in the slide's evidence. No mark: a cream Lucide glyph on a #111111 tile, never an imitation of a product mark",
+        "Lucide line icons (ISC, shared/vendor/lucide) as inline SVG for chips, footer and the CTA glyph: generic glyphs only. Google Fonts: Inter (300-900), JetBrains Mono 500, Anton, Caveat Brush",
+        "Posting-day verification for every item: exact name and case, owner/repo, stars or price, licence; chips are the README's real features in two words or fewer, never marketing adjectives; the what and use lines in your own words, never the README tagline or a reference's copy",
+        "Stage 4 route: three plate jobs, the cover --logo pass, the cards, render-card, then an independent QA agent reads every export against strings[] and the live sources (names, figures, owner/repo, letter by letter), confirms each tile and capture belongs to its item and checks title and footer contrast on the veils; then the contact sheet",
+        "Originality: never copy any reference deck's characters, art, words, hook, CTA phrasing (keyword included), item set or order, or signature palette; only the layout vocabulary carries over. The cover hook comes from the bank (engine/hooks.md F5, F8 or F9)",
+        "Cooldown groups, shown by build-gallery: landscape-grounds (S14, S15, S28; 14 days) and orange-ground-app-tiles-cover (S02, S28 covers; 14 days)"
+      ],
+      "template": null,
+      "prompt_block": "engine/styles/S28-alpine-product-window.prompt.md",
+      "kit": "engine/styles/kits/S28"
     }
   ]
 }

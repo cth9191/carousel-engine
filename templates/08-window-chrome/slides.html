@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Template 08 — Window Chrome</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared/tweak-panel.css">
+<style>
+  /* S19 Window-Chrome Build Diary. Spec: engine/styles/S19-window-chrome-diary.prompt.md */
+  :root {
+    --graphite:#575757; --chrome:#4A4A4A; --chrome-line:#393939; --tabrow:#3F3F3F; --rail:#474747;
+    --white:#FFFFFF; --orange:#D9551F; --apricot:#F5C9A0; --cream:#F5EBE0; --rust:#7A2C14;
+    --ink:#0E0E0E; --terracotta:#D9551F;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { background:#1a1a1a; font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased; height:100%; overflow:hidden; }
+  .stage { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; }
+  .slide-wrap { width:1080px; height:1350px; transform-origin:center; }
+
+  .slide { --accent:#D9551F; --head-scale:1;
+    width:1080px; height:1350px; position:relative; overflow:hidden; background:var(--graphite); color:#fff; }
+  .slide.apricot { background:var(--apricot); color:var(--rust); }
+  .slide.cream { background:var(--cream); color:var(--rust); }
+  .abs { position:absolute; }
+
+  /* ---------- z-order: frame (1) → canvas (2) → content (5) → break-out (20) ---------- */
+  .z-frame { z-index:1; } .z-canvas { z-index:2; } .z-content { z-index:5; } .z-break { z-index:20; } .z-chrome { z-index:30; }
+
+  /* ---------- frame kit (your own window, generic IDE vocabulary) ---------- */
+  .kit-title { left:0; top:0; width:1080px; height:66px; background:var(--chrome); }
+  .lights { position:absolute; left:24px; top:21px; display:flex; gap:14px; }
+  .lights i { display:block; width:24px; height:24px; border-radius:50%; }
+  .kit-title .win-title { position:absolute; right:30px; top:0; line-height:66px; font-weight:500; font-size:26px; color:#E6E6E6; white-space:nowrap; }
+  .kit-ctrl { left:0; top:66px; width:1080px; height:61px; background:var(--chrome); border-top:1px solid var(--chrome-line); }
+  .kit-ctrl .stage-label { position:absolute; left:28px; top:0; line-height:60px; font-weight:500; font-size:30px; color:#F2F2F2; white-space:nowrap; }
+  .counter { display:flex; align-items:center; gap:12px; height:46px; padding:0 20px; border-radius:23px; background:#ECECEC; color:var(--ink);
+    font-weight:500; font-size:30px; white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .counter .dot { width:12px; height:12px; border-radius:50%; background:var(--accent); flex:0 0 auto; }
+  .kit-ctrl .counter { position:absolute; right:22px; top:7px; }
+  .kit-tabs { left:0; top:127px; width:1080px; height:50px; background:var(--tabrow); display:flex; overflow:hidden; }
+  .tab { flex:0 0 auto; height:50px; padding:0 26px; display:flex; align-items:center; gap:14px; font-weight:500; font-size:24px; color:#A6A6A6;
+    border-right:1px solid #353535; white-space:nowrap; }
+  .tab .x { font-size:24px; opacity:.85; }
+  .tab.active { background:var(--graphite); color:#F2F2F2; box-shadow:inset 0 3px 0 var(--accent); }
+  .rail { left:0; top:270px; width:96px; height:1042px; background:var(--rail); border:1px solid #353535; border-left:none; border-radius:0 8px 8px 0; }
+  .rail .cell { position:absolute; left:0; width:95px; height:76px; display:flex; align-items:center; justify-content:center; color:#D6D6D6; }
+  .rail .cell svg { width:40px; height:40px; }
+  .rail .cell.on { background:#2F2F2F; box-shadow:inset 3px 0 0 var(--accent); }
+
+  /* ---------- real-frame mode ---------- */
+  .real-frame { left:0; top:0; width:1080px; height:1350px; object-fit:cover; object-position:left top; }
+  .canvas { background:var(--graphite); }
+  .pill-stage { height:46px; padding:0 20px; border-radius:23px; background:#2F2F2F; color:#fff; font-weight:500; font-size:30px;
+    display:flex; align-items:center; white-space:nowrap; }
+
+  /* ---------- type ---------- */
+  .serif { font-family:'Instrument Serif',serif; font-weight:400; letter-spacing:-.01em; }
+  .serif em, .serif i { font-style:italic; }
+  .type { position:absolute; text-align:center; }
+  .head { line-height:.98; }
+  .lower { text-transform:none; }
+  .caption { font-size:40px; line-height:1.05; }
+  .label { font-size:40px; line-height:1.0; text-align:left; }
+
+  /* ---------- artboards ---------- */
+  .ab { position:absolute; }
+  .ab .clip { position:absolute; inset:0; overflow:hidden; background:#3d3d3d; }
+  .ab .clip img { position:absolute; left:0; top:0; max-width:none; }
+  .ab.warm .clip { box-shadow:0 26px 54px rgba(122,44,20,.26), 0 6px 14px rgba(122,44,20,.16); }
+  .ab .ph { position:absolute; inset:0; border:2px dashed rgba(255,255,255,.45); display:flex; align-items:center; justify-content:center;
+    font:500 30px 'Inter',sans-serif; color:rgba(255,255,255,.7); text-align:center; padding:20px; }
+  .slide.apricot .ab .ph, .slide.cream .ab .ph { border-color:rgba(122,44,20,.45); color:var(--rust); }
+  .card { position:absolute; background:var(--cream); color:var(--ink); font-family:'JetBrains Mono',monospace; font-weight:400;
+    line-height:1.38; padding:34px 38px; white-space:pre-wrap; overflow:hidden; text-align:left; }
+  .card .hl { color:var(--accent); font-weight:500; }
+  .card .dim { color:rgba(14,14,14,.55); }
+  .sel { position:absolute; border:2px solid var(--accent); pointer-events:none; }
+  .sel b { position:absolute; width:14px; height:14px; background:#fff; border:2px solid var(--accent); }
+
+  /* ---------- break-out layer ---------- */
+  .cut { position:absolute; transform-origin:center center; }
+  .cut img { display:block; width:100%; height:auto; }
+  .cut.shadow img { filter:drop-shadow(0 16px 14px rgba(0,0,0,.36)) drop-shadow(0 3px 3px rgba(0,0,0,.25)); }
+  .slide.apricot .cut.shadow img, .slide.cream .cut.shadow img { filter:drop-shadow(0 18px 18px rgba(122,44,20,.28)) drop-shadow(0 3px 4px rgba(122,44,20,.2)); }
+  .cut .ph { width:100%; aspect-ratio:1; border:3px dashed var(--accent); border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font:500 30px 'Inter',sans-serif; color:var(--accent); }
+  .contact { position:absolute; border-radius:50%; background:radial-gradient(closest-side, rgba(122,44,20,.30), rgba(122,44,20,.12) 55%, rgba(122,44,20,0)); }
+
+  /* ---------- caption-page footer ---------- */
+  .footer { position:absolute; left:86px; right:86px; bottom:54px; display:flex; justify-content:space-between; font-weight:500; font-size:30px;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--rust); line-height:1; }
+  .plate { left:0; top:0; width:1080px; height:1350px; object-fit:cover; }
+
+  /* === UI chrome (hidden on export) === */
+  .ui { position:fixed; bottom:18px; left:50%; transform:translateX(-50%); background:rgba(20,20,20,.92); color:#fff;
+    padding:8px 12px; border-radius:999px; display:flex; gap:12px; align-items:center; font-size:13px; z-index:100; }
+  .ui button { background:#2a2a2a; color:#fff; border:none; padding:6px 12px; border-radius:99px; cursor:pointer; font-size:13px; }
+  .ui button:hover { background:#3a3a3a; }
+  .ui .label2 { font-family:'JetBrains Mono',monospace; min-width:240px; text-align:center; }
+  .ui .num { color:var(--terracotta); font-weight:700; }
+  .ui .qa { color:#ffb199; font-family:'JetBrains Mono',monospace; max-width:420px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .arrow-btn { width:32px; height:32px; padding:0 !important; }
+  :fullscreen .ui { display:none !important; }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="slide-wrap" id="slideWrap">
+    <div class="slide" id="slide"></div>
+  </div>
+</div>
+
+<div class="ui">
+  <button class="arrow-btn" id="prev">←</button>
+  <span class="label2"><span class="num" id="num">1/7</span> &nbsp; <span id="name">Cover</span></span>
+  <button class="arrow-btn" id="next">→</button>
+  <button id="fs">Fullscreen (F)</button>
+  <span class="qa" id="qaOut"></span>
+</div>
+
+<button class="tw-toggle" id="twToggle">⚙ Tweaks</button>
+<div class="tw-panel" id="twPanel">
+  <h3>Tweaks <button class="close" id="twClose">×</button></h3>
+  <div class="tw-section">
+    <div class="section-title">GLOBAL</div>
+    <div class="tw-row"><span class="lbl">Orange (UI accents)</span><input type="color" id="twAccent"></div>
+    <div class="tw-row"><span class="lbl">Type scale % <span class="val" id="vHeadScale"></span></span><input type="range" id="twHeadScale" min="80" max="115" step="1"></div>
+  </div>
+  <div class="tw-section">
+    <div class="section-title">PER-SLIDE: <span class="name" id="vSlideName">—</span></div>
+    <div class="tw-row"><span class="lbl">Stage label (chrome)</span><input type="text" id="twStage"></div>
+    <div class="tw-row"><span class="lbl">Headline / sentence (HTML; &lt;em&gt; = italic accent)</span><textarea id="twHead" rows="2"></textarea></div>
+    <div class="tw-row"><span class="lbl">Subtitle / second line</span><input type="text" id="twSub"></div>
+    <div class="tw-row"><span class="lbl">Caption</span><input type="text" id="twCaption"></div>
+    <div class="tw-row"><span class="lbl">Headline size <span class="val" id="vHeadSize"></span></span><input type="range" id="twHeadSize" min="40" max="130" step="1"></div>
+    <div class="tw-row"><span class="lbl">Headline nudge Y <span class="val" id="vHeadTop"></span></span><input type="range" id="twHeadTop" min="-80" max="80" step="1"></div>
+    <div class="tw-row"><span class="lbl">Artboard scale % <span class="val" id="vBoardScale"></span></span><input type="range" id="twBoardScale" min="70" max="115" step="1"></div>
+    <div class="tw-row"><span class="lbl">Break-outs on</span><input type="checkbox" id="twBreak"></div>
+  </div>
+  <button class="tw-reset" id="twReset">Reset slide to defaults</button>
+  <button class="tw-reset" id="twExport" style="background:#0E0E0E;color:#fff;margin-top:6px;">📋 Export tweaks (copy JSON)</button>
+  <pre id="twExportOut" style="display:none;margin-top:10px;padding:10px;background:#f5f5f5;border-radius:6px;font-size:10px;white-space:pre-wrap;word-break:break-all;max-height:240px;overflow:auto;"></pre>
+</div>
+
+<script>
+/* ======================================================================================
+   ENGINE (don't edit per deck). Scroll to CONTENT at the bottom.
+   ====================================================================================== */
+const W = 1080, H = 1350;
+// lucide-static v0.460.0 (ISC), inlined from shared/vendor/lucide/ so the page needs no fetch
+const ICONS = {
+  files:'<path d="M20 7h-3a2 2 0 0 1-2-2V2"/><path d="M9 18a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h7l4 4v10a2 2 0 0 1-2 2Z"/><path d="M3 7.6v12.8A1.6 1.6 0 0 0 4.6 22h9.8"/>',
+  search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  branch:'<line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/>',
+  terminal:'<path d="m7 11 2-2-2-2"/><path d="M11 13h4"/><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>',
+  chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  run:'<polygon points="6 3 20 12 6 21 6 3"/>',
+  account:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/>',
+  settings:'<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
+};
+const RAIL_TOP = ['files','search','branch','terminal','chat','run'], RAIL_FOOT = ['account','settings'];
+const svg = (k) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`;
+const pad = (n) => String(n).padStart(2, '0');
+const esc = (s) => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const ratio = (a) => { if (typeof a === 'number') return a; if (!a) return null; const [x, y] = String(a).split(':').map(Number); return x / y; };
+
+// natural sizes of every image, preloaded so layouts can use real aspects
+const NAT = {};
+function collectSrcs() {
+  const out = new Set();
+  const add = (o) => { if (o && o.src) out.add(o.src); };
+  for (const s of slides) {
+    if (s.frame && s.frame.src) out.add(s.frame.src);
+    if (s.plate) out.add(s.plate);
+    [...(s.artboards || []), ...(s.raw || []), ...(s.pieces || []), ...(s.parts || []), ...(s.cutouts || [])].forEach(add);
+    add(s.hero);
+  }
+  return [...out];
+}
+const preloadAll = () => Promise.all(collectSrcs().map((src) => new Promise((res) => {
+  const im = new Image();
+  im.onload = () => { NAT[src] = [im.naturalWidth, im.naturalHeight]; res(); };
+  im.onerror = () => res();
+  im.src = src;
+})));
+const aspectOf = (o, fallback = 0.8) => ratio(o.aspect) || (o.src && NAT[o.src] ? NAT[o.src][0] / NAT[o.src][1] : fallback);
+
+// italic accent words: wrap the first case-insensitive match of each phrase in <em> (strings already holding < are left alone)
+function accentize(str, accents) {
+  if (!str) return '';
+  if (/[<>]/.test(str)) return str;
+  let out = esc(str);
+  for (const a of accents || []) {
+    const re = new RegExp(`(^|[^\\w])(${a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})(?=$|[^\\w])`, 'i');
+    out = out.replace(re, (m, p, w) => `${p}<em>${w}</em>`);
+  }
+  return out;
+}
+
+// ---------------- storage / tweaks ----------------
+const G_KEY = 'window-chrome-global-v1';
+const sKey = (name) => `window-chrome-slide-${name}-v1`;
+const GLOBAL_DEFAULTS = { accent:'#D9551F', headScale:100 };
+const SLIDE_DEFAULTS = { headTop:0, boardScale:100, breakouts:true };
+function loadGlobal(){ try { return { ...GLOBAL_DEFAULTS, ...(JSON.parse(localStorage.getItem(G_KEY)||'{}')) }; } catch { return { ...GLOBAL_DEFAULTS }; } }
+function saveGlobal(g){ try { localStorage.setItem(G_KEY, JSON.stringify(g)); } catch {} }
+function loadSlide(name){ try { return JSON.parse(localStorage.getItem(sKey(name))||'{}'); } catch { return {}; } }
+function saveSlide(name,s){ try { localStorage.setItem(sKey(name), JSON.stringify(s)); } catch {} }
+
+// default head sizes per layout (px at 1080 x 1350)
+const HEAD_SIZE = { cover:92, stage:72, process:72, command:72, parts:72, result:48, zoom:52, cta:110 };
+function effective(idx) {
+  const s = slides[idx], o = loadSlide(s.name), d = { ...SLIDE_DEFAULTS, ...(s.defaults || {}) };
+  const lay = layoutOf(s);
+  return {
+    stage: o.stage ?? s.stage, head: o.head ?? (s.headline ?? s.sentence ?? ''), sub: o.sub ?? s.subtitle ?? s.line2 ?? '',
+    caption: o.caption ?? s.caption ?? '',
+    headSize: o.headSize ?? d.headSize ?? HEAD_SIZE[lay], headTop: o.headTop ?? d.headTop,
+    boardScale: o.boardScale ?? d.boardScale, breakouts: o.breakouts ?? d.breakouts,
+  };
+}
+const layoutOf = (s) => s.kind === 'chrome' ? (s.layout || 'stage') : s.kind; // result | zoom | cta
+
+// ---------------- pieces ----------------
+function frameHTML(s, idx) {
+  const counter = s.counter || `${pad(NUMBER[idx])} / ${pad(TOTAL_NO)}`;
+  const f = s.frame || {};
+  if (f.src) { // real-frame mode: real 4:5 window capture, graphite laid over its editor rect, pills on top
+    const c = { x:0, y:0, w:W, h:H, ...(f.canvas || {}) };
+    const py = c.y + 16, lx = Math.max(c.x, 0) + 28;
+    return `<img class="abs real-frame z-frame" src="${f.src}" alt="">
+      <div class="abs canvas z-canvas" style="left:${c.x}px;top:${c.y}px;width:${c.w}px;height:${c.h}px"></div>
+      <div class="abs pill-stage z-chrome" data-qa="stage" style="left:${lx}px;top:${py}px">${esc(EFF.stage || '')}</div>
+      <div class="abs counter z-chrome" data-qa="counter" style="right:28px;top:${py}px"><span class="dot"></span>${esc(counter)}</div>`;
+  }
+  const tabs = (s.tabs || []).map((t, k) => {
+    const tt = typeof t === 'string' ? { name:t, active:k === 0 } : t;
+    return `<div class="tab${tt.active ? ' active' : ''}"${tt.active ? ' data-qa="tab"' : ''}>${tt.active ? '<span class="x">×</span>' : ''}${esc(tt.name)}</div>`;
+  }).join('');
+  const activeIcon = s.rail || { cover:'files', stage:'terminal', process:'branch', command:'terminal', parts:'files' }[layoutOf(s)] || 'files';
+  const cells = RAIL_TOP.map((k, n) => `<div class="cell${k === activeIcon ? ' on' : ''}" style="top:${18 + n * 76}px">${svg(k)}</div>`).join('')
+    + RAIL_FOOT.map((k, n) => `<div class="cell${k === activeIcon ? ' on' : ''}" style="top:${1042 - 18 - (RAIL_FOOT.length - n) * 76}px">${svg(k)}</div>`).join('');
+  return `<div class="abs kit-title z-chrome"><div class="lights"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i></div>
+      <div class="win-title">${esc(s.title || `${DECK.repo} — ${DECK.owner}`)}</div></div>
+    <div class="abs kit-ctrl z-chrome"><div class="stage-label" data-qa="stage">${esc(EFF.stage || '')}</div>
+      <div class="counter" data-qa="counter"><span class="dot"></span>${esc(counter)}</div></div>
+    <div class="abs kit-tabs z-chrome" id="tabRow">${tabs}</div>
+    ${s.rail === false ? '' : `<div class="abs rail z-frame">${cells}</div>`}`;
+}
+
+// an artboard: capture cover-fit around a focus box, or an exact-text card; optional selection box over the capture
+function artboardHTML(a, box, extraClass = '') {
+  const style = `left:${box.x}px;top:${box.y}px;width:${box.w}px;height:${box.h}px`;
+  if (a.card) {
+    const c = a.card, size = c.size || 30;
+    const body = c.html ?? esc(c.text || '');
+    return `<div class="card" data-fit data-qa="card" style="${style};font-size:${size}px;${box.auto ? 'height:auto;' : ''}">${body}</div>`;
+  }
+  if (!a.src) return `<div class="ab ${extraClass}" style="${style}"><div class="ph">${esc(a.placeholder || 'capture → assets/')}</div></div>`;
+  const nat = NAT[a.src];
+  let img = '', sel = '', focusRect = null;
+  if (nat) {
+    const [iw, ih] = nat, bw = box.w, bh = box.h;
+    const sc = a.fit === 'contain' ? Math.min(bw / iw, bh / ih) : Math.max(bw / iw, bh / ih);
+    let s = sc;
+    const f = a.focus; // [x, y, w, h] as fractions of the capture
+    if (f && a.fit !== 'contain') s = Math.max(sc, Math.min(bw / (f[2] * iw), bh / (f[3] * ih)) * (a.focusFill ?? 0.86)); // focus fills ≤ 86%: corners stay free for break-outs
+    const cx = f ? (f[0] + f[2] / 2) * iw * s : iw * s / 2, cy = f ? (f[1] + f[3] / 2) * ih * s : ih * s / 2;
+    let left = bw / 2 - cx, top = bh / 2 - cy;
+    if (a.fit !== 'contain') { left = Math.min(0, Math.max(bw - iw * s, left)); top = Math.min(0, Math.max(bh - ih * s, top)); }
+    img = `<img src="${a.src}" alt="" style="left:${left}px;top:${top}px;width:${iw * s}px;height:${ih * s}px">`;
+    if (f) focusRect = { x: box.x + left + f[0] * iw * s, y: box.y + top + f[1] * ih * s, w: f[2] * iw * s, h: f[3] * ih * s };
+    if (a.select) {
+      const q = a.select, x = left + q[0] * iw * s, y = top + q[1] * ih * s, w = q[2] * iw * s, h = q[3] * ih * s;
+      const hs = [[0,0],[.5,0],[1,0],[0,.5],[1,.5],[0,1],[.5,1],[1,1]].map(([u, v]) => `<b style="left:${u * w - 8}px;top:${v * h - 8}px"></b>`).join('');
+      sel = `<div class="sel" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px">${hs}</div>`;
+    }
+  } else {
+    img = `<img src="${a.src}" alt="" style="width:100%;height:100%;object-fit:cover">`;
+  }
+  return `<div class="ab ${extraClass}" ${focusRect ? `data-focus="${[focusRect.x, focusRect.y, focusRect.w, focusRect.h].map(Math.round).join(',')}"` : ''} style="${style};${a.bg ? '' : ''}"><div class="clip"${a.bg ? ` style="background:${a.bg}"` : ''}>${img}</div>${sel}</div>`;
+}
+
+function cutHTML(c, extra = '') {
+  const w = (c.w || 240) * (c.scale || 1);
+  const inner = c.src ? `<img src="${c.src}" alt="">` : `<div class="ph">${esc(c.placeholder || 'cut-out')}</div>`;
+  const anc = c.anchor ? ` data-anchor="${c.anchor}" data-dx="${c.dx || 0}" data-dy="${c.dy || 0}" data-h="${w / aspectOf(c, 1)}"` : '';
+  return `<div class="cut${c.shadow ? ' shadow' : ''}" data-qa="cut"${anc} style="left:${c.x || 0}px;top:${c.y || 0}px;width:${w}px;transform:rotate(${c.rotation || 0}deg);${c.z ? `z-index:${c.z};` : ''}${extra}">${inner}</div>`;
+}
+
+const TEXT_SAFE = { x0: W * .18, x1: W * .82 }; // chrome slides: text inside x 18%–82%, y 17%–95%
+const CAP_SAFE = { x0: W * .08, x1: W * .92 };  // caption pages: 8% side margins
+
+function typeHTML(cls, html, { top, size, x0, x1, extra = '', id = '', lh }) {
+  return `<div class="type serif ${cls}" ${id ? `id="${id}"` : ''} data-qa="type" data-spec="${size}" style="left:${x0}px;width:${x1 - x0}px;top:${top}px;font-size:${size}px;${lh ? `line-height:${lh};` : ''}${extra}">${html}</div>`;
+}
+
+// ---------------- layouts ----------------
+function layoutSlide(s, idx) {
+  const lay = layoutOf(s), g = loadGlobal(), k = g.headScale / 100, e = EFF;
+  const acc = s.accent || [];
+  const parts = [];
+  const bs = e.boardScale / 100;
+  const chrome = s.kind === 'chrome';
+  const SX = chrome ? TEXT_SAFE : CAP_SAFE;
+  const head = (cls, top, size, opts = {}) => typeHTML(cls, accentize(e.head, acc), { top: top + e.headTop, size: Math.round(size * k), x0: SX.x0, x1: SX.x1, id: 'headEl', ...opts });
+
+  if (lay === 'cover') {
+    parts.push(head('head lower', 196, e.headSize, { lh: .98 }));
+    if (e.sub) parts.push(typeHTML('lower', accentize(e.sub, acc), { top: 392 + e.headTop, size: Math.round(46 * k), x0: SX.x0, x1: SX.x1, lh: 1.05, id:'subEl' }));
+    // 2 x 2 grid of finished outputs at the slide aspect; span:2 = one wide artboard over two cells
+    const a = ratio(s.gridAspect) || .8, gut = 24, gridW = 624 * bs, maxCellH = (774 * bs - gut) / 2;
+    const cellW = Math.min((gridW - gut) / 2, maxCellH * a), cellH = cellW / a;
+    const x0 = 540 - (cellW * 2 + gut) / 2;
+    let y = 462, col = 0;
+    for (const ab of s.artboards || []) {
+      if (ab.span === 2) {
+        if (col) { y += cellH + gut; col = 0; }
+        const w = cellW * 2 + gut, h = w / aspectOf(ab, 1.6);
+        parts.push(artboardHTML(ab, { x: x0, y, w, h }));
+        y += h + gut; continue;
+      }
+      parts.push(artboardHTML(ab, { x: x0 + col * (cellW + gut), y, w: cellW, h: cellH }));
+      col++; if (col === 2) { col = 0; y += cellH + gut; }
+    }
+  }
+
+  if (lay === 'stage' || lay === 'command') {
+    const hs = Math.round(e.headSize * k);
+    if (e.head) parts.push(head('head lower', 243, e.headSize));
+    const top = e.head ? 243 + e.headTop + hs * 1.05 * (s.headLines || 1) + 44 : 260;
+    const bottomMax = lay === 'command' ? 1150 : 1134;
+    const capH = e.caption ? 40 * k * 1.1 + 34 : 0;
+    const abs = s.artboards || [];
+    let boxes = [];
+    if (lay === 'command' && abs[0] && abs[0].card) {
+      const w = Math.min(abs[0].card.w || 756, 756) * bs;
+      boxes = [{ x: 540 - w / 2, y: 0, w, h: 0, auto: true }];
+    } else if (abs.length === 1) {
+      const a = aspectOf(abs[0]); let w = 670 * bs, h = w / a;
+      if (h > bottomMax - top) { h = bottomMax - top; w = h * a; }
+      boxes = [{ x: 540 - w / 2, y: 0, w, h }];
+    } else if (abs.length >= 2) {
+      const as = abs.map((x) => aspectOf(x, .75)), gut = 24;
+      let h = (778 * bs - gut * (abs.length - 1)) / as.reduce((p, q) => p + q, 0);
+      h = Math.min(h, bottomMax - top);
+      const tot = as.reduce((p, q) => p + q * h, 0) + gut * (abs.length - 1);
+      let x = 540 - tot / 2;
+      boxes = as.map((q) => { const b = { x, y: 0, w: q * h, h }; x += q * h + gut; return b; });
+    }
+    const blockH = boxes.length ? Math.max(...boxes.map((b) => b.h)) : 0;
+    // centre artboards + caption in the free band; artboards end above 84%
+    const areaBottom = 1250;
+    let y0 = top + Math.max(0, (areaBottom - top - blockH - capH) / 2);
+    if (y0 + blockH > bottomMax) y0 = Math.max(top, bottomMax - blockH);
+    if (s.boardTop) y0 = s.boardTop;
+    boxes.forEach((b, n) => { b.y = y0 + (blockH - b.h) / 2; parts.push(artboardHTML(abs[n], b)); });
+    if (e.caption) parts.push(typeHTML('caption lower', accentize(e.caption, acc), { top: lay === 'command' ? -1 : y0 + blockH + 34, size: Math.round(40 * k), x0: SX.x0, x1: SX.x1, id: 'capEl' }));
+  }
+
+  if (lay === 'process') {
+    // top row 18%–47%: raw inputs bottom-aligned at 635, raw label above the left one
+    const raw = s.raw || [], gut = 24, base = 635, labelH = 56;
+    const rel = raw.map((r, n) => r.rh || [0.82, 1, 0.9][n % 3]);
+    const as = raw.map((r) => aspectOf(r, 1));
+    let unit = 392; // tallest allowed (243..635)
+    let tot = as.reduce((p, q, n) => p + q * rel[n] * unit, 0) + gut * (raw.length - 1);
+    if (tot > 778 * bs) { unit *= (778 * bs - gut * (raw.length - 1)) / (tot - gut * (raw.length - 1)); }
+    if (raw.length) unit = Math.min(unit, (392 - labelH) / rel[0]); // keep room for the label above the left one
+    tot = as.reduce((p, q, n) => p + q * rel[n] * unit, 0) + gut * (raw.length - 1);
+    let x = 540 - tot / 2, firstX = x, rowTop = base;
+    raw.forEach((r, n) => { const h = rel[n] * unit, w = as[n] * h; rowTop = Math.min(rowTop, base - h); parts.push(artboardHTML(r, { x, y: base - h, w, h })); x += w + gut; });
+    // the label sits above the whole row (so it never runs into a taller neighbour), left-aligned over the left capture
+    if (s.rawLabel) parts.push(`<div class="type serif label lower" data-qa="type" style="left:${Math.max(firstX, SX.x0)}px;top:${rowTop - labelH}px;font-size:${Math.round(40 * k)}px;white-space:nowrap">${accentize(s.rawLabel, acc)}</div>`);
+    parts.push(head('head lower', 702 - Math.round(e.headSize * k) / 2, e.headSize));
+    // bottom band 60%–82%: real-result cut-outs, staggered, rotated ≤ 4°, contact shadow
+    const pcs = s.pieces || [], bandTop = 810, bandH = 297;
+    const stag = [0.86, 1, 0.78, 0.94], rot = [-3, 2, -1.5, 3.5];
+    const hs = pcs.map((p, n) => (p.rh || stag[n % 4]) * bandH);
+    const ws = pcs.map((p, n) => aspectOf(p, 1) * hs[n]);
+    const gp = 30; let tw = ws.reduce((p, q) => p + q, 0) + gp * (pcs.length - 1);
+    const f = tw > 864 * bs ? (864 * bs - gp * (pcs.length - 1)) / (tw - gp * (pcs.length - 1)) : 1;
+    tw = ws.reduce((p, q) => p + q * f, 0) + gp * (pcs.length - 1);
+    let px = 540 - tw / 2;
+    pcs.forEach((p, n) => {
+      const w = ws[n] * f, h = hs[n] * f;
+      const c = { ...p, x: p.x ?? px, y: p.y ?? bandTop + (bandH - h) / 2 + (n % 2 ? -10 : 12), w: p.w ?? w, rotation: p.rotation ?? rot[n % 4], shadow: p.shadow ?? true };
+      parts.push(cutHTML(c, 'z-index:6'));
+      px += w + gp;
+    });
+    if (e.caption) parts.push(typeHTML('caption lower', accentize(e.caption, acc), { top: 1161 - 20, size: Math.round(40 * k), x0: SX.x0, x1: SX.x1, id:'capEl' }));
+  }
+
+  if (lay === 'parts') {
+    parts.push(head('head lower', 243, e.headSize));
+    const pr = s.parts || [], n = Math.max(pr.length, 1), slot = 778 * bs / n, imgH = 230;
+    pr.forEach((p, m) => {
+      const x = 540 - 778 * bs / 2 + m * slot, w = Math.min(slot - 24, aspectOf(p, 1) * imgH);
+      parts.push(cutHTML({ ...p, x: x + (slot - w) / 2, y: 540 + (imgH - w / aspectOf(p, 1)) / 2, w, rotation: p.rotation || 0, shadow: p.shadow ?? true }, 'z-index:6'));
+      parts.push(`<div class="type serif label lower" data-qa="type" style="left:${x + 6}px;width:${slot - 12}px;top:${540 + imgH + 28}px;font-size:${Math.round(40 * k)}px;text-align:center">${accentize(p.label || '', acc)}</div>`);
+    });
+  }
+
+  if (lay === 'result') {
+    if (s.plate) parts.push(`<img class="abs plate" style="z-index:0" src="${s.plate}" alt="">`);
+    parts.push(head('head', 122, e.headSize, { lh: .95 }));
+    const ab = (s.artboards || [])[0];
+    if (ab) {
+      const a = aspectOf(ab); let w = 908 * bs, h = w / a;
+      if (h > 860 * bs) { h = 860 * bs; w = h * a; }
+      const y = Math.max(338, 338 + (904 - h) / 2 - 20);
+      parts.push(artboardHTML(ab, { x: 540 - w / 2, y, w, h }, 'warm'));
+    }
+  }
+
+  if (lay === 'zoom') {
+    parts.push(head('head', 122, e.headSize, { lh: .95 }));
+    const ab = (s.artboards || [])[0];
+    const w = 605 * bs, h = 907 * bs;
+    if (ab) parts.push(artboardHTML(ab, { x: 540 - w / 2, y: 324 + (907 - h) / 2, w, h }, 'warm'));
+  }
+
+  if (lay === 'cta') {
+    const kw = s.keyword || 'KEYWORD';
+    const line1 = e.head || `Comment <em>${esc(kw)}</em>`;
+    parts.push(typeHTML('head', line1, { top: 168 + e.headTop, size: Math.round(e.headSize * k), x0: SX.x0, x1: SX.x1, id: 'headEl', lh: .95 }));
+    if (e.sub) parts.push(typeHTML('lower', accentize(e.sub, acc), { top: 168 + e.headTop + Math.round(e.headSize * k) * 1.02 + 18, size: Math.round(48 * k), x0: SX.x0, x1: SX.x1, id: 'subEl', lh: .98 }));
+    if (s.hero) {
+      const h = s.hero, w = (h.w || 520) * bs, ht = w / aspectOf(h, 1), bottom = h.bottom || 1130;
+      parts.push(`<div class="contact" style="left:${540 - w * .62}px;top:${bottom - 46}px;width:${w * 1.24}px;height:92px;z-index:4"></div>`);
+      parts.push(cutHTML({ ...h, x: 540 - w / 2 + (h.dx || 0), y: bottom - ht, w, scale: 1 }, 'z-index:6'));
+    }
+  }
+
+  // free break-out layer (cover, stage, process, command, result, zoom, cta)
+  if (e.breakouts) for (const c of s.cutouts || []) parts.push(cutHTML(c, 'z-index:20'));
+
+  if (!chrome) parts.push(`<div class="footer z-chrome" data-qa="footer"><span>${esc(DECK.brand)}</span><span>${esc(s.counter || `${pad(NUMBER[idx])} / ${pad(TOTAL_NO)}`)}</span></div>`);
+  return parts.join('');
+}
+
+// ---------------- fit passes + QA ----------------
+// shrink a type block until it fits its line budget and width; never below 30px (readability floor)
+function fitType(el, maxLines, min = 30) {
+  if (!el) return null;
+  let size = parseFloat(el.style.fontSize);
+  const lh = () => parseFloat(getComputedStyle(el).lineHeight) || size;
+  const lines = () => Math.round(el.getBoundingClientRect().height / lh());
+  let guard = 60;
+  while ((lines() > maxLines || el.scrollWidth > el.clientWidth + 1) && size > min && guard--) { size -= 2; el.style.fontSize = size + 'px'; }
+  if (lines() > maxLines) return `${el.id || 'type'} needs ${lines()} lines (budget ${maxLines}) at ${size}px: cut copy`;
+  const spec = parseFloat(el.dataset.spec || 0);
+  return spec && size < spec * 0.8 ? `${el.id || 'type'} shrank to ${size}px (spec ${spec}px): shorter copy reads better` : null;
+}
+const BUDGET = { cover:{ headEl:2, subEl:1 }, stage:{ headEl:1, capEl:1 }, process:{ headEl:1, capEl:1 }, command:{ headEl:1, capEl:1 }, parts:{ headEl:1 },
+  result:{ headEl:3 }, zoom:{ headEl:3 }, cta:{ headEl:1, subEl:2 } };
+
+function rect(el) { const r = el.getBoundingClientRect(), b = slideEl.getBoundingClientRect(), k = b.width / W;
+  return { x:(r.left - b.left) / k, y:(r.top - b.top) / k, w:r.width / k, h:r.height / k }; }
+function overlap(a, b) { const w = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x), h = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y); return w > 2 && h > 2 ? w * h : 0; }
+// text-tight box of a type block (its line boxes, not the full-width div)
+function textRects(el) { const r = document.createRange(); r.selectNodeContents(el); const b = slideEl.getBoundingClientRect(), k = b.width / W;
+  // inset 12% top and bottom: a line's content area is taller than its ink
+  return [...r.getClientRects()].filter((q) => q.width > 1).map((q) => ({ x:(q.left - b.left) / k, y:(q.top - b.top) / k + q.height / k * .12, w:q.width / k, h:q.height / k * .76 })); }
+
+function qa() {
+  const s = slides[i], issues = [...FIT_ISSUES];
+  const cuts = [...slideEl.querySelectorAll('.cut')].filter((c) => c.style.zIndex === '20' || c.closest('.cut')).map(rect);
+  const guarded = [...slideEl.querySelectorAll('[data-qa=type]')].flatMap(textRects)
+    .concat([...slideEl.querySelectorAll('[data-qa=stage],[data-qa=counter],[data-qa=tab],[data-qa=footer]')].map(rect));
+  const free = [...slideEl.querySelectorAll('.cut')].filter((c) => c.style.zIndex === '20').map(rect);
+  free.forEach((c, n) => {
+    if (guarded.some((g) => overlap(c, g))) issues.push(`break-out ${n + 1} covers type or chrome`);
+    for (const ab of slideEl.querySelectorAll('[data-focus]')) { const [x, y, w, h] = ab.dataset.focus.split(',').map(Number); if (overlap(c, { x, y, w, h }) > 0.02 * w * h) issues.push(`break-out ${n + 1} covers a focus box`); }
+    if (c.x + c.w > W * .97 + 1 || c.y + c.h > H * .97 + 1) issues.push(`break-out ${n + 1} runs past 97% of the slide`);
+  });
+  if (s.kind === 'chrome') for (const t of slideEl.querySelectorAll('[data-qa=type]')) for (const q of textRects(t)) {
+    if (q.x < W * .18 - 2 || q.x + q.w > W * .82 + 2 || q.y < H * (layoutOf(s) === 'cover' ? .14 : .17) - 2 || q.y + q.h > H * .95 + 2) { issues.push(`text outside the 18–82% / 17–95% safe area (cover headline from 14%): "${t.textContent.trim().slice(0, 24)}"`); break; }
+  }
+  for (const c of slideEl.querySelectorAll('.card[data-fit]')) if (c.scrollHeight > c.clientHeight + 1 || c.scrollWidth > c.clientWidth + 1) issues.push('card text overflows its artboard: cut copy');
+  return [...new Set(issues)];
+}
+
+// ---------------- render ----------------
+const slideEl = document.getElementById('slide');
+let i = 0, EFF = {}, FIT_ISSUES = [];
+let NUMBER = [], TOTAL_NO = 0;
+
+function render(idx) {
+  const s = slides[idx], g = loadGlobal();
+  EFF = effective(idx);
+  slideEl.className = 'slide' + (s.kind === 'result' || s.kind === 'cta' ? ' apricot' : s.kind === 'zoom' ? ' cream' : '');
+  slideEl.style.setProperty('--accent', g.accent);
+  slideEl.innerHTML = (s.kind === 'chrome' ? frameHTML(s, idx) : '') + `<div class="abs z-content" style="inset:0">${layoutSlide(s, idx)}</div>`;
+
+  // command slide: centre the auto-height card in the band, caption under it
+  if (layoutOf(s) === 'command') {
+    const card = slideEl.querySelector('.card'), cap = document.getElementById('capEl');
+    if (card) {
+      const headEl = document.getElementById('headEl');
+      const top = headEl ? rect(headEl).y + rect(headEl).h + 60 : 300;
+      const ch = card.offsetHeight, capH = cap ? cap.offsetHeight + 34 : 0;
+      const y = s.boardTop ?? Math.max(top, top + (1180 - top - ch - capH) / 2);
+      card.style.top = y + 'px';
+      if (cap) cap.style.top = (y + ch + 34) + 'px';
+    }
+  }
+  // anchored break-outs: centre the piece on a corner of the first artboard or card, then offset by dx, dy
+  for (const el of slideEl.querySelectorAll('.cut[data-anchor]')) {
+    const [target, corner] = el.dataset.anchor.split(':');
+    const t = slideEl.querySelector(target === 'card' ? '.card' : '.ab');
+    if (!t) continue;
+    const r = rect(t), w = parseFloat(el.style.width), h = parseFloat(el.dataset.h);
+    const px = corner.includes('r') ? r.x + r.w : r.x, py = corner.includes('b') ? r.y + r.h : r.y;
+    el.style.left = (px - w / 2 + +el.dataset.dx) + 'px';
+    el.style.top = (py - h / 2 + +el.dataset.dy) + 'px';
+  }
+  // tab row: the last tab runs off the right edge
+  const tabRow = document.getElementById('tabRow');
+  if (tabRow && tabRow.children.length > 1) {
+    // widen the earlier tabs so only ~55% of the last one shows before the right edge
+    const tabs = [...tabRow.children], last = tabs[tabs.length - 1];
+    const extra = (W - last.offsetWidth * 0.55) - last.offsetLeft;
+    if (extra > 0) tabs.slice(0, -1).forEach((t) => { t.style.minWidth = (t.offsetWidth + extra / (tabs.length - 1)) + 'px'; });
+  }
+  FIT_ISSUES = [];
+  const bud = BUDGET[layoutOf(s)] || {};
+  for (const [id, n] of Object.entries(bud)) { const msg = fitType(document.getElementById(id), n); if (msg) FIT_ISSUES.push(msg); }
+
+  document.getElementById('num').textContent = `${idx + 1}/${slides.length}`;
+  document.getElementById('name').textContent = s.name;
+  const issues = qa();
+  document.getElementById('qaOut').textContent = issues.length ? '⚠ ' + issues.join(' · ') : '';
+  if (issues.length) console.warn(`[S19 QA] ${s.name}: ${issues.join(' | ')}`);
+  syncTweakUI();
+}
+
+// ---------------- nav ----------------
+function initNumbers() { NUMBER = []; TOTAL_NO = 0; slides.forEach((s, n) => { if (s.mirrorPrev && n > 0) NUMBER[n] = NUMBER[n - 1]; else NUMBER[n] = ++TOTAL_NO; }); }
+document.getElementById('prev').addEventListener('click', () => { i = (i - 1 + slides.length) % slides.length; render(i); });
+document.getElementById('next').addEventListener('click', () => { i = (i + 1) % slides.length; render(i); });
+document.addEventListener('keydown', (e) => {
+  if (e.target.matches('input, textarea')) return;
+  if (e.key === 'ArrowLeft') { i = (i - 1 + slides.length) % slides.length; render(i); }
+  if (e.key === 'ArrowRight') { i = (i + 1) % slides.length; render(i); }
+  if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+});
+window.goSlide = (idx) => { i = idx; render(idx); };
+window.totalSlides = () => slides.length;
+window.qa = qa;
+document.getElementById('fs').addEventListener('click', () => { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); });
+function fit() { const wrap = document.getElementById('slideWrap'), m = 80; wrap.style.transform = `scale(${Math.min((innerWidth - m) / W, (innerHeight - m) / H)})`; }
+addEventListener('resize', fit); fit();
+
+// ---------------- tweak panel ----------------
+const twPanel = document.getElementById('twPanel');
+document.getElementById('twToggle').addEventListener('click', () => twPanel.classList.toggle('open'));
+document.getElementById('twClose').addEventListener('click', () => twPanel.classList.remove('open'));
+const $ = (id) => document.getElementById(id);
+const C = { accent:$('twAccent'), headScale:$('twHeadScale'), stage:$('twStage'), head:$('twHead'), sub:$('twSub'), caption:$('twCaption'),
+  headSize:$('twHeadSize'), headTop:$('twHeadTop'), boardScale:$('twBoardScale'), breakouts:$('twBreak') };
+function syncTweakUI() {
+  const g = loadGlobal(), e = EFF;
+  C.accent.value = g.accent; C.headScale.value = g.headScale; $('vHeadScale').textContent = g.headScale;
+  $('vSlideName').textContent = slides[i].name;
+  C.stage.value = e.stage || ''; C.head.value = e.head || ''; C.sub.value = e.sub || ''; C.caption.value = e.caption || '';
+  C.headSize.value = e.headSize; $('vHeadSize').textContent = e.headSize + 'px';
+  C.headTop.value = e.headTop; $('vHeadTop').textContent = e.headTop + 'px';
+  C.boardScale.value = e.boardScale; $('vBoardScale').textContent = e.boardScale + '%';
+  C.breakouts.checked = !!e.breakouts;
+}
+function setG(k, v) { const g = loadGlobal(); g[k] = v; saveGlobal(g); render(i); }
+function setS(k, v) { const s = slides[i], cur = loadSlide(s.name); cur[k] = v; saveSlide(s.name, cur); render(i); }
+C.accent.addEventListener('input', () => setG('accent', C.accent.value));
+C.headScale.addEventListener('input', () => setG('headScale', +C.headScale.value));
+['stage','head','sub','caption'].forEach((k) => C[k].addEventListener('input', () => setS(k, C[k].value)));
+['headSize','headTop','boardScale'].forEach((k) => C[k].addEventListener('input', () => setS(k, +C[k].value)));
+C.breakouts.addEventListener('change', () => setS('breakouts', C.breakouts.checked));
+$('twReset').addEventListener('click', () => { try { localStorage.removeItem(sKey(slides[i].name)); } catch {} render(i); });
+$('twExport').addEventListener('click', async () => {
+  const out = { global: loadGlobal(), perSlide: {} };
+  slides.forEach((s) => { const o = loadSlide(s.name); if (Object.keys(o).length) out.perSlide[s.name] = o; });
+  const text = JSON.stringify(out, null, 2);
+  try { await navigator.clipboard.writeText(text); } catch {}
+  const box = $('twExportOut'); box.textContent = text; box.style.display = 'block';
+});
+</script>
+
+<script>
+/* ======================================================================================
+   CONTENT — one entry per slide. A deck copies this file to carousels/<id>/slides.html and edits
+   DECK + slides[]. Paths are relative to the deck folder (assets/, cards/, plates/).
+   Fields: see templates/08-window-chrome/recipe.md.
+   ====================================================================================== */
+const DECK = { repo:'your-repo', owner:'{{BRAND}}', brand:'{{BRAND}}' };
+
+const slides = [
+  { name:'Cover', kind:'chrome', layout:'cover',
+    stage:'Build diary', tabs:['SKILL.md','storyboard.json','render.mjs'],
+    headline:'how I built a skill in 5 steps', accent:['skill'],
+    subtitle:'One line on what it makes.',
+    gridAspect:'4:5',
+    artboards:[ { placeholder:'output 1' }, { placeholder:'output 2' }, { placeholder:'output 3' }, { placeholder:'output 4' } ],
+    cutouts:[ { x:760, y:400, w:220, placeholder:'cut-out' }, { x:120, y:1040, w:170, placeholder:'cut-out' } ] },
+  { name:'What it makes', kind:'result',
+    sentence:'One sentence, 30 words or fewer, on what the build makes and why it matters.', accent:['why it matters'],
+    artboards:[ { placeholder:'result capture or SCENE plate', aspect:'4:3' } ] },
+  { name:'Process row', kind:'chrome', layout:'process',
+    stage:'Step 1 · Draft', tabs:['notes.md','SKILL.md'], rawLabel:'rough input',
+    raw:[ { placeholder:'raw 1', aspect:'4:5' }, { placeholder:'raw 2', aspect:'1:1' }, { placeholder:'raw 3', aspect:'3:4' } ],
+    headline:'from X to Y', accent:['Y'],
+    pieces:[ { placeholder:'result', aspect:'1:1' }, { placeholder:'result', aspect:'1:1' }, { placeholder:'result', aspect:'1:1' } ],
+    caption:'one caption line, twelve words or fewer' },
+  { name:'Stage slide', kind:'chrome', layout:'stage',
+    stage:'Step 2 · Build', tabs:['SKILL.md','render.mjs'],
+    headline:'six words or fewer here', accent:['here'],
+    artboards:[ { placeholder:'real panel', aspect:'4:5' }, { card:{ text:'exact text card\nJetBrains Mono\n30 px floor' }, aspect:'4:5' } ],
+    caption:'one caption line under the artboards' },
+  { name:'Zoom page', kind:'zoom',
+    sentence:'Twenty words or fewer on the one detail this crop proves.', accent:['proves'],
+    artboards:[ { placeholder:'2:3 real UI crop with its selection box' } ] },
+  { name:'Command slide', kind:'chrome', layout:'command',
+    stage:'Step 5 · Run', tabs:['SKILL.md'],
+    headline:'one command runs it all', accent:['one command'],
+    artboards:[ { card:{ html:'<span class="hl">&gt; /your-skill</span> --input notes.md\n<span class="dim">exact text: a prompt, a command or a config</span>' } } ],
+    caption:'one caption line under the card' },
+  { name:'CTA', kind:'cta', keyword:'KEYWORD', line2:'and I’ll send you the skill file', hero:{ placeholder:'deliverable', w:360 } },
+];
+
+initNumbers();
+render(0);
+preloadAll().then(() => (document.fonts ? document.fonts.ready : null)).then(() => render(i));
+</script>
+</body>
+</html>

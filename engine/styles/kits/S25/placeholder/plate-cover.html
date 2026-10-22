@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S25 placeholder cover plate</title>
+<!-- PLACEHOLDER ONLY, so the kit's page-01 renders before a deck has a real plate. It stands in for
+     $D/fitted/cover.png after the Codex Cover A plate + composite.py --shot (capture keyed into the
+     laptop's magenta screen). Never ship it. Render:
+     node shared/render-card.mjs engine/styles/kits/S25/placeholder/plate-cover.html engine/styles/kits/S25/fitted/cover.png --w 1080 --h 1350 --scale 1 --min-px 0 -->
+<style>
+  html, body { margin: 0; width: 1080px; height: 1350px; overflow: hidden; }
+  body { position: relative; background: radial-gradient(900px 700px at 8% 4%, #fff, rgba(255,255,255,0) 70%), #F6F5F3; font-family: Arial, sans-serif; }
+  /* laptop: screen 50% wide (540) with its top at 56% (756), 16:10, base ending by 86% (1161) */
+  .lid { position: absolute; left: 256px; top: 742px; width: 568px; height: 365px; border-radius: 22px 22px 6px 6px; background: linear-gradient(#EFEDE9, #E2DFDA); box-shadow: inset 0 0 0 2px #D9D6D1; }
+  .screen { position: absolute; left: 270px; top: 756px; width: 540px; height: 337px; background: #1C1B19 url(../shots/capture-b.png) center / cover; border-radius: 4px; }
+  .base { position: absolute; left: 194px; top: 1107px; width: 692px; height: 34px; border-radius: 4px 4px 18px 18px; background: linear-gradient(#EDEBE7, #D2CFCA); }
+  .notch { position: absolute; left: 490px; top: 1107px; width: 100px; height: 10px; border-radius: 0 0 8px 8px; background: #CFCCC7; }
+  .led { position: absolute; left: 838px; top: 1119px; width: 8px; height: 8px; border-radius: 50%; background: #D9551F; }
+  .shadow { position: absolute; left: 214px; top: 1136px; width: 652px; height: 30px; border-radius: 50%; background: radial-gradient(closest-side, rgba(14,14,14,.18), rgba(14,14,14,0)); }
+  .tag { position: absolute; left: 0; right: 0; top: 1306px; text-align: center; font: 700 18px/1 Arial, sans-serif; letter-spacing: .2em; color: #B5B2AD; }
+</style>
+</head>
+<body>
+  <div class="shadow"></div>
+  <div class="lid"></div>
+  <div class="screen"></div>
+  <div class="base"></div>
+  <div class="notch"></div>
+  <div class="led"></div>
+  <div class="tag">PLACEHOLDER PLATE · NOT A CODEX RENDER · REPLACE FITTED/COVER.PNG</div>
+</body>
+</html>

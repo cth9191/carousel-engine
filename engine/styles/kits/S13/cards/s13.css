@@ -1,0 +1,75 @@
+/* S13 Oversized-Serif Photo Editorial: tokens + components. Spec: engine/styles/S13-oversized-serif-photo-editorial.prompt.md.
+   Canvas 1080 x 1350, 1 CSS px = 1 final px. Type colour comes from shared/sky-tone.mjs (body data-mast / data-stack /
+   data-nav / data-scrim*); without a stamp everything is ink. Side margins 104 px = sky-tone's sampled band. */
+:root {
+  --ink: #0E0E0E;
+  --white: #FFFFFF;
+  --orange: #D9551F;
+  --paper: #CFCDC8;         /* quiet page: photocopy grey */
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1350px; overflow: hidden; }
+body {
+  position: relative; color: var(--ink); background: #9AA7B2 center / 1080px 1350px no-repeat;
+  font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+}
+
+/* ---- tone (stamped by sky-tone.mjs) ------------------------------------------------------------ */
+.mast, .stack, .row3 { color: var(--ink); }
+body[data-mast="white"] .mast,
+body[data-stack="white"] .stack,
+body[data-nav="white"] .row3 { color: var(--white); }
+body[data-stack="white"] .badge { background: var(--white); color: var(--ink); }
+.scrim { position: absolute; pointer-events: none; }
+
+/* ---- grain over everything (film on photo pages, toner on quiet pages) ------------------------- */
+.grain { position: absolute; inset: 0; pointer-events: none; opacity: .22; mix-blend-mode: overlay; }
+.quiet .grain { opacity: .8; mix-blend-mode: multiply; }
+
+/* ---- masthead: date · {{BRAND}} · role ----------------------------------------------------------- */
+.mast {
+  position: absolute; left: 104px; right: 104px; top: 48px; display: flex; justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 22px; letter-spacing: .08em; text-transform: uppercase;
+}
+
+/* ---- photo / quiet page stack: numeral badge + headline + body ---------------------------------- */
+.stack { position: absolute; left: 104px; width: 872px; }
+.head { display: flex; align-items: center; gap: 30px; }
+.head.over { flex-direction: column; align-items: flex-start; gap: 26px; }   /* quiet page: badge above */
+.badge {
+  flex: none; width: 128px; height: 128px; border-radius: 50%; background: var(--ink); color: var(--white);
+  display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 76px; letter-spacing: -0.04em;
+}
+.hl { font-weight: 700; letter-spacing: -0.055em; line-height: .98; }
+.body { margin-top: 40px; font-weight: 500; letter-spacing: -0.035em; line-height: 1.14; }
+.body p + p { margin-top: 30px; }
+.body b { font-weight: 800; }
+
+/* ---- quiet page ground ------------------------------------------------------------------------- */
+body.quiet { background: var(--paper); }
+body.quiet .streaks { position: absolute; inset: 0; pointer-events: none; opacity: .12; }
+
+/* ---- cover ------------------------------------------------------------------------------------ */
+.cover .stack { text-align: left; }
+.kick { font-weight: 800; letter-spacing: -0.05em; line-height: 1; margin-left: 70px; }
+.giant {
+  font-family: 'Instrument Serif', 'Times New Roman', serif; font-weight: 400; letter-spacing: -0.045em;
+  line-height: .92; white-space: nowrap; margin: 0 0 0 -6px;
+}
+.trail { font-weight: 800; letter-spacing: -0.05em; line-height: 1; text-align: right; margin-top: 10px; }
+.fan { position: absolute; left: 0; width: 1080px; }
+.fan .card {
+  position: absolute; border-radius: 22px; overflow: hidden; background: #fff;
+  box-shadow: 0 30px 60px rgba(0,0,0,.35), 0 6px 14px rgba(0,0,0,.25);
+}
+.fan .card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.warm { position: absolute; left: 0; right: 0; bottom: 0; height: 300px; pointer-events: none;
+  background: linear-gradient(0deg, rgba(232,116,58,.55) 0, rgba(232,116,58,.22) 45%, rgba(232,116,58,0) 100%); mix-blend-mode: soft-light; }
+.row3 {
+  position: absolute; left: 104px; right: 104px; bottom: 50px; display: flex; justify-content: space-between;
+  font-weight: 700; font-size: 38px; letter-spacing: -0.04em;
+}
+
+/* ---- CTA (quiet ground) -------------------------------------------------------------------------- */
+.cta .giant { font-size: 300px; }
+.cta .kw { color: var(--orange); }

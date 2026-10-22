@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S28 page 02: before / after</title>
+<!-- S28 Alpine Product Window, layout: before / after. Sample strings: replace every one from storyboard strings[].
+     Plate: fitted/scene.png. Render:
+     node shared/render-card.mjs $D/cards/page-02.html $D/exports/slide-02-YYYY-MM-DD.png --w 1080 --h 1350 --scale 1 --min-px 20 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;600;800;900&family=JetBrains+Mono:wght@500&family=Anton&family=Caveat+Brush&display=block" rel="stylesheet">
+<link rel="stylesheet" href="s28.css">
+<script src="icons.js"></script>
+</head>
+<body>
+<div class="veil-top"></div><div class="veil-foot"></div>
+<div class="stake" data-box><h1 data-fit data-max="96" data-min="76">Your agent is coding <em>blind</em></h1></div>
+<div class="stake-sub" data-fit>Without tools it guesses at APIs and never sees the page it built.</div>
+<div class="window tall"><div class="bar"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span class="src">the same task, twice</span></div><div class="split">
+  <div class="cell"><div class="lab bad"><i data-lucide="x"></i>without</div><div class="pic"><img src="../shots/capture-before.png" alt=""></div></div>
+  <div class="cell"><div class="lab good"><i data-lucide="check"></i>with</div><div class="pic"><img src="../shots/capture-after.png" alt=""></div></div>
+</div></div>
+<div class="foot3"><div class="cell"><i data-lucide="timer"></i><span data-fit>An hour of copy-paste fixes</span></div><div class="cell"><i data-lucide="zap"></i><span data-fit>One prompt, checked live</span></div><div class="cell"><i data-lucide="book-open"></i><span data-fit>Source: my own test run</span></div></div>
+<div class="counter"><span>{{BRAND}} · 02 / 09 &rarr;</span></div>
+<script>
+// Fit pass. [data-fit][data-max] steps down 2 px (floor data-min) until neither it nor its closest
+// [data-box] overflows; a [data-wrap] element may then wrap to a second line at the floor. Whatever
+// still overflows (or any [data-fit] box) makes render-card exit 2: shorter copy.
+window.cardReady = (async () => {
+  await document.fonts.ready;
+  if (window.lucide) window.lucide();
+  const over = (el) => el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1;
+  for (const el of document.querySelectorAll('[data-fit][data-max]')) {
+    const box = el.closest('[data-box]') || el;
+    let px = +el.dataset.max;
+    const min = +el.dataset.min;
+    el.style.fontSize = px + 'px';
+    while ((over(el) || over(box)) && px > min) { px -= 2; el.style.fontSize = px + 'px'; }
+    if (over(el) && 'wrap' in el.dataset) el.style.whiteSpace = 'normal';
+  }
+  // the chip row fits 952 px or drops chips from the end (3 at least)
+  for (const row of document.querySelectorAll('.chips')) {
+    while (row.scrollWidth > row.clientWidth + 1 && row.children.length > 3) row.lastElementChild.remove();
+  }
+})();
+</script>
+</body>
+</html>

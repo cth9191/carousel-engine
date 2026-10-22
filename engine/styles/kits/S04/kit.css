@@ -1,0 +1,60 @@
+/* S04 Brutalist Mascot Poster: card kit tokens and shared card CSS.
+   Cards are rendered WITHOUT --bg at the zone's --zones-only out bbox (--scale 2) and pasted with
+   composite.py --card N=… --ground fill, so the rounded corners stay transparent and land on the plate's own paper.
+   The look of the style's interior cards:
+   3 px ink outline, 16 px radius, sheet-white face, Anton terms, Inter Black lines, one orange accent per card. */
+:root {
+  --cream: #F5EBE0;
+  --ink: #0E0E0E;
+  --orange: #D9551F;
+  --sheet: #FBF8F3;
+  --grey: #8A847C;
+  --hair: rgba(14, 14, 14, .85);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: transparent;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+body { font-family: 'Inter', sans-serif; color: var(--ink); }
+/* exact text: no programming ligatures (=== and => must stay three and two glyphs) */
+body, body * { font-variant-ligatures: none; font-feature-settings: 'liga' 0, 'calt' 0, 'dlig' 0; }
+
+/* the outlined card face every S04 card shares */
+.face { position: absolute; inset: 0; background: var(--sheet); border: 3px solid var(--ink); border-radius: 16px; overflow: hidden; }
+.face.ink { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+/* table: ruled rows, Anton term | divider | Inter Black line */
+.tbl { display: flex; flex-direction: column; }
+.tbl .row { flex: 1 1 0; min-height: 0; display: flex; align-items: center; border-top: 2px solid var(--hair); padding: 0 5.5%; gap: 4.5%; }
+.tbl .row:first-child { border-top: none; }
+.tbl .term { flex: 0 0 31%; font-family: 'Anton', sans-serif; font-size: 72px; line-height: 1.62; text-transform: uppercase;
+  white-space: nowrap; overflow: hidden; letter-spacing: -.005em; }
+.tbl .row.accent .term { color: var(--orange); }
+.tbl .div { flex: 0 0 3px; align-self: stretch; margin: 22px 0; background: var(--ink); }
+.tbl .does { flex: 1 1 auto; min-width: 0; font-weight: 800; font-size: 38px; line-height: 1.12; letter-spacing: -.01em;
+  max-height: 2.3em; overflow: hidden; }
+
+/* prompt: orange label tab + the exact text */
+.prm { display: flex; flex-direction: column; padding: 5.2% 6% 5.5%; }
+.prm .lbl { flex: none; align-self: flex-start; background: var(--orange); color: var(--cream); border-radius: 6px;
+  font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 24px; letter-spacing: .04em; text-transform: uppercase;
+  padding: 7px 16px 6px; margin-bottom: 4.5%; white-space: nowrap; }
+.prm .txt { flex: 1 1 auto; min-height: 0; font-weight: 800; font-size: 46px; line-height: 1.17; letter-spacing: -.012em; overflow: hidden; }
+.prm .txt.mono { font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 32px; line-height: 1.45; white-space: pre-wrap; letter-spacing: 0; }
+.face.ink .prm .txt.mono { color: var(--cream); }
+.face.ink .prm .txt.mono .pr { color: var(--orange); }
+
+/* steps: orange numbered squares + one line each, inline `code` in mono */
+.stp { display: flex; flex-direction: column; justify-content: space-evenly; padding: 3% 5.5%; }
+.stp .s { display: flex; align-items: center; gap: 22px; }
+.stp .n { flex: 0 0 auto; width: 54px; height: 54px; border-radius: 8px; background: var(--orange); color: var(--cream);
+  font-weight: 800; font-size: 30px; display: flex; align-items: center; justify-content: center; }
+.stp .t { flex: 1 1 auto; min-width: 0; font-weight: 700; font-size: 36px; line-height: 1.15; letter-spacing: -.01em; }
+.stp code { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: .9em; background: rgba(217, 85, 31, .1);
+  border-radius: 5px; padding: 0 .2em; letter-spacing: 0; white-space: nowrap; }
+
+/* chip: a cover tag tile, for patching a garbled painted chip (composite.py --paste …,erase) */
+.chip { position: absolute; inset: 6px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 40px; white-space: nowrap; letter-spacing: -.01em;
+  box-shadow: 4px 6px 0 rgba(40, 30, 20, .2); }
+.chip.orange { background: var(--orange); color: var(--cream); }
+.chip.ink { background: var(--ink); color: var(--cream); }

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S10 Prompt Card</title>
+<!--
+  S10 Command-Press Blueprint: the exact-text sheet for a peak / start command sheet (a prompt, command or
+  config, verbatim). Template 03 has no exact-text hero, so this card is rendered to a PNG and shown through its
+  `image` hero (orange frame, corner brackets): hero:{ type:'image', src:'assets/prompt-07.png' }.
+  Copy to $D/cards/prompt-NN.html with kit.css and kit.js, edit only the JSON, render 2x and copy into $D/assets/:
+    node shared/render-card.mjs $D/cards/prompt-07.html $D/assets/prompt-07.png --w 920 --h 420 --scale 2 --min-px 22
+
+    tag    orange mono caps, 24 characters or fewer ("PASTE INTO CLAUDE CODE", "RUN IN YOUR TERMINAL")
+    src    where the text comes from, 22 characters or fewer ("README · line 41", "SKILL.md"), or ""
+    face   "sheet" (bone sheet, ink outline) for a prose prompt; "ink" for a command or config
+    mono   false = prose prompt, Inter SemiBold, 45 words or fewer
+           true  = command / config, JetBrains Mono, whitespace kept, 8 lines or fewer, 44 characters a line;
+                   a line starting "$ " or "> " gets an orange prompt mark
+    cols   optional, mono only: raise the 44-character line cap for a verbatim command that can't wrap
+           (hard ceiling 50; the fit pass and --min-px still guard legibility)
+    text   verbatim from the source in the slide's evidence.source
+
+  The hero zone in Template 03 is 920 px wide (x 80-1000); keep --w 920 and pick --h from the room the sheet's
+  body leaves (360-460 typical), so the template scales it 1:1.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script id="data" type="application/json">
+{
+  "tag": "PASTE INTO CLAUDE CODE",
+  "src": "placeholder text",
+  "face": "sheet",
+  "mono": false,
+  "text": "Read my last ten notes. Find the three ideas I keep coming back to, then link each note to the idea it supports."
+}
+</script>
+</head>
+<body>
+<script src="kit.js"></script>
+<script>
+KIT.ready((d) => {
+  KIT.limit(String(d.tag).length <= 24, 'tag-over-24-chars');
+  KIT.limit(String(d.src || '').length <= 22, 'src-over-22-chars');
+  const lines = String(d.text).split('\n');
+  if (d.mono) {
+    KIT.limit(lines.length <= 8, 'mono-over-8-lines');
+    const cols = Math.min(Number(d.cols) || 44, 50);
+    KIT.limit(lines.every((l) => l.length <= cols), `mono-line-over-${cols}-chars`);
+  } else {
+    KIT.limit(KIT.words(d.text) <= 45, 'prose-over-45-words');
+  }
+  const body = d.mono
+    ? lines.map((l) => /^[$>] /.test(l) ? `<span class="pr">${KIT.esc(l[0])}</span>${KIT.esc(l.slice(1))}` : KIT.esc(l)).join('\n')
+    : KIT.esc(d.text);
+  document.body.insertAdjacentHTML('beforeend', `
+    <div class="pc${d.face === 'ink' ? ' ink' : ''}">
+      <div class="tag"><span>${KIT.esc(d.tag)}</span>${d.src ? `<span class="src">${KIT.esc(d.src)}</span>` : ''}</div>
+      <div class="rule"></div>
+      <div class="txt${d.mono ? ' mono' : ''}" data-fit data-min="${d.mono ? 22 : 26}">${body}</div>
+    </div>`);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+/* S20 Slate Family Tree: shared card styles. CSS px = px on the 1080-wide slide.
+   Every card is transparent: render it WITHOUT --bg and paste it with
+   composite.py --card M1=cards/x.png --ground fill (the zone is erased into the slate, then the card is
+   alpha-composited at the zone's box). */
+:root {
+  --cream: #F5EBE0;
+  --cream-75: rgba(245, 235, 224, 0.75);
+  --cream-80: rgba(245, 235, 224, 0.80);
+  --orange: #D9551F;
+  --ink: #0E0E0E;
+}
+html, body { margin: 0; width: 100%; height: 100%; background: transparent; overflow: hidden; }
+body { position: relative; color: var(--cream); font-family: Inter, "Segoe UI", Arial, sans-serif; }
+
+/* ---- tree card (family / proof / mix / cta) */
+.card { position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden; }
+.card.cta { justify-content: safe center; }
+.def {
+  flex: none; height: 82px; margin: 0 4%;
+  display: flex; align-items: safe center; justify-content: center; overflow: hidden;
+  font: 400 34px/41px Inter, sans-serif; text-align: center;
+}
+.rule { flex: none; height: 2px; margin: 20px 4% 0; background: var(--cream); }
+.cta .rule { margin-top: 0; }
+.cols { flex: 1; min-height: 0; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
+.cta .cols { flex: none; }
+.col { min-width: 0; min-height: 0; display: flex; flex-direction: column; align-items: center; }
+.drop { flex: none; position: relative; width: 100%; height: 52px; }
+.drop .line { position: absolute; left: calc(50% - 0.75px); top: 0; width: 1.5px; height: 51px; background: var(--cream-75); }
+.drop svg { position: absolute; left: calc(50% - 7px); bottom: 0; width: 14px; height: 8px; overflow: visible; }
+.drop .stub { position: absolute; left: calc(50% - 0.75px); top: 0; width: 1.5px; height: 12px; background: var(--cream-75); }
+.start {
+  position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
+  height: 40px; padding: 0 12px; border-radius: 10px; box-sizing: border-box;
+  background: var(--orange); color: var(--ink);
+  font: 600 30px/40px Inter, sans-serif; text-transform: uppercase; white-space: nowrap;
+}
+.name {
+  flex: none; box-sizing: border-box; width: 100%; height: 53px; margin-top: 8px; padding: 0 4px;
+  font: 400 44px/53px Inter, sans-serif; text-align: center; white-space: nowrap; overflow: hidden;
+}
+.plus { flex: none; height: 33px; font: 300 30px/33px Inter, sans-serif; text-align: center; }
+.chips {
+  flex: 1; min-height: 0; width: 100%; margin-top: 6px; box-sizing: border-box; padding: 0 4px;
+  display: flex; flex-direction: column; align-items: safe center; gap: 14px; overflow: hidden;
+}
+.cta .chips { flex: none; }
+.chip {
+  flex: none; max-width: none; box-sizing: border-box;
+  border: 1.5px solid var(--cream-80); border-radius: 10px; padding: 5px 14px;
+  font: italic 400 30px/30px Inter, sans-serif; white-space: nowrap;
+}
+.chip.code { font: normal 400 30px/30px "JetBrains Mono", Consolas, monospace; }
+/* a limit breach (see tree.js) adds this element; render-card then reports an overflow and exits 2 */
+.limit-violation { position: absolute; left: 0; top: 0; width: 0; height: 0; overflow: hidden; }
+.limit-violation > i { display: block; width: 10px; height: 10px; }

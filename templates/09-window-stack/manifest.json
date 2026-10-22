@@ -1,0 +1,54 @@
+{
+  "id": "09-window-stack",
+  "name": "Window Stack",
+  "version": "1.0.0",
+  "style": "S21 Circled-Count Tip Stack (engine/styles/S21-circled-count-tip-stack.prompt.md)",
+  "tagline": "Cream desktop-notes page: a hand-circled count hook, an ink folder spilling window cards, three captioned app windows per slide.",
+  "whenToUse": [
+    "'I read / ran / tested N' findings listicles (declared Spine C variant: 3 numbered windows per stack slide, at most 3 stack slides)",
+    "Tools, repos and skills one per slide in a proof window; prompts and configs in a terminal window",
+    "Not for diagrams or head-to-heads"
+  ],
+  "format": { "width": 1080, "height": 1350, "ratio": "4:5" },
+  "fonts": {
+    "heavy": "Inter 800 — hook, headlines, tips, payoff",
+    "regular": "Inter 400 — captions, byline role (Inter 700 for the byline name)",
+    "mono": "JetBrains Mono 400 — counter, item numbers, item range, window labels, terminal body"
+  },
+  "palette": {
+    "ground": "#F5EBE0 cream",
+    "window": "title bar + frame #E9E2D8, body #FFFFFF, hard shadow #B3A99E +10/+10, dots #EE4B3F / #F5A524 / #2DB84B",
+    "ink": "#0E0E0E (captions #1B1B1B, labels #3A3A3A, warm grey #8A8178)",
+    "accent": "#D9551F — arrow, ellipse, strike, one accent number or word per slide only",
+    "folder": "ink: back #2A2A2A, front #0E0E0E, edge #3A3A3A (kraft variant #B08A62 / #C9A27A)",
+    "terminal": "#141414 body, cream JetBrains Mono"
+  },
+  "layouts": ["cover", "stack", "proof", "terminal", "beforeAfter", "cta"],
+  "windows": {
+    "stack": "840 x 252 at y 200 / 556 / 912, captions 24 px under the shadow",
+    "proof/terminal": "840 x 742 at y 200, captions from y 976",
+    "beforeAfter": "840 x 330 at y 200 and 640",
+    "cta": "840 x 420 at y 330"
+  },
+  "fitPass": {
+    "tips": "64 px, <= 2 lines in 746 px, floor 60",
+    "headline": "48 px one line beside the item range, floor 45",
+    "tipLine": "56 px one line, floor 46",
+    "captions": "34 px one line in 840 px (34 is the floor), <= 46 chars",
+    "hook": "auto-fit so the widest line is 840 px, max 128, floor 64",
+    "payoff": "54 px, 2-3 lines, floor 48",
+    "terminal": "28 px, shrinks to 22 to fit the body",
+    "copyLimits": "headline and tip lines <= 7 words, window tips <= 6 words, captions <= 46 chars, <= 3 windows per stack, <= 3 stack slides",
+    "onFailure": "a red FIT/COPY banner across the top of the slide (visible in the export on purpose) + console.error + window.fitReport"
+  },
+  "tweakable": {
+    "global": ["accent", "role"],
+    "perSlide": ["headline / tip line", "tipSize"]
+  },
+  "files": {
+    "slides.html": "copy to carousel root, edit DECK + slides[] at bottom",
+    "recipe.md": "how-to, slide fields, pitfalls",
+    "preview.png": "cover + stack slide rendered from this file's sample slides"
+  },
+  "exportNaming": "slide-NN-YYYY-MM-DD.png via shared/export.mjs"
+}

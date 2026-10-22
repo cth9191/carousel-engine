@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>S28 placeholder cover plate</title>
+<!-- PLACEHOLDER ONLY: a stand-in for $D/fitted/cover.png AFTER composite.py --logo has filled the cyan slots
+     (Codex studio plate: open cream toolbox, N slots rising out of it). The tiles here are the kit's real
+     sample tiles (logos/tile-*.png from cards/tile-NN.html). Never ship it. Render:
+     node shared/render-card.mjs engine/styles/kits/S28/placeholder/plate-cover.html engine/styles/kits/S28/fitted/cover.png --w 1080 --h 1350 --scale 1 --min-px 0 -->
+<style>
+  html, body { margin: 0; width: 1080px; height: 1350px; overflow: hidden; }
+  body { position: relative; background: radial-gradient(70% 55% at 78% 48%, #E06A35 0%, #D9551F 30%, #A83F18 70%, #7E2C10 100%); }
+  .glow { position: absolute; left: 600px; top: 760px; width: 420px; height: 300px; border-radius: 50%; background: radial-gradient(closest-side, rgba(244,176,106,.75), rgba(244,176,106,0)); }
+  .lid { position: absolute; left: 610px; top: 905px; width: 400px; height: 120px; background: linear-gradient(#E9DDCD, #D9CBB8); border-radius: 18px 18px 6px 6px; transform: skewX(-8deg); }
+  .box { position: absolute; left: 596px; top: 1010px; width: 430px; height: 200px; background: linear-gradient(#F2E9DE, #DCCDBA); border-radius: 10px 10px 22px 22px; }
+  .shadow { position: absolute; left: 580px; top: 1196px; width: 470px; height: 34px; border-radius: 50%; background: radial-gradient(closest-side, rgba(40,10,0,.45), rgba(40,10,0,0)); }
+  .slot { position: absolute; width: 130px; height: 130px; }
+  .slot img { width: 100%; height: 100%; display: block; }
+  .tag { position: absolute; left: 0; right: 0; top: 1316px; text-align: center; font: 700 18px/1 Arial, sans-serif; letter-spacing: .2em; color: rgba(245,235,224,.7); }
+</style></head>
+<body><div class="glow"></div><div class="lid"></div>
+<div class="slot" style="left:640px; top:470px"><img src="../logos/tile-01.png" alt=""></div>
+<div class="slot" style="left:820px; top:520px"><img src="../logos/tile-02.png" alt=""></div>
+<div class="slot" style="left:700px; top:650px"><img src="../logos/tile-03.png" alt=""></div>
+<div class="slot" style="left:880px; top:700px"><img src="../logos/tile-04.png" alt=""></div>
+<div class="slot" style="left:610px; top:800px"><img src="../logos/tile-05.png" alt=""></div>
+<div class="box"></div><div class="shadow"></div>
+<div class="tag">PLACEHOLDER PLATE · NOT A CODEX RENDER · REPLACE FITTED/COVER.PNG</div></body></html>

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S25 page 07: step (model, logo grid)</title>
+<!-- S25 Soft-UI Step Guide, layout: step (model, logo grid). Sample strings: replace every one from storyboard strings[].
+     Render: node shared/render-card.mjs $D/cards/page-07.html $D/exports/slide-07-YYYY-MM-DD.png --w 1080 --h 1350 --scale 1 --min-px 22 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=block" rel="stylesheet">
+<link rel="stylesheet" href="s25.css">
+<script src="icons.js"></script>
+<script src="s25.js"></script>
+</head>
+<body>
+<div class="hdr"><img src="../logos/avatar.png" alt=""><span>{{BRAND}}</span></div>
+<div class="count">07 / 10</div>
+<svg class="traces" viewBox="0 0 1080 1350" aria-hidden="true">
+  <path class="tr" d="M1080 548 H870 a18 18 0 0 0 -18 18 V700"/><circle class="node" cx="852" cy="700" r="5"/>
+  <path class="tr" d="M0 880 H32 a18 18 0 0 1 18 18 V1020"/><circle class="node" cx="50" cy="1020" r="5"/>
+</svg>
+<div class="main" data-fit>
+  <div class="kickrow"><span class="kicker">Where it runs</span></div>
+  <h1 class="hl" data-fit data-max="112" data-min="96">Works where you already code</h1>
+  <p class="body" data-fit data-max="32" data-min="30">Same agent, same CLAUDE.md. Start in the terminal, then pick the session up in your editor or a browser.</p>
+  <div class="modzone">
+    <div class="shell"><div class="lgrid">
+      <div class="title">Claude Code runs in</div>
+      <div class="tiles">
+        <div class="t"><span class="logo glyph-tile"><i data-lucide="terminal"></i></span><span>Terminal</span></div>
+        <div class="t"><span class="logo mono-tile">V</span><span>VS Code</span></div>
+        <div class="t"><span class="logo mono-tile">J</span><span>JetBrains</span></div>
+        <div class="t"><span class="logo"><img src="../logos/claude-orange.png" alt="Claude"></span><span>Desktop app</span></div>
+        <div class="t"><span class="logo glyph-tile"><i data-lucide="globe"></i></span><span>Web</span></div>
+        <div class="t"><span class="logo"><img src="../logos/github-ink.png" alt="GitHub"></span><span>GitHub Actions</span></div>
+      </div>
+    </div></div>
+  </div>
+</div>
+<div class="foot">
+  <span class="callout"><span class="ic"><i data-lucide="file-text"></i></span><span class="tx">One CLAUDE.md, <b>every surface</b></span></span>
+</div>
+<script>
+// Fit pass: every [data-fit][data-max] steps down 2 px at a time (floor data-min) until its box stops
+// overflowing. Whatever still overflows (or any [data-fit] box) makes render-card exit 2: shorten the copy.
+window.cardReady = (async () => {
+  await document.fonts.ready;
+  S25.prep();
+  const over = (el) => el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1;
+  for (const el of document.querySelectorAll('[data-fit][data-max]')) {
+    let px = +el.dataset.max;
+    const min = +el.dataset.min;
+    el.style.fontSize = px + 'px';
+    while (over(el) && px > min) { px -= 2; el.style.fontSize = px + 'px'; }
+  }
+})();
+</script>
+</body>
+</html>

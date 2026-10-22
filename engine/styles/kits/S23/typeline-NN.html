@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S23 Type-Line</title>
+<!--
+  S23 Crop-Mark Proof Sheet: the type-line card, '> /command' on ink plus one short line. It is the caption on a
+  split slide (slim zone under the body) and the optional caption under a capture frame.
+  Copy to $D/cards/typeline-NN.html and edit only the JSON in <script id="data">.
+
+    command  exact lowercase command as typed, 22 characters or fewer (an orange '>' and cursor are added)
+    line     one short plain line, 40 characters or fewer (no second command, path or flag); in a one-row
+             zone (under 80 px tall) command + line together are 36 characters or fewer
+
+  Zones under 80 px tall set both on one row; taller zones stack them. Render at the zone's out bbox x2:
+    split (about 464x93, 5:1):    node shared/render-card.mjs $D/cards/typeline-05.html $D/cards/typeline-05.png --w 464 --h 93 --scale 2
+    capture (about 432x62, 7:1):  node shared/render-card.mjs $D/cards/typeline-03.html $D/cards/typeline-03.png --w 432 --h 62 --scale 2
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script id="data" type="application/json">
+{
+  "command": "/last30days",
+  "line": "a month of Reddit, X and HN"
+}
+</script>
+</head>
+<body>
+<script src="kit.js"></script>
+<script>
+KIT.ready((d) => {
+  KIT.limit(String(d.command).length <= 22, 'command-over-22-chars');
+  KIT.limit(d.command === String(d.command).toLowerCase(), 'command-not-lowercase');
+  const oneRow = innerHeight < 80;
+  KIT.limit(String(d.line).length <= 40, 'line-over-40-chars');
+  if (oneRow) KIT.limit(String(d.command).length + String(d.line).length <= 36, 'one-row-command-plus-line-over-36-chars');
+  document.body.insertAdjacentHTML('beforeend', `
+    <div class="typeline${oneRow ? ' one-row' : ''}" data-fit data-min="21" style="font-size:${oneRow ? 22 : 26}px">
+      <div class="t-cmd"><span class="gt">&gt;</span>${KIT.esc(d.command)}<span class="cur"></span></div>
+      <div class="t-line">${KIT.esc(d.line)}</div>
+    </div>`);
+});
+</script>
+</body>
+</html>

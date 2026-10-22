@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S20 CTA tree</title>
+<!--
+  S20 Slate Family Tree, CTA tree. Zone CTA band 8-92% x 44-78% = 907 x 459 (1.98:1) (CSS px on the 1080 x 1350 slide; use the plate's measured
+  --zones-only out bbox when it differs). Transparent: render WITHOUT --bg.
+    node shared/render-card.mjs cards/tree-cta.html cards/tree-cta.png --w 907 --h 459 --scale 2
+  Edit only the JSON below. See README.md for the limits.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+</head>
+<body>
+<script id="data" type="application/json">
+{
+  "variant": "cta",
+  "children": [
+    {
+      "name": "Hooks",
+      "chips": [
+        "Guardrails",
+        "Auto-run"
+      ]
+    },
+    {
+      "name": "Skills",
+      "chips": [
+        "Know-how",
+        "On demand"
+      ]
+    },
+    {
+      "name": "MCP",
+      "chips": [
+        "Live tools",
+        "Any app"
+      ]
+    }
+  ]
+}
+</script>
+<script src="tree.js"></script>
+</body>
+</html>

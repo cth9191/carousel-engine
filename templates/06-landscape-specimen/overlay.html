@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Template 06 — Landscape Specimen</title>
+<!--
+  S15 Landscape Specimen overlay: every word and all chrome over one fitted, text-free plate.
+  Per slide, copy this file to <deck>/cards/slide-NN.html and edit ONLY the JSON in
+  the slide-data JSON block at the bottom (schema in recipe.md). Then:
+    node shared/sky-tone.mjs <deck>                 (stamps ink/white + scrims onto the body tag)
+    node shared/render-card.mjs <deck>/cards/slide-NN.html <deck>/final/slide-NN.png --w 1080 --h 1350 --scale 1
+  The plate is "plate" from the JSON, or ../fitted/<this file's name>.png when "plate" is left out.
+  The masthead brand is {{BRAND}}: the skill fills it in when it copies this file into a deck.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Instrument+Serif&family=Inter:wght@500;600;700;900&family=JetBrains+Mono:wght@500;700&family=Playfair+Display:ital,wght@1,400;1,900&display=block" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0E0E0E; --white: #FFFFFF; --orange: #D9551F; --cream: #F5EBE0;
+    --mx: 104px; --cw: 872px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1080px; height: 1350px; overflow: hidden; }
+  body {
+    position: relative; color: var(--ink);
+    background: #8FB6D9 center / 1080px 1350px no-repeat;
+    -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision;
+    font-family: Inter, sans-serif;
+  }
+  /* tone: stamped by shared/sky-tone.mjs */
+  body[data-mast="white"] .mast,
+  body[data-stack="white"] .stack,
+  body[data-nav="white"] .nav { color: var(--white); }
+
+  /* scrims sit on the plate, under the type; alpha from data-scrim* (set in JS) */
+  .scrim { position: absolute; pointer-events: none; }
+  /* stack scrim: full strength over the box, an 80px feather outside it on every side */
+  .scrim-stack {
+    left: calc(var(--mx) - 80px); width: calc(var(--cw) + 160px);
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 80px, #000 calc(100% - 80px), transparent), linear-gradient(to bottom, transparent, #000 80px, #000 calc(100% - 80px), transparent);
+    -webkit-mask-composite: source-in; mask-composite: intersect;
+  }
+  .scrim-mast { left: 0; right: 0; top: 0; height: calc(9% + 60px); }
+  .scrim-nav { left: 0; right: 0; bottom: 0; height: calc(9% + 60px); }
+
+  /* masthead: baseline at 6% (81px) */
+  .mast {
+    position: absolute; left: var(--mx); right: var(--mx); top: 0; height: 81px;
+    display: flex; justify-content: space-between; align-items: baseline; padding-top: 52px;
+  }
+  .mast .brand { font: 900 26px/1 Inter, sans-serif; letter-spacing: .04em; text-transform: uppercase; }
+  .mast .label { font: 500 24px/1 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: .02em; }
+
+  /* the specimen stack, centred in the layout's box */
+  .stack {
+    position: absolute; left: var(--mx); width: var(--cw);
+    display: flex; flex-direction: column; align-items: center; justify-content: safe center;
+    text-align: center;
+  }
+  .stack > *, .combo-row > * { flex: none; }
+  .kicker { white-space: nowrap; line-height: 1; position: relative; z-index: 1; }
+  /* padding holds the glyphs' content area (taller than a .86 line); the negative margin gives the space back */
+  .giant { width: var(--cw); line-height: .86; white-space: nowrap; overflow: hidden; padding: .26em 0; margin: -.22em 0; }
+  .giant .ln { display: block; }
+  .giant .ln > span { display: inline-block; }
+  .caption {
+    width: var(--cw); font: 600 46px/1.12 Inter, sans-serif; letter-spacing: -.03em;
+    max-height: calc(2 * 1.12em + .12em + 2px); padding: .06em 0; overflow: hidden; margin-top: 24px; text-wrap: balance;
+  }
+  .use, .proof { width: var(--cw); white-space: nowrap; overflow: hidden; font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+  .use { font-size: 32px; line-height: 1.2; padding: .08em 0; margin-top: 10px; }
+  .proof { font-size: 30px; line-height: 1.2; padding: .08em 0; margin-top: -2px; }
+  .tight .caption, .tight .combo-row { margin-top: 20px; }
+  .tight .use { margin-top: 8px; }
+  .tight.P2 .kicker, .tight.P3 .kicker { margin-bottom: 12px; }
+  .proof svg { width: .9em; height: .9em; vertical-align: -.08em; margin-right: .1em; fill: currentColor; }
+
+  /* pairings: quiet kicker face over loud giant face */
+  .P1 .kicker { font: italic 400 88px/1 'Playfair Display', serif; }
+  .P1 .giant  { font: 900 200px/.86 Inter, sans-serif; letter-spacing: -.05em; }
+  .P2 .kicker { font: 400 88px/1 'Instrument Serif', serif; margin-bottom: 18px; }
+  .P2 .giant  { font-family: Archivo, sans-serif; font-weight: 900; font-style: italic; font-stretch: 62%; }
+  .P3 .kicker { font: 500 80px/1 Inter, sans-serif; letter-spacing: -.02em; margin-bottom: 18px; }
+  .P3 .giant  { font-family: Archivo, sans-serif; font-weight: 900; font-style: normal; font-stretch: 125%; }
+  .caps { text-transform: uppercase; }
+
+  /* cover set */
+  .cover .kicker { font: 900 72px/1 Inter, sans-serif; text-transform: lowercase; letter-spacing: -.02em; margin-bottom: 4px; }
+  .cover .giant { font-family: 'Playfair Display', serif; font-weight: 900; font-style: italic; text-transform: lowercase; letter-spacing: -.01em; }
+  body[data-stack="white"] .cover .giant { text-shadow: 0 0 14px rgba(255,255,255,.35); }
+  body:not([data-stack="white"]) .cover .giant { text-shadow: 0 0 14px rgba(14,14,14,.35); }
+  .outcome {
+    width: var(--cw); font: 700 56px/1.08 Inter, sans-serif; letter-spacing: -.025em;
+    max-height: calc(2 * 1.08em + .16em + 2px); padding: .08em 0; overflow: hidden; margin-top: 22px; text-wrap: balance;
+  }
+
+  /* combo: caption flanked by two real app icons */
+  .combo-row { display: flex; align-items: center; justify-content: center; gap: 22px; width: var(--cw); margin-top: 24px; }
+  .combo-row .caption { width: auto; max-width: calc(var(--cw) - 2 * 94px); margin-top: 0; white-space: nowrap; max-height: none; }
+  .icon { width: 72px; height: 72px; border-radius: 16px; overflow: hidden; flex: none; display: block; object-fit: contain; background: var(--cream); padding: 12px; }
+  .icon.full { object-fit: cover; padding: 0; background: none; }
+
+  /* capture card: real UI on the horizon */
+  .capture {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    border: 10px solid var(--cream); border-radius: 18px; overflow: hidden; background: var(--cream);
+    box-shadow: 0 24px 48px rgba(0,0,0,.35);
+  }
+  .capture img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+  /* optional mascot: your own transparent PNG (never a licensed character), from slide-data "sprite" */
+  .sprite { position: absolute; image-rendering: pixelated; }
+
+  /* nav: rule at 93%, labels at 95.8% */
+  .nav { position: absolute; left: var(--mx); width: var(--cw); top: 0; height: 100%; pointer-events: none; }
+  .nav .rule { position: absolute; left: 0; top: 1255px; width: var(--cw); height: 24px; transform: translateY(-50%); overflow: visible; }
+  .nav .row {
+    position: absolute; left: 0; width: var(--cw); top: 1293px; transform: translateY(-50%);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav .bn { font: 500 24px/1 Inter, sans-serif; text-transform: uppercase; letter-spacing: .06em; width: 92px; }
+  .nav .bn.next { text-align: right; }
+  .nav .nums { flex: 1; display: flex; justify-content: space-evenly; align-items: center; margin: 0 16px; }
+  .nav .num { font: 500 26px/1 'JetBrains Mono', monospace; padding: 6px 12px; border-radius: 999px; }
+  .nav .num.cur { background: var(--orange); color: var(--ink); font-weight: 700; }
+  .nav .dim { opacity: .4; }
+  body[data-nav-dim="70"] .nav .rule, body[data-nav-dim="70"] .nav .bn, body[data-nav-dim="70"] .nav .num:not(.cur) { opacity: .7; }
+</style>
+</head>
+<body data-mast="ink" data-stack="ink" data-nav="ink" data-scrim="0" data-scrim-mast="0" data-scrim-nav="0">
+<div class="scrim scrim-mast"></div>
+<div class="scrim scrim-nav"></div>
+<div class="scrim scrim-stack"></div>
+<div id="capture-slot"></div>
+<header class="mast"><span class="brand">{{BRAND}}</span><span class="label"></span></header>
+<main class="stack" data-fit></main>
+<nav class="nav"></nav>
+
+<script type="application/json" id="slide-data">
+{
+  "layout": "item",
+  "n": 3,
+  "total": 9,
+  "plate": "samples/plates/photo-overcast-sea.jpg",
+  "mast": { "label": "CLAUDE CODE PLUGINS", "month": "OCT 2026" },
+  "pairing": "auto",
+  "kicker": "for memory",
+  "name": "claude-mem",
+  "caption": "Remembers every session, so you stop re-explaining your repo",
+  "use": "recall last week's auth decision",
+  "proof": "★ 18.4k stars · free · AGPL-3.0"
+}
+</script>
+
+<script>
+(() => {
+  const BOXES = { cover: [0.12, 0.43], item: [0.12, 0.52], stake: [0.12, 0.52], combo: [0.12, 0.52], proof: [0.11, 0.44], cta: [0.14, 0.50] };
+  const LIMIT = { P1: 10, P2: 12, P3: 6 };
+  const W = 1080, H = 1350, CW = 872, FIT_W = 864, FLOOR = 140;
+  const info = { notes: [], warn: [] };
+  window.cardInfo = info;
+
+  const d = JSON.parse(document.getElementById('slide-data').textContent);
+  const layout = d.layout || 'item';
+  if (!BOXES[layout]) throw new Error(`unknown layout ${layout}`);
+  const box = d.box || BOXES[layout];
+  const body = document.body;
+  const stack = document.querySelector('.stack');
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+
+  // ---------- plate
+  let plate = d.plate;
+  if (!plate) {
+    const name = decodeURIComponent(location.pathname.split('/').pop()).replace(/\.html?$/i, '.png');
+    plate = `../fitted/${name}`;
+  }
+  body.style.backgroundImage = `url("${plate}")`;
+  info.plate = plate;
+
+  // ---------- scrims (alpha from the stamped data attributes)
+  const scrimOf = (tone, a) => (a > 0 ? (tone === 'white' ? `rgba(0,0,0,${a / 100})` : `rgba(255,255,255,${a / 100})`) : 'transparent');
+  const a = (k) => Number(body.getAttribute(k) || 0);
+  const sStack = document.querySelector('.scrim-stack');
+  sStack.style.top = `${box[0] * H - 80}px`;
+  sStack.style.height = `${(box[1] - box[0]) * H + 160}px`;
+  if (a('data-scrim')) {
+    const c = scrimOf(body.dataset.stack, a('data-scrim'));
+    sStack.style.background = c;
+  }
+  const strip = (sel, tone, alpha, dir) => {
+    if (!alpha) return;
+    const c = scrimOf(tone, alpha);
+    // full strength over the strip (9% of the height), fading out over 60px
+    document.querySelector(sel).style.background = `linear-gradient(${dir}, ${c} 0, ${c} calc(100% - 60px), transparent 100%)`;
+  };
+  strip('.scrim-mast', body.dataset.mast, a('data-scrim-mast'), 'to bottom');
+  strip('.scrim-nav', body.dataset.nav, a('data-scrim-nav'), 'to top');
+
+  // ---------- masthead
+  const m = d.mast || {};
+  document.querySelector('.mast .label').textContent = [m.label, m.month].filter(Boolean).join(' · ');
+  if (m.label && m.label.trim().split(/\s+/).length > 3) info.warn.push('masthead label is over 3 words');
+
+  // ---------- nav
+  const nav = document.querySelector('.nav');
+  const total = d.total || 1, n = d.n || 1;
+  nav.innerHTML = `
+    <svg class="rule" viewBox="0 0 ${CW} 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="2" y1="12" x2="${CW - 2}" y2="12"/>
+      <polyline points="12,3 2,12 12,21"/><polyline points="${CW - 12},3 ${CW - 2},12 ${CW - 12},21"/>
+    </svg>
+    <div class="row"><span class="bn back">Back</span><span class="nums"></span><span class="bn next">Next</span></div>`;
+  const nums = nav.querySelector('.nums');
+  for (let i = 1; i <= total; i++) nums.append(el('span', 'num' + (i === n ? ' cur' : ''), String(i).padStart(2, '0')));
+  if (n >= total) nav.querySelector('.next').classList.add('dim');
+
+  // ---------- helpers
+  const isCapWords = (s) => /^[A-Z][a-z]+(?: [A-Z][a-z]+)*$/.test(s);
+  const chars = (s) => [...s].length;
+  function autoPairing(len) { return len <= 6 ? 'P3' : len <= 10 ? 'P1' : len <= 12 ? 'P2' : null; }
+  // Long-name rule: break at a hyphen, slash or space into two balanced lines (hyphen/slash stay on line 1).
+  function split2(name) {
+    let best = null;
+    for (let i = 1; i < name.length - 1; i++) {
+      const ch = name[i];
+      if (!' -/'.includes(ch)) continue;
+      const a = ch === ' ' ? name.slice(0, i) : name.slice(0, i + 1);
+      const b = name.slice(i + 1);
+      const worst = Math.max(chars(a), chars(b));
+      if (!best || worst < best.worst) best = { lines: [a, b], worst };
+    }
+    return best;
+  }
+  function proofHTML(text) {
+    const star = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8l3.1 6.6 7.1.9-5.2 4.9 1.3 7.1L12 17.8l-6.3 3.5 1.3-7.1L1.8 9.3l7.1-.9z"/></svg>';
+    const esc = (s) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+    let t = text.trim(), lead = '';
+    if (t.startsWith('★')) { lead = star; t = t.slice(1).trimStart(); }
+    return lead + esc(t);
+  }
+
+  // ---------- build the stack
+  let pairing = null, lines = [d.name || ''], caps = false, capPx = 260, kickerEl = null, giantEl = null, kickerPx = null;
+
+  if (layout === 'cover') {
+    stack.classList.add('cover');
+    kickerEl = el('div', 'kicker', d.kicker || '');
+    giantEl = el('div', 'giant');
+    giantEl.dataset.fit = '';
+    const out = el('div', 'outcome', d.outcome || '');
+    out.dataset.fit = '';
+    stack.append(kickerEl, giantEl, out);
+    kickerPx = Math.max(64, Math.min(80, d.kickerPx || 72));
+    const oc = chars(d.outcome || '');
+    capPx = oc > 30 ? 200 : 240;
+    if (!d.outcome) info.warn.push('cover outcome line is mandatory');
+    if ((d.outcome || '').trim().split(/\s+/).length > 8) info.warn.push('outcome line is over 8 words');
+    if (/\bbest\b/i.test(`${d.kicker} ${d.name} ${d.outcome}`)) info.warn.push('cover says "best": an unproven superlative');
+  } else {
+    const name = d.name || '';
+    const forceCaps = layout === 'cta' || d.caps === true;
+    let req = d.pairing && d.pairing !== 'auto' ? d.pairing : null;
+    if (layout === 'cta' && !req) req = chars(name) <= 6 ? 'P3' : 'P2';
+    if (layout === 'stake' && !req) req = 'P3';
+    const len = chars(name);
+    if (req && len <= LIMIT[req]) pairing = req;
+    else if (req === 'P3' && name.includes(' ') && name.split(' ').length === 2 && name.split(' ').every((w) => chars(w) <= 6)) {
+      pairing = 'P3'; lines = name.split(' ');
+    } else {
+      if (req) info.notes.push(`${req} holds ${LIMIT[req]} characters; "${name}" has ${len}: length rule applied`);
+      pairing = autoPairing(len);
+    }
+    if (!pairing) {
+      const s = split2(name);
+      if (s && s.worst <= 12) {
+        lines = s.lines;
+        pairing = req && s.worst <= LIMIT[req] ? req : autoPairing(s.worst);
+        info.notes.push(`long name broken: ${lines.join(' / ')}`);
+      } else {
+        pairing = 'P2';
+        info.warn.push(`"${name}" is over 12 characters with no break: use the README's own short name and put the exact name in the caption`);
+      }
+    }
+    caps = forceCaps || ((pairing === 'P2' || pairing === 'P3') && isCapWords(name));
+    if (layout === 'cta') { pairing = pairing === 'P1' ? 'P2' : pairing; }
+    stack.classList.add(pairing);
+    capPx = lines.length > 1 || layout === 'proof' ? 160 : 260;
+
+    kickerEl = el('div', 'kicker', d.kicker || '');
+    if (layout === 'cta') { kickerEl.style.font = "italic 400 88px/1 'Playfair Display', serif"; kickerEl.style.marginBottom = '18px'; }
+    if (layout === 'combo') kickerEl.style.textTransform = 'none';
+    giantEl = el('div', 'giant' + (caps ? ' caps' : ''));
+    giantEl.dataset.fit = '';
+    stack.append(kickerEl, giantEl);
+    kickerPx = Math.max(64, Math.min(96, d.kickerPx || (pairing === 'P3' ? 80 : 88)));
+
+    if (layout === 'combo') {
+      const row = el('div', 'combo-row');
+      const cap = el('div', 'caption', d.caption || '');
+      cap.dataset.fit = '';
+      const icons = (d.icons || []).map((src) => { const i = el('img', 'icon' + (d.iconsFull ? ' full' : '')); i.src = src; i.alt = ''; return i; });
+      if (icons.length !== 2) info.warn.push('combo needs two real app icons');
+      row.append(icons[0] || el('span'), cap, icons[1] || el('span'));
+      stack.append(row);
+    } else if (d.caption) {
+      const cap = el('div', 'caption', d.caption);
+      cap.dataset.fit = '';
+      if (layout === 'proof') { cap.style.whiteSpace = 'nowrap'; cap.style.maxHeight = 'none'; }
+      stack.append(cap);
+      if (chars(d.caption) > 68) info.warn.push(`caption is ${chars(d.caption)} characters (about 68 fit)`);
+    }
+    if (d.use && layout !== 'stake' && layout !== 'cta') {
+      const u = el('div', 'use', d.use.startsWith('→') ? d.use : `→ ${d.use}`);
+      u.dataset.fit = '';
+      stack.append(u);
+      const bare = d.use.replace(/^→\s*/, '').trim();
+      if (chars(bare) > 40 || bare.split(/\s+/).length > 8) info.warn.push('use line is over 8 words / 40 characters');
+    }
+    if (d.proof && layout !== 'stake' && layout !== 'cta') {
+      const p = el('div', 'proof');
+      p.innerHTML = proofHTML(d.proof);
+      p.dataset.fit = '';
+      stack.append(p);
+      if (d.proof.split('·').length > 6) info.warn.push('proof line is over 6 tokens');
+    }
+  }
+  if ((d.kicker || '').trim().split(/\s+/).length > 4) info.warn.push('kicker is over 4 words');
+  giantEl.innerHTML = '';
+  for (const t of lines) { const ln = el('span', 'ln'); ln.append(el('span', null, t)); giantEl.append(ln); }
+  stack.style.top = `${box[0] * H}px`;
+  stack.style.height = `${(box[1] - box[0]) * H}px`;
+
+  // ---------- capture card (proof) and sprite
+  async function placeCapture() {
+    const c = d.capture;
+    if (!c || !c.src) { if (layout === 'proof' && !d.inScene) info.warn.push('proof slide without a capture'); return; }
+    const img = el('img'); img.src = c.src; img.alt = '';
+    await img.decode().catch(() => info.warn.push(`capture did not load: ${c.src}`));
+    const ar = img.naturalWidth / img.naturalHeight || 1.6;
+    const top0 = 0.46 * H, bot0 = 0.88 * H, maxH = bot0 - top0;
+    let w = Math.max(0.62, Math.min(0.70, c.width || 0.66)) * W;
+    let h = (w - 20) / ar + 20;
+    if (h > maxH) { w = Math.max(0.62 * W, (maxH - 20) * ar + 20); h = Math.min(maxH, (w - 20) / ar + 20); }
+    if ((w - 20) / ar + 20 > maxH + 1) info.notes.push('capture taller than the horizon band: centre-cropped (pre-crop it with shots.py around its focus box)');
+    let top = (c.horizon || 0.64) * H - h / 2;
+    top = Math.max(top0, Math.min(bot0 - h, top));
+    const card = el('div', 'capture');
+    Object.assign(card.style, { width: `${w}px`, height: `${h}px`, top: `${top}px` });
+    card.append(img);
+    document.getElementById('capture-slot').append(card);
+    info.capture = { x: Math.round((W - w) / 2), y: Math.round(top), w: Math.round(w), h: Math.round(h) };
+  }
+  function placeSprite() {
+    const s = d.sprite;
+    if (!s || !s.src) return;
+    const i = el('img', 'sprite'); i.src = s.src; i.alt = '';
+    Object.assign(i.style, { left: `${s.x}px`, top: `${s.y}px`, width: `${s.w}px` });
+    body.append(i);
+  }
+
+  // ---------- fit pass
+  function widthAt(px) {
+    giantEl.style.fontSize = `${px}px`;
+    return Math.max(...[...giantEl.querySelectorAll('.ln > span')].map((s) => s.getBoundingClientRect().width));
+  }
+  function setKicker(px) {
+    kickerEl.style.fontSize = `${px}px`;
+    // P1: the kicker overlaps the giant's cap height by about 10%
+    if (stack.classList.contains('P1') && layout !== 'cta') kickerEl.style.marginBottom = `${-0.1 * 0.73 * parseFloat(giantEl.style.fontSize)}px`;
+  }
+  const overflowsBox = () => stack.scrollHeight > stack.clientHeight + 1;
+
+  async function fit() {
+    const faces = ["italic 400 50px 'Playfair Display'", "italic 900 50px 'Playfair Display'", "400 50px 'Instrument Serif'",
+      'italic 900 50px Archivo', '900 50px Archivo', '900 50px Inter', '700 50px Inter', '600 50px Inter', '500 50px Inter',
+      "500 50px 'JetBrains Mono'", "700 50px 'JetBrains Mono'"];
+    await Promise.all(faces.map((f) => document.fonts.load(f, 'Aa1')));
+    await document.fonts.ready;
+    await Promise.all([placeCapture()]);
+    placeSprite();
+
+    const w100 = widthAt(100);
+    let size = Math.floor(Math.min(capPx, (100 * FIT_W) / w100));
+    if (size < FLOOR) {
+      info.warn.push(`giant line needs ${size}px to fit, under the ${FLOOR}px floor`);
+      size = FLOOR;
+    }
+    giantEl.style.fontSize = `${size}px`;
+    setKicker(kickerPx);
+    // vertical fit: the giant drops toward its floor, then the kicker toward 64px
+    let g = size, k = kickerPx;
+    while (overflowsBox() && g > FLOOR) { g -= 4; giantEl.style.fontSize = `${g}px`; setKicker(k); }
+    while (overflowsBox() && k > 64) { k -= 4; setKicker(k); }
+    if (overflowsBox()) stack.classList.add('tight');   // gaps to the low end of their ranges
+    if (overflowsBox()) info.warn.push('stack taller than its box: cut the caption or use line (storyboard rewrite)');
+    info.layout = layout; info.pairing = layout === 'cover' ? 'cover' : pairing; info.giantPx = g; info.kickerPx = k;
+    info.lines = lines; info.box = box;
+    if (!info.notes.length) delete info.notes;
+    if (!info.warn.length) delete info.warn;
+  }
+  window.cardReady = fit();
+})();
+</script>
+</body>
+</html>

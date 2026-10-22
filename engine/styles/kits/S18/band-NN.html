@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>S18 Band Text</title>
+<!--
+  S18 Folder-Tab Field Guide: the text for one scene band, pasted into that band's magenta well.
+  Copy to $D/cards/band-NN-B.html (NN = slide, B = band 1-3) and edit only the JSON in <script id="data">.
+
+    layout  "three-band" (body 20 words max) | "deep-dive" (22) | "d-step" (18)
+    name    caps entry name, 14 characters or fewer (Inter 900, 48 px, fits down to 40 px)
+    where   the 'where it lives' line after the orange pin: install source plus stars, verified on
+            posting day (Inter 700, 30-32 px, one line)
+    body    three-band: "does X; replaces Y". deep-dive: the concrete use. d-step: what you build.
+            Inter 400, 30-32 px.
+    mark    emblem decks only: the entry's real mark (PNG/SVG path relative to this file, e.g.
+            "../logos/github.png"), shown beside the name. null in logo decks (the face carries it).
+    markTone "cream" (default, the mark flattened to cream) | "original" (its own colours)
+
+  All text is cream #F5EBE0. Render at the well's --zones-only out bbox, 2x, on the pool ink sampled
+  just outside the well (never exactly #0E0E0E):
+    node shared/render-card.mjs $D/cards/band-04-1.html $D/cards/band-04-1.png --w <bw> --h <bh> --scale 2 --bg "<pool ink>" --min-px 30
+  A rule break (name length, word cap, layout) adds an overflowing [data-fit] .LIMIT element, so
+  render-card exits 2 and prints the rule in the class name.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=block" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5EBE0;
+    --orange: #D9551F;
+    --name: 48px;
+    --text: 32px;
+  }
+  html, body { margin: 0; width: 100%; height: 100%; background: transparent; overflow: hidden; }
+  .well {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: safe center;
+    padding: 2px 4px;
+    overflow: hidden;
+    color: var(--cream);
+  }
+  .well > * { flex: none; }
+  .name {
+    display: flex;
+    align-items: center;
+    gap: 0.28em;
+    font: 900 var(--name)/1.25 Inter, sans-serif;
+    letter-spacing: 0.005em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .name img { flex: none; height: 0.92em; width: auto; max-width: 1.6em; object-fit: contain; }
+  .name img.tone-cream { filter: url(#tone-cream); }
+  .where {
+    display: flex;
+    align-items: center;
+    gap: 0.36em;
+    margin-top: 0.3em;
+    font: 700 var(--text)/1.15 Inter, sans-serif;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .where svg { flex: none; height: 1.05em; width: auto; }
+  .body {
+    margin-top: 0.3em;
+    font: 400 var(--text)/1.27 Inter, sans-serif;
+    overflow-wrap: break-word;
+  }
+  .LIMIT { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: hidden; visibility: hidden; }
+  .LIMIT i { display: block; width: 50px; height: 50px; }
+</style>
+</head>
+<body>
+<script id="data" type="application/json">
+{
+  "layout": "three-band",
+  "name": "Superpowers",
+  "where": "Claude Code plugin · NNK stars",
+  "body": "Does brainstorm, plan, test-first build and review as skills; replaces one giant prompt you retype every session.",
+  "mark": null,
+  "markTone": "cream"
+}
+</script>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="tone-cream" color-interpolation-filters="sRGB">
+    <feFlood flood-color="#F5EBE0" result="c"/>
+    <feComposite in="c" in2="SourceAlpha" operator="in"/>
+  </filter>
+</svg>
+<div class="well" data-fit>
+  <div class="name" data-fit></div>
+  <div class="where" data-fit>
+    <svg viewBox="0 0 20 28" aria-hidden="true"><path d="M10 27.2C10 27.2 1.2 16.4 1.2 9.9A8.8 8.8 0 0 1 18.8 9.9C18.8 16.4 10 27.2 10 27.2Z" fill="#D9551F"/><circle cx="10" cy="9.9" r="3.4" fill="#F5EBE0"/></svg>
+    <span></span>
+  </div>
+  <div class="body"></div>
+</div>
+<script>
+  const D = JSON.parse(document.getElementById('data').textContent);
+  const CAPS = { 'three-band': 20, 'deep-dive': 22, 'd-step': 18 };
+  const violations = [];
+  function violate(rule) {
+    violations.push(rule);
+    const el = document.createElement('div');
+    el.setAttribute('data-fit', '');
+    el.className = 'LIMIT ' + rule.replace(/[^A-Za-z0-9/.-]+/g, '_');
+    el.innerHTML = '<i></i>';
+    document.body.appendChild(el);
+  }
+
+  const cap = CAPS[D.layout];
+  if (!cap) violate(`layout-"${D.layout}"-must-be-three-band/deep-dive/d-step`);
+  const name = String(D.name || '');
+  if (!name || name.length > 14) violate(`name-"${name}"-is-${name.length}-chars-max-14`);
+  const words = String(D.body || '').trim().split(/\s+/).filter(Boolean).length;
+  if (cap && words > cap) violate(`body-is-${words}-words-max-${cap}-for-${D.layout}`);
+  if (!String(D.where || '').trim()) violate('where-line-is-empty');
+
+  const nameEl = document.querySelector('.name');
+  if (D.mark) {
+    const img = document.createElement('img');
+    img.src = D.mark;
+    img.alt = '';
+    if ((D.markTone || 'cream') === 'cream') img.className = 'tone-cream';
+    nameEl.appendChild(img);
+  }
+  const nameText = document.createElement('span');
+  nameText.textContent = name;
+  nameEl.appendChild(nameText);
+  document.querySelector('.where span').textContent = D.where;
+  document.querySelector('.body').textContent = D.body;
+
+  window.cardReady = (async () => {
+    await document.fonts.ready;
+    const img = nameEl.querySelector('img');
+    if (img && !img.complete) await img.decode().catch(() => null);
+    if (img && !img.naturalWidth) violate(`mark-"${D.mark}"-did-not-load`);
+    const root = document.documentElement;
+    const well = document.querySelector('.well');
+    const whereEl = document.querySelector('.where');
+    // Name: 48 px down to 40 px until it fits the width.
+    let n = 48;
+    root.style.setProperty('--name', n + 'px');
+    while (nameEl.scrollWidth > nameEl.clientWidth + 0.5 && n > 40) { n -= 0.5; root.style.setProperty('--name', n + 'px'); }
+    // Pin line and body: 32 px down to 30 px until the stack fits the well.
+    const fits = () => well.scrollHeight <= well.clientHeight + 0.5 && whereEl.scrollWidth <= whereEl.clientWidth + 0.5;
+    let t = 32;
+    root.style.setProperty('--text', t + 'px');
+    while (!fits() && t > 30) { t -= 0.5; root.style.setProperty('--text', t + 'px'); }
+    window.cardInfo = { layout: D.layout, name_px: n, text_px: t, body_words: words, cap, mark: D.mark || null, violations };
+  })();
+</script>
+</body>
+</html>

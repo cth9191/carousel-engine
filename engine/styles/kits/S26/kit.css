@@ -1,0 +1,36 @@
+/* S26 Whiteboard Doodle Showcase: shared card styles. CSS px = px on the 1080 x 1350 slide.
+   Cards are rendered edge to edge with --bg = the plate ground sampled beside the zone (normally #FBF8F3);
+   the page itself stays transparent so --bg is the only ground. */
+:root {
+  --paper: #FBF8F3;
+  --ink: #1B1B1B;
+  --orange: #D9551F;
+  --counter: #8A8178;
+  --cream: #F5EBE0;
+  --ink-card: #141414;
+}
+html, body { margin: 0; width: 100%; height: 100%; background: transparent; overflow: hidden; }
+body { position: relative; color: var(--ink); font-family: "Shantell Sans", "Comic Sans MS", cursive; }
+
+.counter { position: absolute; top: 0; right: 0; font: 500 26px/30px "Shantell Sans", cursive; color: var(--counter); white-space: nowrap; }
+
+/* a block of hand-lettered lines, centred; the fit pass sets font-size on .lines */
+.stack { position: absolute; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: safe center; overflow: hidden; }
+.lines { max-width: 92%; text-align: center; font-weight: 800; line-height: 1.3; }
+.lines .ln { display: block; white-space: nowrap; }
+.lines.wrap .ln { white-space: normal; text-wrap: balance; }
+.lines .ln.key { position: relative; }
+.kw { color: var(--orange); }
+.aside { max-width: 96%; margin-top: 0.5em; text-align: center; font-weight: 500; line-height: 1.35; white-space: nowrap; }
+.ul { position: absolute; overflow: visible; pointer-events: none; }
+.ul path { fill: none; stroke: var(--orange); stroke-width: 12px; stroke-linecap: round; stroke-linejoin: round; }
+
+/* caption */
+.cap { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: safe center; overflow: hidden;
+       text-align: center; font-weight: 500; line-height: 1.22; }
+.cap p { margin: 0; text-wrap: pretty; }
+.cap p + p { margin-top: 0.3em; }
+
+/* a limit breach (see kit.js) adds this element; render-card then reports an overflow and exits 2 */
+.limit-violation { position: absolute; left: 0; top: 0; width: 0; height: 0; overflow: hidden; }
+.limit-violation > i { display: block; width: 10px; height: 10px; }

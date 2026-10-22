@@ -111,8 +111,8 @@ Each deck lives in its own folder, `carousels/YYYY-MM-DD-slug/`, and ends with
 
 ## Styles
 
-Nine styles ship with prompt blocks and exemplars, six of them with HTML card kits and Codex
-references. Add your own in [`engine/styles/`](engine/styles/); a style rests 14 days after each use
+28 styles ship with prompt blocks, kits or HTML templates, and exemplars. Eleven are proven in
+posted decks; the other 17 (`test-wave`) are ready to make but show sample renders until you post one. Add your own in [`engine/styles/`](engine/styles/); a style rests 14 days after each use
 (look-alike styles can share a cooldown group).
 
 | ID | Style | Best for | Made as |
@@ -120,12 +120,31 @@ references. Add your own in [`engine/styles/`](engine/styles/); a style rests 14
 | S01 | Terracotta Zine | system builds, N-step tutorials | Codex cover + HTML interiors |
 | S02 | Logo Equation | tool combos, integrations | hybrid: Codex plates, real logos composited in |
 | S03 | Newsprint Benchmark | head-to-heads, model launch tests | Codex, every slide |
+| S04 | Brutalist Mascot Poster | urgency listicles, use cases | Codex plates, your mascot or a logo tile composited, exact text as HTML cards |
 | S05 | Phone-Photo Monitor | repo listicles, quick tips | your monitor photo (or a Codex desk plate) with the real capture warped onto the screen, HTML stickers |
 | S06 | Statue Cover + Graph-Paper Cards | top-N lists, tool roundups | Codex statue cover + HTML type and logo tile, HTML interiors |
 | S07 | Dark Network Hero | single-tool and system reveals | text-free Codex network plates, every word HTML |
 | S08 | Bone Editorial | system reveals, explainers | Codex paper ground and doodles, every word HTML |
 | S09 | Charcoal Studio | tutorials, step-by-step builds | Codex plates, exact text as HTML cards |
+| S10 | Command-Press Blueprint | skill and command roundups, N levels | HTML sheets from Template 03, word-free Codex FIG plates |
 | S11 | Sketchnote | what-is / how-it-works explainers | Codex, every slide (diagram kit for exact-text diagrams) |
+| S12 | Voxel Costume Explainer | one tool or feature explained end to end | HTML pages, your own costume poses or logo tiles composited |
+| S13 | Oversized-Serif Photo Editorial | frameworks, 'N rules' decks | Codex photo plates, every word HTML, sky-tone pass |
+| S14 | Scenic Painterly | big collections grouped by job | Codex painted plates, HTML list cards, sky-tone pass |
+| S15 | Landscape Specimen | top-N tools and pairings | Codex landscape plates under Template 06's HTML overlay, sky-tone pass |
+| S16 | Neon Node Pipeline | how pipelines and agent patterns run | HTML from Template 05, graphs from storyboard JSON |
+| S17 | Split-Band Before/After | before/after habit flips | HTML from Template 07 |
+| S18 | Folder-Tab Field Guide | entries grouped into 3 chapters | Codex plates, HTML tab and band cards, logo or emblem medallions |
+| S19 | Window-Chrome Build Diary | build diaries | HTML from Template 08 over real app captures |
+| S20 | Slate Family Tree | taxonomies: N base parts and what's built on each | Codex slate plates, transparent HTML tree cards |
+| S21 | Circled-Count Tip Stack | 'I went through N' findings | HTML from Template 09 |
+| S22 | Layered Parts Atlas | 20-36 items in 4-6 layers | Codex cover plate, atlas sheets from Template 03 |
+| S23 | Crop-Mark Proof Sheet | slash-command roundups with proof | Codex plates, proof cards from the kit |
+| S24 | Spotlight Dossier | repo, tool and skill roundups | Codex plates, numbers / install / verdict cards, real logo tiles |
+| S25 | Soft-UI Step Guide | setup guides for a tool or repo | one Codex cover plate, every page HTML |
+| S26 | Whiteboard Doodle Showcase | repo and tool showcases | Codex doodle plates, every word an HTML card |
+| S27 | Icon-Grid Cheat Sheet | one-page repo cheat sheets | HTML only, no Codex job |
+| S28 | Alpine Product Window | tools that each have a real UI | three Codex plates per deck, every page HTML |
 
 ![Every style, with an example cover and interior for each](engine/styles/gallery.jpg)
 

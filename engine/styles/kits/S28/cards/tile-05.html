@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>S28 tile 05: Serena</title>
+<!-- One cover-slot tile: Serena. A real mark on a #111111 or #FFFFFF rounded square (corner radius 22%, the
+     cyan slot's), transparent outside the corners; no mark: a cream Lucide glyph on #111111. Render:
+     node shared/render-card.mjs $D/cards/tile-05.html $D/logos/tile-05.png --w 256 --h 256 --scale 2 --min-px 0 -->
+<link rel="stylesheet" href="s28.css">
+<script src="icons.js"></script>
+<style>
+  html, body { width: 256px; height: 256px; background: transparent; }
+  .tile { width: 256px; height: 256px; border-radius: 22%; box-shadow: none; }
+  .tile.glyph { font-size: 132px; }
+  .tile .spark { right: 30px; top: 26px; font-size: 44px; }
+</style>
+</head><body>
+<div class="tile dark glyph "><i data-lucide="search-code"></i><span class="spark"><i data-lucide="sparkle"></i></span></div>
+<script>window.cardReady = (async () => { if (window.lucide) window.lucide(); })();</script>
+</body></html>

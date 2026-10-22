@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S23 Audit Column</title>
+<!--
+  S23 Crop-Mark Proof Sheet: the audit column of a chart + audit slide (the tall right-hand magenta zone).
+  An ink-header audit card naming the command, then a BEFORE and an AFTER tab card.
+  Copy to $D/cards/audit-NN.html and edit only the JSON in <script id="data">.
+
+    command  exact lowercase command, shown in the ink header (22 characters or fewer)
+    label    header label, default "AUDIT" (orange tracked mono)
+    rows     what the skill checked, 2-4 rows, 26 characters or fewer each (Inter 600)
+    before / after
+      verdict  short orange tag on the tab card's right, 10 characters or fewer ("unsafe", "fixed")
+      text     the real before / after line from the run, 64 characters or fewer
+      mono     true for code or terminal text
+
+  Render at the zone's --zones-only out bbox x2 (about 346x460, 0.75:1):
+    node shared/render-card.mjs $D/cards/audit-05.html $D/cards/audit-05.png --w 346 --h 460 --scale 2
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script id="data" type="application/json">
+{
+  "command": "/code-review",
+  "label": "AUDIT",
+  "rows": ["SQL built from user input", "Null user on first login", "N+1 query in the loop", "Token printed to logs"],
+  "before": { "verdict": "unsafe", "mono": true, "text": "db.query(\"SELECT * FROM users WHERE id=\" + id)" },
+  "after": { "verdict": "fixed", "mono": true, "text": "db.query(\"SELECT * FROM users WHERE id=$1\", [id])" }
+}
+</script>
+<style>
+  .audit .tab-text.mono { white-space: pre-wrap; overflow-wrap: anywhere; }
+</style>
+</head>
+<body>
+<script src="kit.js"></script>
+<script>
+const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+const DOWN = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="20"/><polyline points="6 14 12 20 18 14"/></svg>';
+KIT.ready((d) => {
+  KIT.limit(String(d.command).length <= 22, 'command-over-22-chars');
+  KIT.limit(d.command === String(d.command).toLowerCase(), 'command-not-lowercase');
+  KIT.limit(d.rows.length >= 2 && d.rows.length <= 4, 'rows-not-2-to-4');
+  KIT.limit(d.rows.every((r) => r.length <= 26), 'row-over-26-chars');
+  for (const k of ['before', 'after']) {
+    KIT.limit(String(d[k].text).length <= 64, k + '-text-over-64-chars');
+    KIT.limit(String(d[k].verdict || '').length <= 10, k + '-verdict-over-10-chars');
+  }
+  const tab = (k, t) => `
+    <div class="tab-card ${k}">
+      <span class="tab">${k.toUpperCase()}</span>
+      ${t.verdict ? `<span class="verdict">${KIT.esc(t.verdict)}</span>` : ''}
+      <div class="tab-text${t.mono ? ' mono' : ''}" data-fit>${KIT.esc(t.text)}</div>
+    </div>`;
+  document.body.insertAdjacentHTML('beforeend', `
+    <div class="audit">
+      <div class="a-card">
+        <div class="a-head" data-fit><span>${KIT.esc(d.command)}</span><span class="lbl">${KIT.esc(d.label || 'AUDIT')}</span></div>
+        <div class="a-rows">${d.rows.map((r) => `<div class="a-row"><span class="ck">${CHECK}</span>${KIT.esc(r)}</div>`).join('')}</div>
+      </div>
+      ${tab('before', d.before)}
+      <div class="down">${DOWN}</div>
+      ${tab('after', d.after)}
+    </div>`);
+});
+</script>
+</body>
+</html>

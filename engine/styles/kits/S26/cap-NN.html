@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S26 caption card</title>
+<!--
+  S26 Whiteboard Doodle Showcase, caption card. Item caption zone x 100-980, y 906-1104 = 880 x 198.
+    node shared/render-card.mjs cards/cap-NN.html cards/cap-NN.png --w 880 --h 198 --scale 2 --bg "#FBF8F3"
+  --bg = the plate ground sampled beside the zone (#FBF8F3 on a clean plate). Use the plate's measured
+  --zones-only out bbox for --w/--h. Paste: python -I shared/composite.py plate out --card MN=cards/cap-NN.png
+  Edit only the JSON below. Fields: caption = a string, or an array of up to two paragraphs; <= 34 words, <= 4 lines (42 px, fit 46->36).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shantell+Sans:wght@500;800&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+</head>
+<body data-card="cap">
+<script id="data" type="application/json">
+{
+  "caption": [
+    "Gives Claude a real browser it can click, type and test in.",
+    "Replaces pasting screenshots by hand. Use it to check your signup flow before a deploy."
+  ]
+}
+</script>
+<script src="kit.js"></script>
+</body>
+</html>

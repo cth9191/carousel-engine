@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Template 03 — Command Press</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared/tweak-panel.css">
+<style>
+  :root {
+    --cream:#F5EBE0; --bone:#ECE3D4; --ink:#0E0E0E; --terra:#D9551F;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { background:#1a1a1a; font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; height:100%; overflow:hidden; }
+  .stage { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; }
+  .slide-wrap { width:1080px; height:1350px; transform-origin:center; }
+
+  .slide {
+    --bg:#ECE3D4;
+    --line:rgba(14,14,14,.07); --line2:rgba(14,14,14,.035);
+    --fg:#0E0E0E; --muted:rgba(14,14,14,.55); --accent:#D9551F;
+    --chrome:rgba(14,14,14,.5); --chrome-soft:rgba(14,14,14,.4);
+    --head-size:210px; --body-size:33px; --body-top:466px; --hero-bottom:170px;
+    width:1080px; height:1350px; position:relative; overflow:hidden;
+    background:var(--bg); color:var(--fg); font-family:'Inter',sans-serif; }
+
+  /* blueprint grid */
+  .slide::before { content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(var(--line) 1.5px,transparent 1.5px),
+      linear-gradient(90deg,var(--line) 1.5px,transparent 1.5px),
+      linear-gradient(var(--line2) 1px,transparent 1px),
+      linear-gradient(90deg,var(--line2) 1px,transparent 1px);
+    background-size:180px 180px,180px 180px,36px 36px,36px 36px; }
+  /* paper grain */
+  .slide::after { content:''; position:absolute; inset:0; z-index:1; pointer-events:none; opacity:.5; mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(14,14,14,.05) .6px,transparent .7px); background-size:4px 4px; }
+
+  /* cover variant */
+  .slide .cover-img { display:none; position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:10; }
+  .slide.is-cover .cover-img { display:block; }
+  .slide.is-cover > :not(.cover-img) { display:none !important; }
+
+  .frame { position:absolute; inset:34px; border:1.5px solid var(--chrome-soft); z-index:2; pointer-events:none; }
+
+  /* dimension line — ink chrome */
+  .dim-top { position:absolute; top:100px; left:80px; right:80px; height:1.5px; background:var(--chrome); z-index:3; }
+  .dim-top::before,.dim-top::after { content:''; position:absolute; top:-5px; width:1.5px; height:12px; background:var(--chrome); }
+  .dim-top::before{left:0;} .dim-top::after{right:0;}
+  .dim-label { position:absolute; top:84px; left:50%; transform:translateX(-50%); z-index:4; background:var(--bg);
+    padding:0 12px; font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:700; color:var(--chrome); letter-spacing:.18em; }
+
+  /* corner crosshairs — ORANGE, all 4 */
+  .xh { position:absolute; z-index:4; width:30px; height:30px; }
+  .xh::before,.xh::after { content:''; position:absolute; background:var(--accent); }
+  .xh::before { left:50%; top:0; width:1.5px; height:100%; transform:translateX(-50%); }
+  .xh::after  { top:50%; left:0; height:1.5px; width:100%; transform:translateY(-50%); }
+
+  .chip { position:absolute; top:54px; left:78px; z-index:6; background:var(--fg); color:var(--bg);
+    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:16px; letter-spacing:.22em; padding:9px 15px 8px; }
+  .rev { position:absolute; top:56px; right:78px; z-index:6; display:flex; gap:10px; align-items:center;
+    font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:700; color:var(--accent); letter-spacing:.12em; }
+  .rev .tri { width:0; height:0; border-left:9px solid transparent; border-right:9px solid transparent; border-bottom:15px solid var(--accent); }
+
+  .head { position:absolute; top:158px; left:72px; right:40px; z-index:5; }
+  .h1 { font-family:'Anton',sans-serif; font-size:var(--head-size); line-height:.86; letter-spacing:-.005em;
+    text-transform:uppercase; color:var(--fg); white-space:nowrap; transform-origin:left center; }
+
+  .underdim { position:absolute; left:78px; width:560px; top:392px; height:1.5px; background:var(--accent); z-index:4; }
+  .underdim::before,.underdim::after { content:''; position:absolute; top:-4px; width:1.5px; height:10px; background:var(--accent); }
+  .underdim::before{left:0;} .underdim::after{right:0;}
+  .fig { position:absolute; left:78px; top:404px; z-index:5; font-family:'JetBrains Mono',monospace; font-size:17px; font-weight:700; color:var(--accent); letter-spacing:.1em; }
+
+  .body-copy { position:absolute; top:var(--body-top); left:80px; right:80px; z-index:5; font-weight:600; font-size:var(--body-size); line-height:1.34; color:var(--fg); max-width:820px; }
+  .body-copy p { margin-bottom:20px; } .body-copy p:last-child { margin-bottom:0; }
+  .body-copy .accent { color:var(--accent); font-weight:800; }
+  .body-copy strong { font-weight:800; }
+
+  /* hero zone */
+  .hero-zone { position:absolute; left:80px; right:80px; bottom:var(--hero-bottom); z-index:5; }
+
+  /* --- hero: before/after --- */
+  .ba { display:flex; align-items:stretch; gap:30px; }
+  .card { flex:1; border-radius:0; padding:30px 32px 34px; position:relative; min-height:282px; }
+  .card .tag { font-family:'JetBrains Mono',monospace; font-weight:700; font-size:14px; letter-spacing:.2em; color:var(--accent); margin-bottom:12px; display:block; }
+  .card .ttl { font-family:'Anton',sans-serif; font-size:48px; line-height:1; text-transform:uppercase; margin-bottom:18px; }
+  .card .lines { font-size:24px; font-weight:500; line-height:1.4; }
+  .card.before { background:var(--fg); color:#F0EBE1; box-shadow:0 14px 30px rgba(14,14,14,.22); }
+  .card.before .ttl { color:#F0EBE1; } .card.before .lines { color:rgba(240,235,225,.55); }
+  .card.after { background:transparent; color:var(--fg); border:1.5px solid var(--accent); }
+  .card.after .ttl { color:var(--fg); }
+  .ba-arrow { align-self:center; color:var(--accent); flex:0 0 auto; width:50px; height:50px; margin:0 -6px; }
+
+  /* --- hero: video --- */
+  .hero-video { position:relative; }
+  .video-card { position:relative; border:1.5px solid var(--ink); background:#000; box-shadow:0 14px 30px rgba(14,14,14,.22); }
+  .video-card .thumb { display:block; width:100%; aspect-ratio:16/9; object-fit:cover; }
+  .video-card .thumb-fallback { width:100%; aspect-ratio:16/9; background:linear-gradient(135deg,#1a1a1a,#333); display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,.4); font-family:'JetBrains Mono',monospace; font-size:18px; }
+  .video-card .play { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:96px; height:96px; border-radius:50%; background:rgba(14,14,14,.72); display:flex; align-items:center; justify-content:center; z-index:3; }
+  .video-card .play::after { content:''; border-left:30px solid #fff; border-top:18px solid transparent; border-bottom:18px solid transparent; margin-left:6px; }
+  .video-card .vbar { display:flex; align-items:center; justify-content:space-between; gap:14px; background:var(--ink); padding:16px 20px; }
+  .video-card .vtitle { color:#F0EBE1; font-weight:700; font-size:22px; line-height:1.2; }
+  .video-card .vmeta { color:rgba(240,235,225,.5); font-family:'JetBrains Mono',monospace; font-size:14px; white-space:nowrap; }
+  /* retention squiggle overlay */
+  .video-card .retention { position:absolute; left:0; right:0; bottom:64px; height:120px; z-index:2; pointer-events:none; }
+  .video-card .vcap { position:absolute; left:50%; bottom:84px; transform:translateX(-50%); z-index:3;
+    font-family:'Anton',sans-serif; font-size:40px; text-transform:uppercase; color:#fff; text-shadow:0 3px 0 rgba(14,14,14,.55); letter-spacing:.01em; white-space:nowrap; }
+  .video-doodle { position:absolute; right:-6px; top:-58px; z-index:4; color:var(--accent); width:120px; height:90px; }
+
+  /* --- hero: chart / audit --- */
+  .hero-chart { display:flex; gap:26px; align-items:stretch; }
+  .audit { flex:0 0 360px; border:1.5px solid var(--ink); background:rgba(255,255,255,.35); padding:24px 26px; }
+  .audit .a-tag { font-family:'JetBrains Mono',monospace; font-weight:700; font-size:14px; letter-spacing:.2em; color:var(--accent); margin-bottom:18px; display:block; }
+  .audit .a-row { display:flex; align-items:center; gap:14px; padding:12px 0; border-top:1px solid rgba(14,14,14,.12); font-size:21px; font-weight:600; }
+  .audit .a-row:first-of-type { border-top:none; }
+  .audit .a-row .ck { flex:0 0 26px; width:26px; height:26px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; }
+  .audit .a-row .ck svg { width:15px; height:15px; color:#fff; }
+  .chart { flex:1; border:1.5px solid var(--ink); background:rgba(255,255,255,.35); padding:24px 26px; position:relative; }
+  .chart .c-tag { font-family:'JetBrains Mono',monospace; font-weight:700; font-size:14px; letter-spacing:.2em; color:var(--accent); }
+  .chart .legend { position:absolute; right:26px; top:24px; display:flex; gap:18px; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:700; }
+  .chart .legend span { display:flex; align-items:center; gap:8px; } .chart .legend i { width:20px; height:4px; display:block; }
+  .chart svg.plot { position:absolute; left:26px; right:26px; bottom:24px; width:calc(100% - 52px); height:230px; }
+
+  /* --- hero: image (framed screenshot) --- */
+  .hero-image { position:relative; }
+  .hero-image .shot { display:block; width:100%; height:auto; border:1.5px solid var(--accent); box-shadow:0 16px 34px rgba(14,14,14,.25); }
+  .hero-image .shot-fallback { width:100%; aspect-ratio:2/1; border:1.5px dashed var(--accent); display:flex; align-items:center; justify-content:center; color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:16px; }
+  .hero-image .shot-cap { position:absolute; left:0; top:-6px; transform:translateY(-100%); font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:700; color:var(--accent); letter-spacing:.16em; }
+  .hero-image .cnr { position:absolute; width:18px; height:18px; border:2px solid var(--accent); z-index:2; }
+  .hero-image .cnr.tl { left:-6px; top:-6px; border-right:none; border-bottom:none; }
+  .hero-image .cnr.tr { right:-6px; top:-6px; border-left:none; border-bottom:none; }
+  .hero-image .cnr.bl { left:-6px; bottom:-6px; border-right:none; border-top:none; }
+  .hero-image .cnr.br { right:-6px; bottom:-6px; border-left:none; border-top:none; }
+
+  /* footer */
+  .sheet { position:absolute; bottom:60px; left:80px; z-index:6; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:16px; color:var(--muted); letter-spacing:.2em; }
+  .footer-swipe { position:absolute; bottom:60px; right:80px; z-index:6; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:16px; color:var(--accent); letter-spacing:.2em; display:flex; align-items:center; gap:8px; }
+  .footer-swipe svg { width:1em; height:1em; }
+
+  /* ===================== layout:'atlas' (style S22 Layered Parts Atlas) =====================
+     Sheet kinds: layer · index · combo · cta. Spec: recipe.md "atlas layout". Everything sits on
+     the 80 px side margins, content y 52–1290. Orange = callouts only (banner, start-here balloon +
+     leader, ▸, crosshairs, SWIPE →); structure is ink. */
+  .atlas { display:none; position:absolute; inset:0; z-index:5; --ls:1; }
+  .slide.is-atlas .atlas { display:block; }
+  .slide.is-atlas .chip, .slide.is-atlas .rev, .slide.is-atlas .dim-top, .slide.is-atlas .dim-label,
+  .slide.is-atlas .sheet, .slide.is-atlas .footer-swipe, .slide.is-atlas .head, .slide.is-atlas .underdim,
+  .slide.is-atlas .fig, .slide.is-atlas .body-copy, .slide.is-atlas .hero-zone { display:none !important; }
+  .atlas .mono { font-family:'JetBrains Mono',monospace; font-weight:700; }
+  /* Row 1 (y 52–92): dimension line with the deck label in its gap · SHEET nn / TT */
+  .at-dim { position:absolute; top:72px; left:80px; height:1.5px; background:rgba(14,14,14,.7); }
+  .at-dim::before,.at-dim::after { content:''; position:absolute; top:-6px; width:1.5px; height:13px; background:rgba(14,14,14,.7); }
+  .at-dim::before{left:0;} .at-dim::after{right:0;}
+  .at-dimlabel, .at-sheet { position:absolute; top:58px; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:22px;
+    line-height:28px; color:rgba(14,14,14,.7); letter-spacing:.06em; white-space:nowrap; }
+  .at-dimlabel { background:var(--bg); padding:0 12px; }
+  .at-sheet { right:80px; }
+  /* Row 2 (y 108–184) Anton ink line · Row 3 (y 196–356) orange count banner */
+  .at-title { position:absolute; left:80px; font-family:'Anton',sans-serif; text-transform:uppercase; color:var(--fg); white-space:nowrap; }
+  .at-banner { position:absolute; left:80px; top:196px; width:920px; height:160px; background:var(--accent); overflow:hidden; }
+  .at-banner .at-title { left:28px; color:#F5EBE0; }
+  /* DETAIL box (x 80–496, y 384–1120) */
+  .at-box { position:absolute; left:80px; top:384px; width:416px; height:736px; border:1.5px solid var(--fg); }
+  .at-tab { position:absolute; left:0; top:0; padding:8px 14px 7px; border-right:1.5px solid var(--fg); border-bottom:1.5px solid var(--fg);
+    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:16px; letter-spacing:.14em; color:var(--fg); white-space:nowrap; background:var(--bg); }
+  .at-svg { position:absolute; left:0; top:0; width:1080px; height:1350px; pointer-events:none; overflow:visible; }
+  .at-dimtxt { position:absolute; top:442px; transform:translateX(-50%); background:var(--bg); padding:0 10px;
+    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:22px; line-height:28px; color:rgba(14,14,14,.85); white-space:nowrap; letter-spacing:.02em; }
+  .at-shadow { position:absolute; border-radius:50%; pointer-events:none;
+    background:radial-gradient(ellipse at center, rgba(14,14,14,.30) 0%, rgba(14,14,14,.14) 45%, rgba(14,14,14,0) 70%); }
+  .at-pose { position:absolute; display:block; }
+  .at-pose-missing { position:absolute; border:1.5px dashed var(--accent); display:flex; align-items:center; justify-content:center; text-align:center;
+    font-family:'JetBrains Mono',monospace; font-size:16px; color:var(--muted); }
+  .at-proof { position:absolute; left:80px; top:1004px; width:416px; padding:0 12px; }
+  .at-proof div { font-family:'JetBrains Mono',monospace; font-weight:700; font-size:22px; line-height:28px; padding:11px 0 10px;
+    border-top:1.5px solid var(--fg); white-space:nowrap; color:var(--fg); }
+  .at-proof div + div { border-top:1px solid rgba(14,14,14,.35); }
+  /* parts list (x 520–1000, y 384–1120) */
+  .at-list { position:absolute; left:520px; top:384px; width:480px; }
+  .at-lhead { display:flex; gap:16px; padding:0 0 8px; border-bottom:2px solid var(--fg);
+    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:16px; letter-spacing:.14em; color:rgba(14,14,14,.55); }
+  .at-lhead span:first-child { flex:0 0 54px; }
+  .at-row { position:relative; display:flex; gap:16px; align-items:center; min-height:calc(104px * var(--ls));
+    padding:calc(14px * var(--ls)) 0; border-bottom:1px solid rgba(14,14,14,.35); }
+  .at-ball { flex:0 0 54px; width:54px; height:54px; border:2px solid var(--fg); border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:26px; color:var(--fg); background:var(--bg); }
+  .at-ball.start { background:var(--accent); border-color:var(--accent); color:#F5EBE0; }
+  .at-txt { flex:1; min-width:0; }
+  .at-nl { display:flex; align-items:flex-start; gap:10px; }
+  .at-name { flex:1; min-width:0; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:calc(34px * var(--ls)); line-height:1.12; color:var(--fg); overflow-wrap:anywhere; }
+  .at-kind { flex:0 0 auto; margin-top:4px; border:2px solid var(--fg); padding:1px 8px 0; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:22px; line-height:28px; letter-spacing:.06em; color:var(--fg); }
+  .at-does { margin-top:4px; font-family:'Inter',sans-serif; font-weight:600; font-size:calc(30px * var(--ls)); line-height:1.18; color:rgba(14,14,14,.8); }
+  /* footer: takeaway pill (y 1144–1228) + SWIPE → (y 1246–1276) */
+  .at-pill { position:absolute; left:80px; top:1144px; width:920px; height:84px; border:3px solid var(--fg); border-radius:999px; background:var(--bg);
+    display:flex; align-items:center; gap:20px; padding:0 36px; }
+  .at-tri { flex:0 0 auto; width:0; height:0; border-top:14px solid transparent; border-bottom:14px solid transparent; border-left:22px solid var(--accent); }
+  .at-pilltxt { flex:0 0 auto; font-family:'Inter',sans-serif; font-weight:900; font-size:34px; line-height:1; color:var(--fg); white-space:nowrap; letter-spacing:-.005em; }
+  .at-swipe { position:absolute; right:80px; top:1246px; height:30px; display:flex; align-items:center; gap:8px; color:var(--accent);
+    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:22px; letter-spacing:.16em; }
+  .at-swipe svg { width:1em; height:1em; }
+  /* index sheet: ruled LAYER | COVERS | ITEMS table */
+  .at-index { position:absolute; left:520px; top:384px; width:480px; }
+  .at-index .at-lhead span:first-child { flex:0 0 96px; } .at-index .at-lhead span:last-child { flex:0 0 120px; margin-left:auto; }
+  .at-irow { display:flex; align-items:center; min-height:96px; border-bottom:1px solid rgba(14,14,14,.35); }
+  .at-irow > div { padding:10px 0; }
+  .at-irow .c1 { flex:0 0 96px; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:30px; }
+  .at-irow .c2 { flex:1; min-width:0; font-family:'Inter',sans-serif; font-weight:600; font-size:30px; line-height:1.15; padding-left:16px; border-left:1px solid rgba(14,14,14,.35); }
+  .at-irow .c3 { flex:0 0 120px; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:26px; text-align:right; }
+  /* combo sheet: framed capture + 3 steps */
+  .at-combo-img { position:absolute; left:80px; top:384px; width:920px; }
+  .at-combo-img .shot { width:100%; object-fit:cover; }
+  .at-steps { position:absolute; left:80px; width:920px; }
+  .at-step { display:flex; align-items:center; gap:20px; padding:12px 0; border-bottom:1px solid rgba(14,14,14,.35); }
+  .at-step:first-child { border-top:2px solid var(--fg); }
+  .at-step .at-stxt { flex:1; font-family:'Inter',sans-serif; font-weight:600; font-size:30px; line-height:1.2; color:var(--fg); }
+  /* CTA sheet */
+  .at-comment { position:absolute; left:80px; top:206px; font-family:'Inter',sans-serif; font-weight:900; font-size:44px; line-height:52px; color:var(--fg); }
+  .at-underdim { position:absolute; left:80px; width:560px; height:1.5px; background:var(--accent); }
+  .at-underdim::before,.at-underdim::after { content:''; position:absolute; top:-4px; width:1.5px; height:10px; background:var(--accent); }
+  .at-underdim::before{left:0;} .at-underdim::after{right:0;}
+  .at-figkw { position:absolute; left:80px; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:22px; line-height:28px; color:var(--accent); letter-spacing:.1em; }
+  .at-stub { position:absolute; left:80px; width:920px; border:2px solid var(--fg); background:var(--bg); padding:18px 26px 20px; }
+  .at-stubhead { display:flex; align-items:center; gap:16px; padding-bottom:14px; border-bottom:2px solid var(--fg);
+    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:22px; letter-spacing:.06em; color:var(--fg); }
+  .at-stubhead img { width:56px; height:56px; object-fit:contain; flex:0 0 56px; }
+  .at-srow { display:flex; align-items:flex-start; gap:16px; padding:14px 0; border-bottom:1px solid rgba(14,14,14,.35); }
+  .at-srow:last-of-type { border-bottom:none; }
+  .at-srow .at-ball { margin-top:2px; }
+  .at-sname { font-family:'JetBrains Mono',monospace; font-weight:700; font-size:30px; line-height:1.15; color:var(--fg); }
+  .at-scmd { margin-top:6px; font-family:'JetBrains Mono',monospace; font-weight:400; font-size:24px; line-height:32px; color:rgba(14,14,14,.85); overflow-wrap:anywhere; }
+  .at-more { margin-top:4px; padding-top:16px; border-top:2px dashed var(--fg); font-family:'Inter',sans-serif; font-weight:900; font-size:34px; line-height:1.1; color:var(--fg); }
+  .at-error { position:absolute; left:80px; right:80px; top:560px; z-index:50; background:#B00020; color:#fff; padding:24px 28px;
+    font-family:'JetBrains Mono',monospace; font-size:22px; line-height:1.35; white-space:pre-wrap; }
+
+  /* === UI chrome (hidden on export) === */
+  .ui { position:fixed; bottom:18px; left:50%; transform:translateX(-50%); background:rgba(20,20,20,.92); color:#fff;
+    padding:8px 12px; border-radius:999px; display:flex; gap:12px; align-items:center; font-size:13px; z-index:100; }
+  .ui button { background:#2a2a2a; color:#fff; border:none; padding:6px 12px; border-radius:99px; cursor:pointer; font-size:13px; }
+  .ui button:hover { background:#3a3a3a; }
+  .ui .label { font-family:'JetBrains Mono',monospace; min-width:220px; text-align:center; }
+  .ui .num { color:var(--terra); font-weight:700; }
+  .arrow-btn { width:32px; height:32px; padding:0 !important; }
+  :fullscreen .ui { display:none !important; }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="slide-wrap" id="slideWrap">
+    <div class="slide" id="slide">
+      <img class="cover-img" id="coverImg" alt="">
+      <div class="frame"></div>
+      <div class="dim-top"></div><div class="dim-label" id="dimLabel">1080 PX</div>
+      <div class="xh" style="top:30px;left:30px;"></div>
+      <div class="xh" style="top:30px;right:30px;"></div>
+      <div class="xh" style="bottom:30px;left:30px;"></div>
+      <div class="xh" style="bottom:30px;right:30px;"></div>
+      <div class="chip" id="chip">SKILL 01</div>
+      <div class="rev"><span id="revTxt">REV A</span><span class="tri"></span></div>
+      <div class="head"><div class="h1" id="headline">/DUMBIFY</div></div>
+      <div class="underdim"></div>
+      <div class="fig" id="fig">FIG.1 — /dumbify.skill</div>
+      <div class="body-copy" id="bodyCopy"></div>
+      <div class="hero-zone" id="heroZone"></div>
+      <div class="atlas" id="atlas"></div>
+      <div class="sheet" id="sheet">SHEET 01 / 09</div>
+      <div class="footer-swipe" id="swipe">SWIPE
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ui">
+  <button class="arrow-btn" id="prev">←</button>
+  <span class="label"><span class="num" id="num">1/9</span> &nbsp; <span id="name">Cover</span></span>
+  <button class="arrow-btn" id="next">→</button>
+  <button id="fs">Fullscreen (F)</button>
+</div>
+
+<button class="tw-toggle" id="twToggle">⚙ Tweaks</button>
+<div class="tw-panel" id="twPanel">
+  <h3>Tweaks <button class="close" id="twClose">×</button></h3>
+  <div class="tw-section">
+    <div class="section-title">GLOBAL</div>
+    <div class="tw-row"><span class="lbl">Accent (callouts)</span><input type="color" id="twAccent"></div>
+    <div class="tw-row"><span class="lbl">Headline size <span class="val" id="vHeadSize"></span></span><input type="range" id="twHeadSize" min="120" max="280" step="2"></div>
+    <div class="tw-row"><span class="lbl">Body size <span class="val" id="vBodySize"></span></span><input type="range" id="twBodySize" min="22" max="46" step="1"></div>
+    <div class="tw-row"><span class="lbl">Grid opacity <span class="val" id="vGrid"></span></span><input type="range" id="twGrid" min="0" max="20" step="1"></div>
+  </div>
+  <div class="tw-section">
+    <div class="section-title">PER-SLIDE: <span class="name" id="vSlideName">—</span></div>
+    <div class="tw-row"><span class="lbl">Skill tag</span><input type="text" id="twChip"></div>
+    <div class="tw-row"><span class="lbl">Rev</span><input type="text" id="twRev"></div>
+    <div class="tw-row"><span class="lbl">Headline (e.g. /DUMBIFY)</span><input type="text" id="twHeadline"></div>
+    <div class="tw-row"><span class="lbl">Fig label</span><input type="text" id="twFig"></div>
+    <div class="tw-row"><span class="lbl">Body (HTML; &lt;strong&gt;, &lt;span class="accent"&gt;)</span><textarea id="twBody" rows="3"></textarea></div>
+    <div class="tw-row"><span class="lbl">Body top <span class="val" id="vBodyTop"></span></span><input type="range" id="twBodyTop" min="200" max="900" step="2"></div>
+    <div class="tw-row"><span class="lbl">Headline size (this slide) <span class="val" id="vHeadSizeS"></span></span><input type="range" id="twHeadSizeS" min="120" max="280" step="2"></div>
+    <div class="tw-row"><span class="lbl">Hero bottom <span class="val" id="vHeroBottom"></span></span><input type="range" id="twHeroBottom" min="60" max="500" step="2"></div>
+    <div class="tw-row"><span class="lbl">Video thumb src (video hero)</span><input type="text" id="twHeroImg"></div>
+    <div class="tw-row"><span class="lbl">Atlas pose height (% of wireframe) <span class="val" id="vPoseH"></span></span><input type="range" id="twPoseH" min="40" max="80" step="1"></div>
+    <div class="tw-row"><span class="lbl">Atlas pose x nudge <span class="val" id="vPoseDx"></span></span><input type="range" id="twPoseDx" min="-80" max="80" step="2"></div>
+  </div>
+  <button class="tw-reset" id="twReset">Reset slide to defaults</button>
+  <button class="tw-reset" id="twExport" style="background:#0E0E0E;color:#fff;margin-top:6px;">📋 Export tweaks (copy JSON)</button>
+  <pre id="twExportOut" style="display:none;margin-top:10px;padding:10px;background:#f5f5f5;border-radius:6px;font-size:10px;white-space:pre-wrap;word-break:break-all;max-height:240px;overflow:auto;"></pre>
+</div>
+
+<script>
+  // ============ CONTENT ============
+  const slides = [
+    { name:'Cover', cover:true, coverImg:'cover.png' },
+    {
+      name:'Skill 01 — Dumbify',
+      chip:'SKILL 01', rev:'REV A',
+      headlineHTML:'/DUMBIFY', fig:'FIG.1 — /dumbify.skill',
+      body:'I built this to rewrite everything at an <strong>8th-grade reading level</strong>.<br><br>Simpler language means less mental load.<br><br>Ideas people get instantly <span class="accent">go viral.</span>',
+      hero:{ type:'beforeafter',
+        before:{ tag:'BEFORE', title:'Complex', lines:'Leverage cutting-edge paradigms to optimize synergistic scalable value.' },
+        after:{ tag:'AFTER', title:'Simple', lines:'Use smart tools.<br>Solve real problems.<br>Make things better.<br>Help more people.' } },
+      defaults:{ headSize:210, bodySize:33, bodyTop:466, heroBottom:170 },
+    },
+    {
+      name:'Skill 02 — Storytelling',
+      chip:'SKILL 02', rev:'REV A',
+      headlineHTML:'/STORYTELLING', fig:'FIG.2 — /storytelling.skill',
+      body:'I turned this YouTube video on writing engaging stories into a skill.<br><br>It structures your content like a <span class="accent">story that holds attention.</span>',
+      hero:{ type:'video', thumb:'assets/yt-thumb.jpg', title:'Your video title', meta:'views · age', caption:'Sample video hero' },
+      defaults:{ headSize:176, bodySize:33, bodyTop:466, heroBottom:160 },
+    },
+    {
+      name:'Skill 03 — Viral Hooks',
+      chip:'SKILL 03', rev:'REV A',
+      headlineHTML:'/VIRAL-HOOKS', fig:'FIG.3 — /viral-hooks.skill',
+      body:'Most content dies in the first 2 seconds.<br><br>This audits your hook against 100 of the best ever written, then <span class="accent">rewrites yours to go viral.</span>',
+      hero:{ type:'chart',
+        auditTag:'HOOK AUDIT',
+        audit:['Grabs attention quickly','Creates curiosity','Delivers on promise','Triggers emotion'],
+        chartTag:'AUDIENCE RETENTION',
+        good:'0,28 130,34 320,48 540,58 740,66 900,78',
+        bad:'0,28 90,118 210,196 380,236 580,252 900,260' },
+      defaults:{ headSize:182, bodySize:32, bodyTop:452, heroBottom:150 },
+    },
+    {
+      name:'Skill 04 — (edit me)',
+      chip:'SKILL 04', rev:'REV A',
+      headlineHTML:'/CONTEXT', fig:'FIG.4 — /context.skill',
+      body:'One-line setup of the problem.<br><br>The payoff, with the part you want them to remember as <span class="accent">the accent.</span>',
+      hero:{ type:'beforeafter',
+        before:{ tag:'BEFORE', title:'Manual', lines:'Re-explain everything every single session. Nothing carries over.' },
+        after:{ tag:'AFTER', title:'Loaded', lines:'Context auto-loads.<br>Memory persists.<br>Pick up instantly.<br>Zero re-explaining.' } },
+      defaults:{ headSize:240, bodySize:33, bodyTop:466, heroBottom:170 },
+    },
+    {
+      name:'CTA',
+      chip:'OUTRO', rev:'REV A',
+      headlineHTML:'/FOLLOW', fig:'FIG.5 — like · share · save',
+      body:'Link in bio for the <strong>full guide</strong>.<br><br>Follow for one of these <span class="accent">every week.</span>',
+      hero:{ type:'none' },
+      defaults:{ headSize:240, bodySize:34, bodyTop:520, heroBottom:170 },
+    },
+
+    // ---- layout:'atlas' samples (style S22). A real deck keeps ONE mode: an atlas deck's slides[]
+    // is the cover + atlas sheets only (delete the command sheets above), and vice versa.
+    { name:'Atlas — Index', layout:'atlas',
+      atlas:{ kind:'index', title:'WHAT IS IN THE KIT', pill:'Install one layer at a time' } },
+    { name:'Atlas — Layer 1', layout:'atlas',
+      atlas:{ kind:'layer', category:'DESIGN', banner:'5 DESIGN PARTS',
+        pose:{ src:'', prop:'SET-SQUARE',   // src: your own mascot pose (optional) or the subject's logo tile
+               aspect:1.1667, prop_anchor:[0.04, 0.42], feet_y:0.833 },
+        rows:[
+          { n:1, name:'frontend-design', kind:'SKILL', does:'Gives UIs a real look', start:true },
+          { n:2, name:'theme-factory', kind:'SKILL', does:'Restyles docs in themes' },
+          { n:3, name:'canvas-design', kind:'SKILL', does:'Makes posters and art' },
+          { n:4, name:'figma', kind:'MCP', does:'Reads your Figma frames' },
+          { n:5, name:'brand-guidelines', kind:'SKILL', does:'Applies brand colors' },
+        ],
+        proof:['START HERE · frontend-design', 'official repo · checked 10-16'],
+        pill:'Replaces a hired UI designer' },
+      defaults:{ poseH:65, poseDx:0 } },
+    { name:'Atlas — Layer 2', layout:'atlas',
+      atlas:{ kind:'layer', category:'BROWSER TESTING', banner:'4 TESTING PARTS',
+        pose:{ src:'', prop:'CLIPBOARD',
+               aspect:1.1667, prop_anchor:[0.96, 0.42], feet_y:0.833 },
+        rows:[
+          { n:6, name:'playwright', kind:'MCP', does:'Drives a real browser', start:true },
+          { n:7, name:'webapp-testing', kind:'SKILL', does:'Tests your local app' },
+          { n:8, name:'chrome-devtools', kind:'MCP', does:'Reads console and network' },
+          { n:9, name:'sentry', kind:'MCP', does:'Pulls live error reports' },
+        ],
+        proof:['START HERE · playwright', 'by Microsoft · checked 10-16'],
+        pill:'Replaces clicking through by hand' },
+      defaults:{ poseH:65, poseDx:0 } },
+    { name:'Atlas — Combo', layout:'atlas',
+      atlas:{ kind:'combo', title:'COMBO: SEE, THEN FIX', pair:[6, 1], src:'', maxH:460,
+        steps:[
+          { n:6, text:'Playwright screenshots your running app' },
+          { n:1, text:'frontend-design restyles what it sees' },
+          { n:6, text:'Playwright checks the new layout again' },
+        ],
+        pill:'A design loop with no designer' } },
+    { name:'Atlas — CTA', layout:'atlas',
+      atlas:{ kind:'cta', title:'GET THE WHOLE KIT', keyword:'ATLAS',
+        avatar:'',   // your square profile photo, mascot or logo tile in assets/; '' hides it
+        rows:[
+          { n:1, name:'frontend-design', cmd:'/plugin install frontend-design@claude-plugins-official' },
+          { n:2, name:'theme-factory', cmd:'/plugin install example-skills@anthropic-agent-skills' },
+          { n:3, name:'canvas-design', cmd:'/plugin install example-skills@anthropic-agent-skills' },
+        ] } },
+  ];
+  // Deck-level facts for atlas sheets: the Row 1 dimension label and M, the cover count (the last
+  // row number on the last layer sheet must equal it).
+  const ATLAS = { label:'CLAUDE CODE · PARTS ATLAS', total:9 };
+
+  // ============ STATE ============
+  const TOTAL = slides.length;
+  let i = 0;
+
+  // sheet numbering — cover counts as sheet 1; a `mirrorPrev` slide shares the previous
+  // sheet number and is NOT counted in the total (alt CTAs: only one posts per platform).
+  const SHEET_NO = []; let SHEET_TOTAL = 0;
+  slides.forEach((s, idx) => {
+    if (s.mirrorPrev && idx > 0) { SHEET_NO[idx] = SHEET_NO[idx-1]; }
+    else { SHEET_TOTAL++; SHEET_NO[idx] = SHEET_TOTAL; }
+  });
+  const G_KEY = 'cmd-press-global-v1';
+  const sKey = (name) => `cmd-press-slide-${name}-v1`;
+  const GLOBAL_DEFAULTS = { accent:'#D9551F', headSize:210, bodySize:33, grid:7 };
+
+  function loadGlobal(){ try { return { ...GLOBAL_DEFAULTS, ...(JSON.parse(localStorage.getItem(G_KEY)||'{}')) }; } catch { return { ...GLOBAL_DEFAULTS }; } }
+  function saveGlobal(g){ localStorage.setItem(G_KEY, JSON.stringify(g)); }
+  function loadSlide(name){ try { return JSON.parse(localStorage.getItem(sKey(name))||'{}'); } catch { return {}; } }
+  function saveSlide(name,s){ localStorage.setItem(sKey(name), JSON.stringify(s)); }
+
+  function effectiveSlide(idx){
+    const base = slides[idx]; const def = base.defaults || {}; const o = loadSlide(base.name);
+    return {
+      chip:o.chip ?? base.chip, rev:o.rev ?? base.rev,
+      headlineHTML:o.headlineHTML ?? base.headlineHTML, fig:o.fig ?? base.fig, body:o.body ?? base.body,
+      heroImg:o.heroImg ?? (base.hero && (base.hero.thumb || base.hero.src)),
+      headSize:o.headSize ?? def.headSize, bodySize:o.bodySize ?? def.bodySize,
+      bodyTop:o.bodyTop ?? def.bodyTop, heroBottom:o.heroBottom ?? def.heroBottom,
+    };
+  }
+
+  // ============ HERO RENDERERS ============
+  function heroHTML(s, eff){
+    const h = s.hero || { type:'none' };
+    if (h.type === 'beforeafter') {
+      return `<div class="ba">
+        <div class="card before"><span class="tag">${h.before.tag}</span><div class="ttl">${h.before.title}</div><div class="lines">${h.before.lines}</div></div>
+        <svg class="ba-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="19" y2="12"/><polyline points="13 6 20 12 13 18"/></svg>
+        <div class="card after"><span class="tag">${h.after.tag}</span><div class="ttl">${h.after.title}</div><div class="lines">${h.after.lines}</div></div>
+      </div>`;
+    }
+    if (h.type === 'video') {
+      const src = eff.heroImg || h.thumb || '';
+      const thumb = src
+        ? `<img class="thumb" src="${src}" alt="">`
+        : `<div class="thumb-fallback">DROP A REAL SCREENSHOT → assets/</div>`;
+      return `<div class="hero-video">
+        <svg class="video-doodle" viewBox="0 0 120 90" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M112 8 C 70 20, 40 40, 22 74"/><path d="M22 74 L 18 50"/><path d="M22 74 L 46 70"/>
+        </svg>
+        <div class="video-card">
+          ${thumb}
+          <div class="play"></div>
+          <svg class="retention" viewBox="0 0 900 120" preserveAspectRatio="none"><polyline points="0,84 140,70 320,58 520,52 740,44 900,30" fill="none" stroke="#D9551F" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/></svg>
+          <div class="vcap">${h.caption || ''}</div>
+          <div class="vbar"><div class="vtitle">${h.title || ''}</div><div class="vmeta">${h.meta || ''}</div></div>
+        </div>
+      </div>`;
+    }
+    if (h.type === 'chart') {
+      const rows = (h.audit||[]).map(a => `<div class="a-row"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>${a}</div>`).join('');
+      return `<div class="hero-chart">
+        <div class="audit"><span class="a-tag">${h.auditTag||'AUDIT'}</span>${rows}</div>
+        <div class="chart">
+          <span class="c-tag">${h.chartTag||'RETENTION'}</span>
+          <div class="legend"><span><i style="background:#D9551F"></i>GOOD</span><span><i style="background:#0E0E0E"></i>BAD</span></div>
+          <svg class="plot" viewBox="0 0 900 230" preserveAspectRatio="none">
+            <line x1="0" y1="0" x2="0" y2="230" stroke="rgba(14,14,14,.25)" stroke-width="2"/>
+            <line x1="0" y1="230" x2="900" y2="230" stroke="rgba(14,14,14,.25)" stroke-width="2"/>
+            <polyline points="${h.good}" fill="none" stroke="#D9551F" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
+            <polyline points="${h.bad}" fill="none" stroke="#0E0E0E" stroke-width="5" stroke-dasharray="2 11" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>`;
+    }
+    if (h.type === 'image') {
+      const src = eff.heroImg || h.src || '';
+      const fit = h.maxH ? ` style="max-height:${h.maxH}px;object-fit:cover;object-position:${h.focus||'center'}"` : '';
+      const inner = src ? `<img class="shot"${fit} src="${src}" alt="">` : `<div class="shot-fallback">DROP SCREENSHOT → assets/</div>`;
+      return `<div class="hero-image">${h.caption ? `<span class="shot-cap">${h.caption}</span>` : ''}${inner}<span class="cnr tl"></span><span class="cnr tr"></span><span class="cnr bl"></span><span class="cnr br"></span></div>`;
+    }
+    return '';
+  }
+
+  // ============ ATLAS LAYOUT (layout:'atlas', style S22) ============
+  // Kick off the faces atlas sheets measure, so document.fonts.ready (which export.mjs awaits before
+  // the first goSlide) covers them even when the first slide shown is the cover.
+  if (document.fonts) ['100px Anton','600 30px Inter','900 34px Inter','700 22px "JetBrains Mono"','400 24px "JetBrains Mono"']
+    .forEach(f => document.fonts.load(f).catch(() => {}));
+
+  const esc = (v) => String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const isAtlasSlide = (s) => !!s && !s.cover && s.layout === 'atlas';
+  const atlasKind = (s) => (s.atlas && s.atlas.kind) || 'layer';
+  const ATLAS_LAYERS = () => slides.filter(s => isAtlasSlide(s) && atlasKind(s) === 'layer');
+  // Kind chips show only when the deck's rows mix kinds (SKILL / MCP / PLUGIN / HOOK).
+  const atlasChips = () => new Set(ATLAS_LAYERS().flatMap(s => (s.atlas.rows || []).map(r => r.kind || ''))).size > 1;
+
+  function atlasFail(msg){
+    const name = slides[i] ? slides[i].name : '?';
+    const full = `ATLAS FIT FAIL — slide "${name}": ${msg}`;
+    const el = document.getElementById('atlas');
+    if (el) el.insertAdjacentHTML('beforeend', `<div class="at-error">${esc(full)}</div>`);
+    return new Error(full);
+  }
+
+  // Anton metrics per 1 px of font size (cap height, font ascent/descent), measured once loaded.
+  let _am = null;
+  function antonMetrics(){
+    if (_am && _am.ok) return _am;
+    const c = document.createElement('canvas').getContext('2d');
+    c.font = '100px Anton';
+    const m = c.measureText('H');
+    _am = { cap:m.actualBoundingBoxAscent/100, asc:m.fontBoundingBoxAscent/100, desc:m.fontBoundingBoxDescent/100,
+            ok: document.fonts ? document.fonts.check('100px Anton') : true };
+    return _am;
+  }
+  // One Anton line: the largest cap height <= capMax that fits maxW; its cap top lands on capTop.
+  function fitAnton(el, { capMax, capMin, maxW, capTop, what }){
+    const m = antonMetrics();
+    let cap = capMax;
+    el.style.fontSize = (cap / m.cap) + 'px';
+    const w = el.offsetWidth;
+    if (w > maxW) cap = Math.floor(cap * maxW / w * 10) / 10;
+    if (cap < capMin) throw atlasFail(`${what} needs a ${cap.toFixed(0)} px cap height to fit (min ${capMin}); shorten "${el.textContent}"`);
+    const fs = cap / m.cap;
+    el.style.fontSize = fs + 'px'; el.style.lineHeight = fs + 'px';
+    const baseline = (fs - (m.asc + m.desc) * fs) / 2 + m.asc * fs;
+    el.style.top = (capTop - (baseline - cap)) + 'px';
+    return cap;
+  }
+  const yIn = (el, root) => { let y = 0; for (let n = el; n && n !== root; n = n.offsetParent) y += n.offsetTop; return y; };
+
+  function atlasRow1(label, idx){
+    return `<div class="at-dim" id="atDim"></div><div class="at-dimlabel" id="atDimLabel">${esc(label)}</div>
+      <div class="at-sheet">SHEET ${pad(SHEET_NO[idx])} / ${pad(SHEET_TOTAL)}</div>`;
+  }
+  function placeRow1(root){
+    const lab = root.querySelector('#atDimLabel'), dim = root.querySelector('#atDim');
+    const lw = lab.offsetWidth;                                   // includes its 12 px side padding
+    const len = Math.max(560, lw + 64);
+    if (80 + len > 760) throw atlasFail(`Row 1 deck label is too long ("${lab.textContent}")`);
+    dim.style.width = len + 'px';
+    lab.style.left = (80 + len / 2 - lw / 2) + 'px';
+  }
+  const SWIPE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>';
+  const pillHTML = (t) => t ? `<div class="at-pill" id="atPill"><span class="at-tri"></span><span class="at-pilltxt" id="atPillTxt">${esc(t)}</span></div>` : '';
+  function checkPill(root){
+    const p = root.querySelector('#atPill'); if (!p) return;
+    const t = root.querySelector('#atPillTxt');
+    const room = 920 - 72 - 6 - 22 - 20;                        // padding, outline, ▸, gap
+    if (t.offsetWidth > room) { t.style.fontSize = '30px'; if (t.offsetWidth > room) throw atlasFail(`takeaway pill overflows: "${t.textContent}" (≤ 42 characters)`); }
+  }
+
+  // Isometric wireframe box for the DETAIL panel, in slide coordinates. 30° iso, w = d.
+  const WIRE = { cx:288, hw:180, hh:104, fy:975, H:279 };   // front-bottom vertex y = 975, top at 488
+  function wireSVG(){
+    const { cx, hw, hh, fy, H } = WIRE;
+    const B=[cx,fy-2*hh], R=[cx+hw,fy-hh], F=[cx,fy], L=[cx-hw,fy-hh], up=(p)=>[p[0],p[1]-H];
+    const ln = (a,b,st) => `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" ${st}/>`;
+    const solid = 'stroke="rgba(14,14,14,.35)" stroke-width="1.5"', hid = solid + ' stroke-dasharray="5 6"';
+    const grid = 'stroke="rgba(14,14,14,.12)" stroke-width="1"';
+    const P = (u,v) => [B[0]+u*(R[0]-B[0])+v*(L[0]-B[0]), B[1]+u*(R[1]-B[1])+v*(L[1]-B[1])];
+    let g = '';
+    for (let k = 1; k < 6; k++) { g += ln(P(k/6,0), P(k/6,1), grid) + ln(P(0,k/6), P(1,k/6), grid); }
+    const e = [ln(R,F,solid), ln(F,L,solid), ln(B,R,hid), ln(B,L,hid), ln(B,up(B),hid),
+      ln(up(B),up(R),solid), ln(up(R),up(F),solid), ln(up(F),up(L),solid), ln(up(L),up(B),solid),
+      ln(R,up(R),solid), ln(F,up(F),solid), ln(L,up(L),solid)].join('');
+    // ONE labelled dimension across the top (label is an HTML div); a second one, ticks only, at the left.
+    const dy = 456, ch = 'stroke="rgba(14,14,14,.55)" stroke-width="1.5"', ext = 'stroke="rgba(14,14,14,.3)" stroke-width="1" stroke-dasharray="3 4"';
+    const dim = ln([L[0],dy],[R[0],dy],ch) + ln([L[0],dy-7],[L[0],dy+7],ch) + ln([R[0],dy-7],[R[0],dy+7],ch)
+      + ln([L[0],up(L)[1]-6],[L[0],dy+10],ext) + ln([R[0],up(R)[1]-6],[R[0],dy+10],ext)
+      + ln([96,up(L)[1]],[96,L[1]],ch) + ln([90,up(L)[1]],[102,up(L)[1]],ch) + ln([90,L[1]],[102,L[1]],ch);
+    return `<svg class="at-svg" viewBox="0 0 1080 1350">${g}${e}${dim}</svg>`;
+  }
+
+  function atlasEff(idx){
+    const s = slides[idx], def = s.defaults || {}, o = loadSlide(s.name);
+    return { poseH: o.poseH ?? def.poseH ?? 65, poseDx: o.poseDx ?? def.poseDx ?? 0 };
+  }
+
+  function renderAtlas(idx, root){
+    const s = slides[idx], a = s.atlas || {}, kind = atlasKind(s);
+    const label = a.label || ATLAS.label || '';
+    const last = SHEET_NO[idx] === SHEET_TOTAL || kind === 'cta';
+    let html = atlasRow1(label, idx);
+    const layers = ATLAS_LAYERS();
+
+    if (kind === 'layer') {
+      const ord = layers.indexOf(s), N = layers.length, rows = a.rows || [];
+      const chips = atlasChips(), nameMax = chips ? 14 : 18;
+      // Row cap: 6 one-line rows, or 5 with at most 2 two-line rows (does > 24 chars or name > 18 / 14).
+      const two = rows.filter(r => String(r.does||'').length > 24 || String(r.name||'').length > nameMax).length;
+      if (rows.length < 3 || rows.length > 6) throw atlasFail(`a layer takes 3–6 rows (has ${rows.length})`);
+      if (two && rows.length > 5) throw atlasFail(`${two} two-line row(s): the cap is 5 rows (has ${rows.length})`);
+      if (two > 2) throw atlasFail(`at most 2 two-line rows per layer (has ${two})`);
+      const starts = rows.filter(r => r.start);
+      if (starts.length !== 1) throw atlasFail(`exactly one start-here row (has ${starts.length})`);
+      // Numbers run 01..M across the deck's layer sheets; the last one equals the cover count.
+      const prevLast = ord > 0 ? Math.max(...(layers[ord-1].atlas.rows || []).map(r => r.n)) : 0;
+      rows.forEach((r, k) => { if (r.n !== prevLast + 1 + k) throw atlasFail(`row numbers must run on from ${pad(prevLast)}: row ${k+1} is ${r.n}, expected ${prevLast + 1 + k}`); });
+      const lastN = rows[rows.length-1].n, M = ATLAS.total || lastN;
+      if (ord === N - 1 && ATLAS.total && lastN !== ATLAS.total) throw atlasFail(`last row is ${pad(lastN)} but ATLAS.total (cover count) is ${ATLAS.total}`);
+      const bn = String(a.banner || `${rows.length} PARTS`); const bk = bn.match(/^\s*(\d+)/);
+      if (bk && +bk[1] !== rows.length) throw atlasFail(`banner says ${bk[1]} but the layer has ${rows.length} rows`);
+      const pose = a.pose || {}, letter = String.fromCharCode(65 + ord);
+      html += `<div class="at-title" id="atT2">${esc(`LAYER ${ord+1}/${N}: ${a.category || ''}`)}</div>
+        <div class="at-banner"><div class="at-title" id="atT3">${esc(bn)}</div></div>
+        <div class="at-box"><div class="at-tab">DETAIL ${letter}${pose.prop ? ' — ' + esc(String(pose.prop).toUpperCase()) : ''}</div></div>
+        ${wireSVG()}
+        <div class="at-dimtxt" id="atDimTxt" style="left:${WIRE.cx}px">RUNNING TOTAL ${pad(lastN)} / ${pad(M)}</div>
+        <div id="atPoseWrap"></div>
+        <div class="at-proof" id="atProof">${(a.proof || [`START HERE · ${starts[0].name}`]).slice(0,2).map(l => `<div>${esc(l)}</div>`).join('')}</div>
+        <div class="at-list" id="atList">
+          <div class="at-lhead"><span>NO.</span><span>PART / DOES</span></div>
+          ${rows.map(r => `<div class="at-row"><div class="at-ball${r.start ? ' start' : ''}"${r.start ? ' id="atStart"' : ''}>${pad(r.n)}</div>
+            <div class="at-txt"><div class="at-nl"><span class="at-name">${esc(r.name)}</span>${chips && r.kind ? `<span class="at-kind">${esc(r.kind)}</span>` : ''}</div>
+            <div class="at-does">${esc(r.does)}</div></div></div>`).join('')}
+        </div>
+        ${pillHTML(a.pill)}
+        <svg class="at-svg" id="atLeader" viewBox="0 0 1080 1350" style="z-index:7"></svg>`;
+    } else if (kind === 'index') {
+      const rows = a.rows || layers.map((L, k) => {
+        const ns = (L.atlas.rows || []).map(r => r.n);
+        const cat = String(L.atlas.covers || L.atlas.category || '');
+        return { layer:k+1, covers: L.atlas.covers || (cat.charAt(0) + cat.slice(1).toLowerCase()), items:`${pad(Math.min(...ns))}–${pad(Math.max(...ns))}` };
+      });
+      const M = ATLAS.total || 0, N = rows.length;
+      html += `<div class="at-title" id="atT2">${esc(a.title || 'THE PARTS LIST')}</div>
+        <div class="at-banner"><div class="at-title" id="atT3">${esc(a.banner || `${M} PARTS · ${N} LAYERS`)}</div></div>
+        <div class="at-box"><div class="at-tab">EXPLODED VIEW — ${N} LAYERS</div></div>
+        ${slabSVG(N)}
+        <div class="at-index" id="atList"><div class="at-lhead"><span>LAYER</span><span>COVERS</span><span>ITEMS</span></div>
+          ${rows.map(r => `<div class="at-irow"><div class="c1">${pad(r.layer)}</div><div class="c2">${esc(r.covers)}</div><div class="c3">${esc(r.items)}</div></div>`).join('')}
+        </div>${pillHTML(a.pill)}`;
+    } else if (kind === 'combo') {
+      const pair = a.pair || [];
+      const src = a.src || '';
+      const h = Math.min(a.maxH || 460, 460);
+      html += `<div class="at-title" id="atT2">${esc(a.title || 'COMBO')}</div>
+        <div class="at-banner"><div class="at-title" id="atT3">${esc(a.banner || pair.map(pad).join(' + '))}</div></div>
+        <div class="hero-image at-combo-img" id="atShot">${src ? `<img class="shot" src="${esc(src)}" alt="" style="height:${h}px;object-position:${esc(a.focus || 'center top')}">` : `<div class="shot-fallback" style="aspect-ratio:auto;height:${h}px">DROP A REAL CAPTURE → assets/</div>`}<span class="cnr tl"></span><span class="cnr tr"></span><span class="cnr bl"></span><span class="cnr br"></span></div>
+        <div class="at-steps" id="atList">${(a.steps || []).map(st => `<div class="at-step"><div class="at-ball">${pad(st.n)}</div><div class="at-stxt">${esc(st.text)}</div></div>`).join('')}</div>
+        ${pillHTML(a.pill)}`;
+      (a.steps || []).forEach(st => { if (pair.length && !pair.includes(st.n)) throw atlasFail(`step balloon ${pad(st.n)} is not one of the pair ${pair.map(pad).join(' + ')}`); });
+      if ((a.steps || []).length !== 3) throw atlasFail(`a combo takes 3 steps (has ${(a.steps || []).length})`);
+    } else if (kind === 'cta') {
+      const M = ATLAS.total || 0, rows = (a.rows || []).slice(0, 3);
+      html += `<div class="at-title" id="atT2">${esc(a.title || '')}</div>
+        <div class="at-comment">Comment</div>
+        <div class="at-title" id="atKw">${esc(a.keyword || '')}</div>
+        <div class="at-underdim" id="atUd"></div><div class="at-figkw" id="atFig">FIG. ${pad(SHEET_NO[idx])} — KEYWORD</div>
+        <div class="at-stub" id="atStub">
+          <div class="at-stubhead">${a.avatar ? `<img src="${esc(a.avatar)}" alt="">` : ''}<span>THE FULL LIST · ${M} INSTALL COMMANDS</span></div>
+          ${rows.map(r => `<div class="at-srow"><div class="at-ball">${pad(r.n)}</div><div style="flex:1;min-width:0"><div class="at-sname">${esc(r.name)}</div><div class="at-scmd">${esc(r.cmd)}</div></div></div>`).join('')}
+          <div class="at-more">+ ${Math.max(0, M - 3)} MORE IN YOUR DMS</div>
+        </div>`;
+    } else {
+      throw atlasFail(`unknown atlas kind "${kind}" (layer · index · combo · cta)`);
+    }
+    if (!last) html += `<div class="at-swipe">SWIPE ${SWIPE_SVG}</div>`;
+    root.innerHTML = html;
+
+    // ---- fit passes (all measured in slide px; offset* ignores the preview's scale transform) ----
+    placeRow1(root);
+    fitAnton(root.querySelector('#atT2'), { capMax:64, capMin:36, maxW:920, capTop:114, what:'Row 2' });
+    const t3 = root.querySelector('#atT3');
+    if (t3) {
+      const cap = fitAnton(t3, { capMax:120, capMin:80, maxW:864, capTop:0, what:'count banner' });
+      fitAnton(t3, { capMax:cap, capMin:80, maxW:864, capTop:(160 - cap) / 2, what:'count banner' });
+    }
+    checkPill(root);
+
+    if (kind === 'layer') {
+      const dt = root.querySelector('#atDimTxt');
+      if (dt.offsetWidth > 2 * WIRE.hw - 16) throw atlasFail('RUNNING TOTAL label is wider than the box');
+      root.querySelectorAll('#atProof div').forEach(d => { if (d.scrollWidth > 392) throw atlasFail(`proof caption line overflows (≤ 29 characters): "${d.textContent}"`); });
+      // parts list: shrink evenly to a 30 px name floor, then throw (never clip)
+      const list = root.querySelector('#atList');
+      let ls = 1;
+      for (; ls >= 30/34 - 1e-6; ls -= 0.01) { list.style.setProperty('--ls', ls.toFixed(3)); if (list.offsetTop + list.offsetHeight <= 1120) break; }
+      if (list.offsetTop + list.offsetHeight > 1120) throw atlasFail(`parts list ends at y ${list.offsetTop + list.offsetHeight} (> 1120) at the 30 px name floor; trim or split this layer in the storyboard`);
+      // pose on the box floor, ellipse shadow at feet_y, leader prop_anchor → start-here balloon
+      const pose = (s.atlas.pose || {}), eff = atlasEff(idx);
+      const asp = +pose.aspect || 1, fy = +pose.feet_y || 1, pa = pose.prop_anchor || [0.5, 0.5];
+      const wireTop = WIRE.fy - 2*WIRE.hh - WIRE.H, wireH = WIRE.fy - wireTop;
+      let ph = wireH * eff.poseH / 100, pw = ph * asp;
+      if (pw > 340) { pw = 340; ph = pw / asp; }
+      const feetY = WIRE.fy - WIRE.hh + 30, pcx = WIRE.cx + eff.poseDx;
+      const left = pcx - pw / 2, top = feetY - fy * ph;
+      const shW = Math.min(pw * 0.8, 300), shH = Math.min(pw * 0.13, 40);
+      root.querySelector('#atPoseWrap').innerHTML =
+        `<div class="at-shadow" style="left:${pcx - shW/2}px;top:${feetY - shH/2}px;width:${shW}px;height:${shH}px"></div>` +
+        (pose.src ? `<img class="at-pose" src="${esc(pose.src)}" alt="" style="left:${left}px;top:${top}px;width:${pw}px;height:${ph}px">`
+                  : `<div class="at-pose-missing" style="left:${left}px;top:${top}px;width:${pw}px;height:${ph}px">YOUR MASCOT → assets/poses/<br>(optional)</div>`);
+      const ball = root.querySelector('#atStart');
+      const by = yIn(ball, root) + ball.offsetHeight / 2, bx = 520, gx = 508;
+      const ax = left + pa[0] * pw, ay = top + pa[1] * ph;
+      const pts = ax < pcx - pw * 0.1
+        ? [[ax, ay], [ax, top - 18], [gx, top - 18], [gx, by], [bx, by]]     // prop on the left: route over the pose
+        : [[ax, ay], [gx, by], [bx, by]];
+      root.querySelector('#atLeader').innerHTML =
+        `<polyline points="${pts.map(p => p.map(v => v.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linejoin="round"/>` +
+        `<circle cx="${ax.toFixed(1)}" cy="${ay.toFixed(1)}" r="5" fill="var(--accent)"/>`;
+    } else if (kind === 'index') {
+      const list = root.querySelector('#atList');
+      if (list.offsetTop + list.offsetHeight > 1120) throw atlasFail(`index table ends at y ${list.offsetTop + list.offsetHeight} (> 1120)`);
+    } else if (kind === 'combo') {
+      const shot = root.querySelector('#atShot'), steps = root.querySelector('#atList');
+      const img = shot.querySelector('.shot, .shot-fallback');
+      let h = parseFloat(img.style.height);
+      for (;;) {
+        steps.style.top = (384 + h + 30) + 'px';
+        if (steps.offsetTop + steps.offsetHeight <= 1120) break;
+        if (h <= 340) throw atlasFail(`combo steps end at y ${steps.offsetTop + steps.offsetHeight} (> 1120) with the capture at 340 px; shorten the steps (≤ 10 words)`);
+        h -= 10; img.style.height = h + 'px';
+      }
+    } else if (kind === 'cta') {
+      const kw = root.querySelector('#atKw'), stub = root.querySelector('#atStub');
+      root.querySelectorAll('.at-scmd').forEach(c => { if (c.offsetHeight > 2 * 32 + 1) throw atlasFail(`install command runs past 2 lines: "${c.textContent}"`); });
+      for (let capMax = 240; ; capMax -= 10) {
+        const cap = fitAnton(kw, { capMax, capMin:180, maxW:920, capTop:290, what:'CTA keyword' });
+        const base = 290 + cap;
+        root.querySelector('#atUd').style.top = (base + 24) + 'px';
+        root.querySelector('#atFig').style.top = (base + 36) + 'px';
+        stub.style.top = (base + 90) + 'px';
+        if (stub.offsetTop + stub.offsetHeight <= 1290) {
+          // centre the stub in the room between the FIG label and the content floor (1276)
+          const free = 1276 - (base + 90 + stub.offsetHeight);
+          if (free > 0) stub.style.top = (base + 90 + free / 2) + 'px';
+          break;
+        }
+        if (cap <= 180) throw atlasFail(`deliverable stub ends at y ${stub.offsetTop + stub.offsetHeight} (> 1290)`);
+      }
+    }
+  }
+
+  // Index sheet: N exploded slabs at the same 30° angle, balloons 1..N (top slab = layer 1).
+  function slabSVG(N){
+    const cx = 300, hw = 130, hh = 75, t = 20, y0 = 446, y1 = 1092;
+    const pitch = N > 1 ? Math.min(150, (y1 - y0 - 2*hh - t) / (N - 1)) : 0;
+    const top = y0 + ((y1 - y0) - (2*hh + t + (N - 1) * pitch)) / 2;   // centre the stack in the box
+    const poly = (pts, fill) => `<polygon points="${pts.map(p => p.join(',')).join(' ')}" fill="${fill}" stroke="#0E0E0E" stroke-width="1.5" stroke-linejoin="round"/>`;
+    let dashes = '', slabs = '', balls = '';
+    const yTop0 = top + hh, yTopN = top + hh + (N - 1) * pitch;   // left/right vertex y of the first and last slab
+    [[cx - hw, 0], [cx + hw, 0], [cx, hh]].forEach(([x, dy]) => {
+      dashes += `<line x1="${x}" y1="${yTop0 + dy}" x2="${x}" y2="${yTopN + dy + t}" stroke="rgba(14,14,14,.4)" stroke-width="1" stroke-dasharray="4 5"/>`;
+    });
+    for (let k = N - 1; k >= 0; k--) {             // bottom slab first, so upper slabs sit in front
+      const cy = top + hh + k * pitch;               // rhombus centre
+      const Tb = [cx, cy - hh], Tr = [cx + hw, cy], Tf = [cx, cy + hh], Tl = [cx - hw, cy];
+      const d = (p) => [p[0], p[1] + t];
+      slabs += poly([Tl, Tf, d(Tf), d(Tl)], '#E4D9C6') + poly([Tf, Tr, d(Tr), d(Tf)], '#D9CDB8') + poly([Tb, Tr, Tf, Tl], '#F1E9DC');
+      balls += `<line x1="${cx - hw - 4}" y1="${cy + t/2}" x2="145" y2="${cy + t/2}" stroke="#0E0E0E" stroke-width="1.5"/>`
+        + `<circle cx="118" cy="${cy + t/2}" r="26" fill="#ECE3D4" stroke="#0E0E0E" stroke-width="2"/>`
+        + `<text x="118" y="${cy + t/2 + 9}" text-anchor="middle" font-family="JetBrains Mono" font-weight="700" font-size="26" fill="#0E0E0E">${pad(k + 1)}</text>`;
+    }
+    return `<svg class="at-svg" viewBox="0 0 1080 1350">${dashes}${slabs}${balls}</svg>`;
+  }
+
+  // ============ DOM ============
+  const slideEl = document.getElementById('slide');
+  const coverImg = document.getElementById('coverImg');
+  const chipEl = document.getElementById('chip');
+  const revEl = document.getElementById('revTxt');
+  const headlineEl = document.getElementById('headline');
+  const figEl = document.getElementById('fig');
+  const bodyEl = document.getElementById('bodyCopy');
+  const heroZone = document.getElementById('heroZone');
+  const sheetEl = document.getElementById('sheet');
+  const numEl = document.getElementById('num');
+  const nameEl = document.getElementById('name');
+  function pad(n){ return String(n).padStart(2,'0'); }
+
+  // headline auto-fit: fill width up to head-size, shrink only if it would overflow the safe bleed
+  function fitHeadline(){
+    const maxW = 1080 - 72 - 14;            // left pad + small right bleed
+    headlineEl.style.transform = 'scale(1)';
+    const w = headlineEl.scrollWidth;
+    const scale = w > maxW ? (maxW / w) : 1;
+    headlineEl.style.transform = `scale(${scale})`;
+  }
+
+  function render(idx){
+    const s = slides[idx];
+    const g = loadGlobal();
+    slideEl.classList.toggle('is-cover', !!s.cover);
+    slideEl.style.setProperty('--accent', g.accent);
+    slideEl.style.setProperty('--line', `rgba(14,14,14,${(g.grid/100).toFixed(3)})`);
+    slideEl.style.setProperty('--line2', `rgba(14,14,14,${(g.grid/200).toFixed(3)})`);
+
+    if (s.cover){
+      coverImg.src = s.coverImg;
+      numEl.textContent = `${idx+1}/${TOTAL}`; nameEl.textContent = s.name; syncTweakUI(); return;
+    }
+
+    const atlasEl = document.getElementById('atlas');
+    slideEl.classList.toggle('is-atlas', isAtlasSlide(s));
+    if (isAtlasSlide(s)) {
+      numEl.textContent = `${idx+1}/${TOTAL}`; nameEl.textContent = s.name;
+      syncTweakUI();
+      renderAtlas(idx, atlasEl);          // throws on a fit/cap failure, so a bake fails instead of clipping
+      return;
+    }
+    atlasEl.innerHTML = '';
+
+    const eff = effectiveSlide(idx);
+    chipEl.textContent = eff.chip;
+    revEl.textContent = eff.rev;
+    headlineEl.innerHTML = eff.headlineHTML;
+    figEl.textContent = eff.fig;
+    bodyEl.innerHTML = eff.body;
+    heroZone.innerHTML = heroHTML(s, eff);
+
+    slideEl.style.setProperty('--head-size', eff.headSize + 'px');
+    slideEl.style.setProperty('--body-size', eff.bodySize + 'px');
+    slideEl.style.setProperty('--body-top', eff.bodyTop + 'px');
+    slideEl.style.setProperty('--hero-bottom', eff.heroBottom + 'px');
+
+    sheetEl.textContent = `SHEET ${pad(SHEET_NO[idx])} / ${pad(SHEET_TOTAL)}`;
+    document.getElementById('swipe').style.display = (SHEET_NO[idx] === SHEET_TOTAL) ? 'none' : 'flex';
+    numEl.textContent = `${idx+1}/${TOTAL}`; nameEl.textContent = s.name;
+
+    fitHeadline();
+    syncTweakUI();
+  }
+
+  // ============ NAV ============
+  document.getElementById('prev').addEventListener('click', () => { i=(i-1+TOTAL)%TOTAL; render(i); });
+  document.getElementById('next').addEventListener('click', () => { i=(i+1)%TOTAL; render(i); });
+  document.addEventListener('keydown', (e) => {
+    if (e.target.matches('input, textarea')) return;
+    if (e.key === 'ArrowLeft'){ i=(i-1+TOTAL)%TOTAL; render(i); }
+    if (e.key === 'ArrowRight'){ i=(i+1)%TOTAL; render(i); }
+    if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+  });
+  window.goSlide = (idx) => { i=idx; render(idx); };
+  window.totalSlides = () => TOTAL;
+  document.getElementById('fs').addEventListener('click', () => {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen();
+  });
+  function fit(){ const wrap=document.getElementById('slideWrap'); const m=80;
+    const sx=(innerWidth-m)/1080, sy=(innerHeight-m)/1350; wrap.style.transform=`scale(${Math.min(sx,sy)})`; }
+  addEventListener('resize', fit); fit();
+
+  // ============ TWEAK PANEL ============
+  const twPanel = document.getElementById('twPanel');
+  document.getElementById('twToggle').addEventListener('click', () => twPanel.classList.toggle('open'));
+  document.getElementById('twClose').addEventListener('click', () => twPanel.classList.remove('open'));
+  const ctrls = {
+    accent:document.getElementById('twAccent'), headSize:document.getElementById('twHeadSize'),
+    bodySize:document.getElementById('twBodySize'), grid:document.getElementById('twGrid'),
+    chip:document.getElementById('twChip'), rev:document.getElementById('twRev'),
+    headline:document.getElementById('twHeadline'), fig:document.getElementById('twFig'),
+    body:document.getElementById('twBody'), bodyTop:document.getElementById('twBodyTop'),
+    headSizeS:document.getElementById('twHeadSizeS'), heroBottom:document.getElementById('twHeroBottom'),
+    heroImg:document.getElementById('twHeroImg'),
+    poseH:document.getElementById('twPoseH'), poseDx:document.getElementById('twPoseDx'),
+  };
+  const vals = {
+    headSize:document.getElementById('vHeadSize'), bodySize:document.getElementById('vBodySize'),
+    grid:document.getElementById('vGrid'), bodyTop:document.getElementById('vBodyTop'),
+    headSizeS:document.getElementById('vHeadSizeS'), heroBottom:document.getElementById('vHeroBottom'),
+    slideName:document.getElementById('vSlideName'),
+    poseH:document.getElementById('vPoseH'), poseDx:document.getElementById('vPoseDx'),
+  };
+
+  function syncTweakUI(){
+    const g = loadGlobal(); const s = slides[i];
+    ctrls.accent.value = g.accent;
+    ctrls.headSize.value = g.headSize; vals.headSize.textContent = g.headSize;
+    ctrls.bodySize.value = g.bodySize; vals.bodySize.textContent = g.bodySize;
+    ctrls.grid.value = g.grid; vals.grid.textContent = g.grid;
+    vals.slideName.textContent = s.name;
+    const perKeys = ['chip','rev','headline','fig','body','bodyTop','headSizeS','heroBottom','heroImg'];
+    const poseKeys = ['poseH','poseDx'];
+    const atlasLayer = isAtlasSlide(s) && atlasKind(s) === 'layer';
+    poseKeys.forEach(k => ctrls[k].disabled = !atlasLayer);
+    if (atlasLayer) {
+      const ae = atlasEff(i);
+      ctrls.poseH.value = ae.poseH; vals.poseH.textContent = ae.poseH + '%';
+      ctrls.poseDx.value = ae.poseDx; vals.poseDx.textContent = ae.poseDx + 'px';
+    }
+    if (s.cover || isAtlasSlide(s)){ perKeys.forEach(k => ctrls[k].disabled = true); return; }
+    perKeys.forEach(k => ctrls[k].disabled = false);
+    const eff = effectiveSlide(i);
+    ctrls.chip.value = eff.chip || ''; ctrls.rev.value = eff.rev || '';
+    ctrls.headline.value = eff.headlineHTML || ''; ctrls.fig.value = eff.fig || '';
+    ctrls.body.value = eff.body || '';
+    ctrls.bodyTop.value = eff.bodyTop; vals.bodyTop.textContent = eff.bodyTop + 'px';
+    ctrls.headSizeS.value = eff.headSize; vals.headSizeS.textContent = eff.headSize + 'px';
+    ctrls.heroBottom.value = eff.heroBottom; vals.heroBottom.textContent = eff.heroBottom + 'px';
+    ctrls.heroImg.value = eff.heroImg || '';
+  }
+
+  ctrls.accent.addEventListener('input', () => { const g=loadGlobal(); g.accent=ctrls.accent.value; saveGlobal(g); render(i); });
+  ctrls.headSize.addEventListener('input', () => { const g=loadGlobal(); g.headSize=+ctrls.headSize.value; saveGlobal(g); applyGlobalHead(); });
+  ctrls.bodySize.addEventListener('input', () => { const g=loadGlobal(); g.bodySize=+ctrls.bodySize.value; saveGlobal(g); render(i); });
+  ctrls.grid.addEventListener('input', () => { const g=loadGlobal(); g.grid=+ctrls.grid.value; saveGlobal(g); render(i); });
+  // global head sets the per-slide baseline only if slide has no override
+  function applyGlobalHead(){ const g=loadGlobal(); const s=slides[i]; if(!s.cover){ const o=loadSlide(s.name); if(o.headSize==null){ slides[i].defaults.headSize=g.headSize; } } render(i); }
+
+  ctrls.chip.addEventListener('input', () => updatePerSlide('chip', ctrls.chip.value));
+  ctrls.rev.addEventListener('input', () => updatePerSlide('rev', ctrls.rev.value));
+  ctrls.headline.addEventListener('input', () => updatePerSlide('headlineHTML', ctrls.headline.value));
+  ctrls.fig.addEventListener('input', () => updatePerSlide('fig', ctrls.fig.value));
+  ctrls.body.addEventListener('input', () => updatePerSlide('body', ctrls.body.value));
+  ctrls.bodyTop.addEventListener('input', () => updatePerSlide('bodyTop', +ctrls.bodyTop.value));
+  ctrls.headSizeS.addEventListener('input', () => updatePerSlide('headSize', +ctrls.headSizeS.value));
+  ctrls.heroBottom.addEventListener('input', () => updatePerSlide('heroBottom', +ctrls.heroBottom.value));
+  ctrls.heroImg.addEventListener('input', () => updatePerSlide('heroImg', ctrls.heroImg.value));
+  ctrls.poseH.addEventListener('input', () => updatePerSlide('poseH', +ctrls.poseH.value));
+  ctrls.poseDx.addEventListener('input', () => updatePerSlide('poseDx', +ctrls.poseDx.value));
+
+  function updatePerSlide(key, val){ const s=slides[i]; if(s.cover) return; const cur=loadSlide(s.name); cur[key]=val; saveSlide(s.name,cur); render(i); }
+
+  document.getElementById('twReset').addEventListener('click', () => { const s=slides[i]; if(s.cover) return; localStorage.removeItem(sKey(s.name)); render(i); });
+  document.getElementById('twExport').addEventListener('click', async () => {
+    const out = { global:loadGlobal(), perSlide:{} };
+    slides.forEach(s => { if(s.cover) return; const o=loadSlide(s.name); if(Object.keys(o).length) out.perSlide[s.name]=o; });
+    const text = JSON.stringify(out, null, 2);
+    try { await navigator.clipboard.writeText(text); } catch {}
+    const box = document.getElementById('twExportOut'); box.textContent = text; box.style.display='block';
+  });
+
+  // initial
+  render(0);
+  document.fonts && document.fonts.ready.then(() => render(i));
+</script>
+</body>
+</html>

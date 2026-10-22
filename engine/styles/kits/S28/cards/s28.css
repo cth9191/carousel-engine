@@ -1,0 +1,127 @@
+/* S28 Alpine Product Window: tokens and components for $D/cards/page-NN.html.
+   Spec: engine/styles/S28-alpine-product-window.prompt.md. Page 1080x1350, margins 64.
+   Fonts (each page links them): Inter 300-900, JetBrains Mono 500, Anton, Caveat Brush.
+   Plates (fitted, 1080x1350): ../fitted/scene.png (every interior), ../fitted/cover.png, ../fitted/cta.png. */
+
+:root {
+  --ink: #0E0E0E;
+  --sub: #2B2F36;
+  --cream: #F5EBE0;
+  --orange: #D9551F;
+  --win: #121418;
+  --win-line: rgba(255, 255, 255, .08);
+  --win-shadow: 0 30px 60px rgba(14, 14, 14, .35);
+  --win-label: #8B9096;
+  --win-ink: #E8E6E3;
+  --dot-r: #FF5F57; --dot-y: #FEBC2E; --dot-g: #28C840;
+  --bad: #E5534B; --good: #3FB950;
+  /* chip tints in order (restart on every slide) and their deeper icon strokes */
+  --t1: #FBE3D6; --s1: #D9551F;   /* apricot */
+  --t2: #FFF1CC; --s2: #B07A0C;   /* butter */
+  --t3: #E2EDD9; --s3: #4F7A3A;   /* sage */
+  --t4: #EFE5D8; --s4: #8A6A45;   /* sand */
+  --t5: #E9E7E3; --s5: #5E5A54;   /* stone */
+  --veil-top: .6;
+  --veil-foot: .5;   /* raise to .75 if a word reads under 4.5:1 */
+  --sans: "Inter", Arial, sans-serif;
+  --mono: "JetBrains Mono", Consolas, monospace;
+  --anton: "Anton", Impact, sans-serif;
+  --script: "Caveat Brush", "Comic Sans MS", cursive;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 1080px; height: 1350px; overflow: hidden; }
+body { position: relative; font-family: var(--sans); color: var(--ink); background: #EEF3F8 url(../fitted/scene.png) center / 1080px 1350px no-repeat; }
+body.cover { background: #B8461A url(../fitted/cover.png) center / 1080px 1350px no-repeat; color: var(--cream); }
+body.cta { background: #B8461A url(../fitted/cta.png) center / 1080px 1350px no-repeat; color: var(--cream); }
+
+svg.lucide { width: 1em; height: 1em; flex: none; stroke-width: 2; }
+
+/* ---------- interior veils (behind the title band and the footer band) ---------- */
+.veil-top { position: absolute; left: 0; right: 0; top: 20px; height: 370px; z-index: 0;
+  background: radial-gradient(60% 75% at 50% 45%, rgba(255,255,255,var(--veil-top)), rgba(255,255,255,0) 100%); }
+.veil-foot { position: absolute; left: 0; right: 0; top: 1100px; height: 200px; z-index: 0;
+  background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,var(--veil-foot)) 22%, rgba(255,255,255,var(--veil-foot)) 78%, rgba(255,255,255,0)); }
+
+/* ---------- item head: tile, name, what, chips (a flow column, y 34-492) ---------- */
+.head { position: absolute; left: 64px; right: 64px; top: 34px; height: 458px; display: flex; flex-direction: column; align-items: center; text-align: center; z-index: 2; }
+.tile { width: 150px; height: 150px; border-radius: 34px; display: flex; align-items: center; justify-content: center; box-shadow: 0 14px 30px rgba(14,14,14,.22); flex: none; position: relative; overflow: hidden; }
+.tile.dark { background: #111111; }
+.tile.light { background: #FFFFFF; }
+.tile img { width: 62%; height: 62%; object-fit: contain; }
+.tile img.white { filter: brightness(0) invert(1); }       /* a mono mark recoloured to white on #111 */
+.tile.glyph { color: var(--cream); font-size: 76px; }        /* no mark: a cream Lucide glyph on #111111 */
+.tile .spark { position: absolute; right: 18px; top: 16px; font-size: 26px; color: var(--orange); }
+.name { margin-top: 12px; width: 100%; font: 800 104px/1 var(--sans); letter-spacing: -0.045em; color: var(--ink); white-space: nowrap; overflow: hidden; padding-bottom: .1em; margin-bottom: -.1em; flex: none; }
+.what { margin-top: 8px; max-width: 900px; font: 500 34px/40px var(--sans); color: var(--sub); flex: none; }
+.chips { margin-top: auto; display: flex; justify-content: center; gap: 12px; width: 952px; flex: none; }
+.chip { height: 52px; display: inline-flex; align-items: center; gap: 10px; padding: 0 18px 0 14px; border-radius: 16px; font: 500 26px/1 var(--sans); color: var(--ink); white-space: nowrap; }
+.chip svg.lucide { font-size: 24px; }
+.chips .chip:nth-child(5n+1) { background: var(--t1); } .chips .chip:nth-child(5n+1) svg { color: var(--s1); }
+.chips .chip:nth-child(5n+2) { background: var(--t2); } .chips .chip:nth-child(5n+2) svg { color: var(--s2); }
+.chips .chip:nth-child(5n+3) { background: var(--t3); } .chips .chip:nth-child(5n+3) svg { color: var(--s3); }
+.chips .chip:nth-child(5n+4) { background: var(--t4); } .chips .chip:nth-child(5n+4) svg { color: var(--s4); }
+.chips .chip:nth-child(5n+5) { background: var(--t5); } .chips .chip:nth-child(5n+5) svg { color: var(--s5); }
+
+/* combo: two 130 px tiles joined by an ink "+" */
+.pair { display: flex; align-items: center; gap: 26px; flex: none; }
+.pair .tile { width: 130px; height: 130px; border-radius: 30px; }
+.pair .tile.glyph { font-size: 64px; }
+.pair .plus { font: 800 80px/1 var(--sans); color: var(--ink); }
+
+/* before/after title band: the stake, <= 7 words, one Claude-orange word (y 60-260) */
+.stake { position: absolute; left: 64px; right: 64px; top: 60px; height: 200px; display: flex; align-items: center; justify-content: center; text-align: center; z-index: 2; overflow: hidden; }
+.stake h1 { margin: 0; padding-bottom: .08em; font: 800 96px/1.02 var(--sans); letter-spacing: -0.045em; color: var(--ink); }
+.stake h1 em { font-style: normal; color: var(--orange); }
+.stake-sub { position: absolute; left: 90px; right: 90px; top: 270px; height: 84px; text-align: center; font: 500 34px/40px var(--sans); color: var(--sub); z-index: 2; overflow: hidden; }
+
+/* ---------- the window: x 70-1010, y 500-1080 (before/after: from y 380) ---------- */
+.window { position: absolute; left: 70px; width: 940px; top: 500px; height: 580px; background: var(--win); border: 1px solid var(--win-line); border-radius: 26px; box-shadow: var(--win-shadow); overflow: hidden; z-index: 2; display: flex; flex-direction: column; }
+.window.tall { top: 380px; height: 700px; }
+.window .bar { height: 44px; flex: none; display: flex; align-items: center; gap: 9px; padding: 0 18px; border-bottom: 1px solid var(--win-line); }
+.window .bar i { width: 13px; height: 13px; border-radius: 50%; display: block; }
+.window .bar .src { margin-left: 16px; font: 500 20px/1 var(--mono); color: var(--win-label); white-space: nowrap; }
+.window .body { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
+.window .body img { display: block; width: 100%; height: 100%; object-fit: contain; }   /* letterboxed on the window colour */
+.window .body pre { margin: 0; padding: 36px 44px; width: 100%; font: 500 30px/1.5 var(--mono); color: var(--win-ink); white-space: pre-wrap; }
+.window .split { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; }
+.window .split .cell { min-width: 0; display: flex; flex-direction: column; padding: 18px 18px 18px; }
+.window .split .cell + .cell { border-left: 1px solid rgba(255,255,255,.12); }
+.window .split .lab { display: flex; align-items: center; gap: 10px; font: 600 24px/1 var(--sans); margin-bottom: 14px; }
+.window .split .lab.bad { color: var(--bad); } .window .split .lab.good { color: var(--good); }
+.window .split .lab svg.lucide { font-size: 26px; stroke-width: 2.6; }
+.window .split .pic { flex: 1; min-height: 0; border-radius: 12px; overflow: hidden; background: #0B0C0E; display: flex; align-items: center; }
+.window .split .pic img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+/* ---------- footer: three cells split by 1 px rules (y 1118-1212) ---------- */
+.foot3 { position: absolute; left: 64px; right: 64px; top: 1118px; height: 94px; display: grid; grid-template-columns: 1fr 1fr 1fr; z-index: 2; }
+.foot3 .cell { display: flex; align-items: center; gap: 16px; padding: 0 20px; min-width: 0; }
+.foot3 .cell + .cell { border-left: 1px solid rgba(14,14,14,.22); }
+.foot3 .cell svg.lucide { font-size: 48px; color: var(--ink); stroke-width: 1.75; }
+.foot3 .cell span { font: 500 26px/1.2 var(--sans); color: var(--ink); max-height: calc(2.4em + 2px); overflow: hidden; }  /* two lines, <= 5 words */
+
+/* ---------- counter in place of SWIPE (y 1250) ---------- */
+.counter { position: absolute; left: 0; right: 0; top: 1236px; height: 60px; display: flex; flex-direction: column; align-items: center; z-index: 2; }
+.counter span { font: 600 26px/1 var(--sans); letter-spacing: .35em; text-transform: uppercase; color: var(--ink); padding-left: .35em; white-space: nowrap; }
+.counter::after { content: ""; width: 140px; height: 2px; background: var(--ink); margin-top: 14px; }
+
+/* ---------- cover + CTA: corner micro-labels, cream type on the studio plate ---------- */
+.ml { position: absolute; font: 600 22px/1.35 var(--sans); letter-spacing: .3em; text-transform: uppercase; color: var(--cream); z-index: 3; }
+.ml::before { content: ""; display: block; width: 40px; height: 3px; background: var(--cream); margin-bottom: 12px; }
+.ml.tl { left: 72px; top: 60px; }
+.ml.tr { right: 72px; top: 60px; text-align: right; }
+.ml.tr::before { margin-left: auto; }
+.ml.bl { left: 72px; bottom: 60px; }
+.hookstack { position: absolute; left: 72px; top: 296px; width: 560px; height: 748px; display: flex; flex-direction: column; justify-content: center; color: var(--cream); z-index: 3; overflow: hidden; }
+.hookstack .num { font: 900 320px/.8 var(--sans); letter-spacing: -0.05em; padding-top: .04em; }
+.hookstack .noun { margin-top: 30px; width: 520px; font: 800 72px/1 var(--sans); letter-spacing: -0.01em; text-transform: uppercase; white-space: nowrap; overflow: hidden; padding-bottom: .08em; }
+.hookstack .script { position: relative; margin-top: 18px; align-self: flex-start; font: 400 136px/1 var(--script); padding: 0 6px .12em; }
+.hookstack .script svg { position: absolute; left: 0; right: 0; bottom: -4px; width: 100%; height: 30px; overflow: visible; }
+.hookstack .script svg path { fill: none; stroke: var(--cream); stroke-width: 6; stroke-linecap: round; }
+.hookstack .close { margin-top: 20px; font: 300 80px/1.04 var(--sans); letter-spacing: -0.02em; }
+
+.cta-stack { position: absolute; left: 72px; top: 250px; width: 620px; height: 820px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; z-index: 3; color: var(--cream); }
+.cta-stack .glyph { font-size: 96px; color: var(--cream); }
+.cta-stack .glyph svg.lucide { stroke-width: 1.75; }
+.cta-stack .cm { margin-top: 24px; font: 400 150px/1 var(--anton); letter-spacing: .01em; }
+.cta-stack .kw { margin-top: 18px; display: inline-block; max-width: 560px; padding: 4px 24px .14em; border-radius: 10px; background: var(--cream); color: var(--ink); font: 400 190px/1.2 var(--anton); white-space: nowrap; overflow: hidden; }
+.cta-stack .dl { margin-top: 34px; font: 500 40px/1.25 var(--sans); max-width: 540px; }

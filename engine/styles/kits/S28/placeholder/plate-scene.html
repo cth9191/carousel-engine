@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>S28 placeholder scene plate</title>
+<!-- PLACEHOLDER ONLY: a flat gradient stand-in for $D/fitted/scene.png (the Codex alpine scene plate) so the
+     kit's interior pages render. Never ship it. Render:
+     node shared/render-card.mjs engine/styles/kits/S28/placeholder/plate-scene.html engine/styles/kits/S28/fitted/scene.png --w 1080 --h 1350 --scale 1 --min-px 0 -->
+<style>
+  html, body { margin: 0; width: 1080px; height: 1350px; overflow: hidden; }
+  body { position: relative; background: linear-gradient(#4A84C2 0%, #9DBEDF 9%, #EEF3F8 24%, #EEF3F8 34%, #C9D6DF 42%, #5E7B91 48%, #6F8CA0 62%, #8FA58A 72%, #5F8A47 80%, #4E7A3A 100%); }
+  .side { position: absolute; top: 300px; height: 540px; width: 260px; background: linear-gradient(#2F4A2E, #3C5C37); opacity: .85; }
+  .l { left: 0; border-radius: 0 60% 0 0; } .r { right: 0; border-radius: 60% 0 0 0; }
+  .mtn { position: absolute; top: 150px; width: 0; height: 0; border-left: 200px solid transparent; border-right: 200px solid transparent; border-bottom: 260px solid #B9C3CC; }
+  .m1 { left: -120px; } .m2 { right: -120px; }
+  .dots { position: absolute; left: 0; right: 0; top: 1060px; bottom: 0;
+    background-image: radial-gradient(#FFFFFF 5px, transparent 6px), radial-gradient(#F2C230 5px, transparent 6px), radial-gradient(#F5EBE0 4px, transparent 5px);
+    background-size: 90px 70px, 130px 90px, 70px 110px; background-position: 0 0, 40px 30px, 20px 50px; opacity: .8; }
+  .tag { position: absolute; left: 0; right: 0; top: 1316px; text-align: center; font: 700 18px/1 Arial, sans-serif; letter-spacing: .2em; color: rgba(255,255,255,.8); }
+</style></head>
+<body><div class="mtn m1"></div><div class="mtn m2"></div><div class="side l"></div><div class="side r"></div><div class="dots"></div>
+<div class="tag">PLACEHOLDER PLATE · NOT A CODEX RENDER · REPLACE FITTED/SCENE.PNG</div></body></html>

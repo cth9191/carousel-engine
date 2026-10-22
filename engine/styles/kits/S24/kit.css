@@ -1,0 +1,53 @@
+/* S24 Spotlight Dossier: card kit tokens and shared card CSS.
+   Every card is the ink panel's face, square-cornered and edge to edge (the plate's rounded magenta mask trims the
+   corners). Render with shared/render-card.mjs --bg '#121212' at the zone's --zones-only out bbox, --scale 2. */
+:root {
+  --panel: #121212;
+  --cream: #F3EBDF;
+  --ink: #111111;
+  --orange: #D9551F;
+  --amber: #E8A33D;
+  --grey: #8A847C;
+  --white: #F7F2EA;
+  --soft: rgba(247, 242, 234, .66);
+  --cell: rgba(247, 242, 234, .16);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: var(--panel);
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+body { font-family: 'Inter', sans-serif; color: var(--white); }
+/* exact text: no programming ligatures */
+body, body * { font-variant-ligatures: none; font-feature-settings: 'liga' 0, 'calt' 0, 'dlig' 0; }
+
+.panel { position: absolute; inset: 0; background: var(--panel); display: flex; flex-direction: column; overflow: hidden; }
+.label { flex: none; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 16px; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--orange); white-space: nowrap; }
+
+/* --- numbers strip --- */
+.numbers { padding: 20px 22px 20px; gap: 14px; }
+.numbers .label { text-align: center; }
+.numbers .cells { flex: 1 1 auto; min-height: 0; display: flex; gap: 14px; }
+.numbers .c { flex: 1 1 0; min-width: 0; border: 1.5px solid var(--cell); border-radius: 14px; position: relative;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px 10px; }
+.numbers .v { font-family: 'Newsreader', serif; font-optical-sizing: auto; font-weight: 500; font-size: 56px; line-height: 1.1;
+  letter-spacing: -.01em; color: var(--white); white-space: nowrap; max-width: 100%; }
+.numbers .k { font-size: 20px; line-height: 1.25; color: var(--soft); white-space: nowrap; margin-top: 2px; }
+.numbers .star { width: 24px; height: 24px; color: var(--amber); margin-top: 8px; flex: none; }
+
+/* --- install card --- */
+.install { padding: 24px 34px; justify-content: center; gap: 14px; }
+.install .cmd { font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 30px; line-height: 1.25; color: var(--white);
+  white-space: nowrap; }
+.install .cmd .p { color: var(--orange); margin-right: .5em; }
+.install .sub { font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 19px; color: var(--soft); white-space: nowrap; letter-spacing: .02em; }
+
+/* --- verdict table --- */
+.verdict { padding: 26px 40px 14px; }
+.verdict .label { text-align: center; margin-bottom: 8px; }
+.verdict .rows { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.verdict .r { flex: 1 1 0; min-height: 0; display: grid; grid-template-columns: 50% 50%; align-items: center;
+  border-top: 1.5px dashed rgba(247, 242, 234, .24); font-family: 'JetBrains Mono', monospace; }
+.verdict .r:first-child { border-top: none; }
+.verdict .n { display: flex; align-items: center; gap: 14px; font-weight: 700; font-size: 25px; color: var(--white); white-space: nowrap; min-width: 0; }
+.verdict .n img { flex: none; width: 36px; height: 36px; border-radius: 9px; background: #FBF8F3; object-fit: contain; padding: 4px; }
+.verdict .t { font-weight: 500; font-size: 23px; color: var(--soft); white-space: nowrap; }

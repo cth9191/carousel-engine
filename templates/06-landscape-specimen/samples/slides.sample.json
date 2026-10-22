@@ -1,0 +1,132 @@
+{
+ "_note": "The slide-data JSON of each sample render (samples/slide-NN-*.jpg). Paths are deck-relative from cards/: plates default to ../fitted/slide-NN.png, captures live in ../shots/, icons in ../logos/ (your own logo files or simple-icons). In the samples, 03's capture is a dashed placeholder and 07's icons are two Lucide glyphs standing in for real app icons. 05 holds the longest allowed copy; 08 shows the long-name rule (two lines). Star counts are sample data: verify every figure on posting day.",
+ "01": {
+  "layout": "cover",
+  "n": 1,
+  "total": 9,
+  "mast": {
+   "label": "CLAUDE CODE PLUGINS",
+   "month": "OCT 2026"
+  },
+  "kicker": "7 claude code",
+  "name": "plugins",
+  "outcome": "that do the boring work"
+ },
+ "02": {
+  "layout": "item",
+  "n": 2,
+  "total": 9,
+  "mast": {
+   "label": "CLAUDE CODE PLUGINS",
+   "month": "OCT 2026"
+  },
+  "pairing": "auto",
+  "kicker": "for memory",
+  "name": "claude-mem",
+  "caption": "Remembers every session, so you stop re-explaining your repo",
+  "use": "recall last week's auth decision",
+  "proof": "★ 18.4k stars · free · AGPL-3.0"
+ },
+ "03": {
+  "layout": "proof",
+  "n": 3,
+  "total": 9,
+  "mast": {
+   "label": "CLAUDE CODE PLUGINS",
+   "month": "OCT 2026"
+  },
+  "pairing": "P2",
+  "kicker": "for discovery",
+  "name": "ai-toolbox",
+  "caption": "148 checked skills and repos, by job",
+  "use": "find a browser tool in one scroll",
+  "proof": "★ free · public · 19 domains",
+  "capture": {
+   "src": "../shots/capture.png",
+   "horizon": 0.66,
+   "width": 0.7
+  }
+ },
+ "04": {
+  "layout": "cta",
+  "n": 9,
+  "total": 9,
+  "mast": {
+   "label": "CLAUDE CODE PLUGINS",
+   "month": "OCT 2026"
+  },
+  "kicker": "comment",
+  "name": "tools",
+  "caption": "for all 7, with install commands"
+ },
+ "05": {
+  "layout": "item",
+  "n": 4,
+  "total": 9,
+  "mast": {
+   "label": "CLAUDE CODE PLUGINS",
+   "month": "OCT 2026"
+  },
+  "pairing": "P2",
+  "kicker": "for docs in context",
+  "name": "Context7 MCP",
+  "caption": "Pulls current library docs into the prompt, replacing stale guesses",
+  "use": "→ ask for the Next 16 cache API today",
+  "proof": "★ 41.2k stars · free · MIT · npm · TS"
+ },
+ "06": {
+  "layout": "stake",
+  "n": 2,
+  "total": 9,
+  "mast": {
+   "label": "CLAUDE CODE PLUGINS",
+   "month": "OCT 2026"
+  },
+  "kicker": "what these save",
+  "name": "3 HOURS",
+  "caption": "a week, on the setup you redo every new repo"
+ },
+ "07": {
+  "layout": "combo",
+  "n": 8,
+  "total": 9,
+  "mast": {
+   "label": "CLAUDE CODE PLUGINS",
+   "month": "OCT 2026"
+  },
+  "pairing": "P1",
+  "kicker": "Claude Code",
+  "name": "Codex",
+  "caption": "Claude + Codex: plan & review",
+  "icons": [
+   "../logos/tool-a.png",
+   "../logos/tool-b.png"
+  ],
+  "use": "have Codex review every Claude diff"
+ },
+ "08": {
+  "layout": "item",
+  "n": 6,
+  "total": 9,
+  "mast": {
+   "label": "CLAUDE CODE PLUGINS",
+   "month": "OCT 2026"
+  },
+  "pairing": "auto",
+  "kicker": "for browser tests",
+  "name": "Playwright MCP",
+  "caption": "Drives a real browser, replacing test scripts",
+  "use": "→ click through signup, screenshot it",
+  "proof": "★ 21.7k stars · free · Apache-2.0"
+ },
+ "_plates": {
+  "01": "samples/plates/photo-golden-grass.jpg",
+  "02": "samples/plates/photo-overcast-sea.jpg",
+  "03": "samples/plates/painted-morning-river.jpg",
+  "04": "samples/plates/photo-overcast-sea-night.jpg",
+  "05": "samples/plates/painted-golden-meadow.jpg",
+  "06": "samples/plates/painted-morning-river.jpg",
+  "07": "samples/plates/painted-golden-meadow.jpg",
+  "08": "samples/plates/photo-overcast-sea.jpg"
+ }
+}

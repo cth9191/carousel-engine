@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S20 family tree, 3 children</title>
+<!--
+  S20 Slate Family Tree, family tree, 3 children. Zone family band 8-92% x 52-88% = 907 x 486 (1.87:1) (CSS px on the 1080 x 1350 slide; use the plate's measured
+  --zones-only out bbox when it differs). Transparent: render WITHOUT --bg.
+    node shared/render-card.mjs cards/tree-family-3.html cards/tree-family-3.png --w 907 --h 486 --scale 2
+  Edit only the JSON below. See README.md for the limits.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+</head>
+<body>
+<script id="data" type="application/json">
+{
+  "variant": "family",
+  "definition": "Hooks run your own scripts at set points in every session.",
+  "children": [
+    {
+      "name": "Block deletes",
+      "start": true,
+      "chips": [
+        "Before any tool",
+        "`rm -rf build/`",
+        "Exit code two",
+        "Stops the call"
+      ]
+    },
+    {
+      "name": "Run formatter",
+      "chips": [
+        "After each edit",
+        "Prettier, Black",
+        "No manual step"
+      ]
+    },
+    {
+      "name": "Desktop alert",
+      "chips": [
+        "On Stop event",
+        "Sound or toast",
+        "`notify-send`"
+      ]
+    }
+  ]
+}
+</script>
+<script src="tree.js"></script>
+</body>
+</html>

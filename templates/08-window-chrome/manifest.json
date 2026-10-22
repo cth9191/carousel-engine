@@ -1,0 +1,44 @@
+{
+  "id": "08-window-chrome",
+  "name": "Window Chrome",
+  "version": "1.0.0",
+  "style": "S19 Window-Chrome Build Diary (engine/styles/S19-window-chrome-diary.prompt.md)",
+  "tagline": "Build diary told inside an app window: graphite canvas in window chrome, white Instrument Serif over real artboards, cut-outs breaking out over the frame; apricot and cream caption pages between.",
+  "whenToUse": [
+    "Spine D build diaries: 'how I built X in N steps', 'build your X with Claude Code'",
+    "Spine A explainers of one tool shown inside its own window",
+    "Raw-to-refined process rows (rough input above, real result pieces below)"
+  ],
+  "format": { "width": 1080, "height": 1350, "ratio": "4:5" },
+  "fonts": {
+    "serif": "Instrument Serif (Google) — every headline, sentence, caption and label; accent words take the italic cut only",
+    "ui": "Inter Medium — window chrome labels, counter pill, caption-page footer",
+    "mono": "JetBrains Mono — exact-text cards (30 px floor)"
+  },
+  "palette": {
+    "graphite": "#575757 canvas",
+    "chrome": "#4A4A4A title + control bar, #3F3F3F tab row, #474747 rail",
+    "orange": "#D9551F UI accents only (active tab line, rail marker, counter dot, selection boxes)",
+    "apricot": "#F5C9A0 result + CTA pages",
+    "cream": "#F5EBE0 zoom pages and exact-text cards",
+    "rust": "#7A2C14 type on apricot / cream",
+    "ink": "#0E0E0E card text"
+  },
+  "kinds": {
+    "chrome": "layout: cover | stage | process | command | parts; frame = the HTML kit (default) or a real 4:5 window capture (frame.src + frame.canvas)",
+    "result": "apricot: sentence + one large artboard with a warm shadow, or a SCENE plate full-bleed (plate)",
+    "zoom": "cream: sentence + one 605 x 907 artboard with an HTML selection box",
+    "cta": "apricot: Comment {keyword} + what they get + hero cut-out on a contact shadow"
+  },
+  "slideFields": ["name", "kind", "layout", "stage", "counter", "title", "tabs", "rail", "frame{src, canvas{x,y,w,h}}", "headline | sentence", "subtitle | line2", "caption", "accent[]", "gridAspect", "artboards[{src, aspect, focus, focusFill, select, fit, bg, span, card{text|html, size, w}}]", "raw[]", "rawLabel", "pieces[]", "parts[{src, label}]", "cutouts[{src, x, y, w, scale, rotation, shadow, anchor, dx, dy}]", "plate", "keyword", "hero{src, w, bottom}", "boardTop", "defaults{headSize, headTop, boardScale, breakouts}"],
+  "tweakable": {
+    "global": ["accent", "headScale"],
+    "perSlide": ["stage", "head", "sub", "caption", "headSize", "headTop", "boardScale", "breakouts"]
+  },
+  "files": {
+    "slides.html": "copy to carousels/<id>/slides.html, edit DECK + slides[] at the bottom",
+    "recipe.md": "full how-to, field reference, pitfalls",
+    "preview.png": "this file's 7 placeholder sample slides"
+  },
+  "exportNaming": "slide-NN-YYYY-MM-DD.png via shared/export.mjs"
+}

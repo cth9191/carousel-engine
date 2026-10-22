@@ -1,0 +1,43 @@
+{
+  "id": "07-split-band",
+  "name": "Split Band",
+  "version": "1.0.0",
+  "style": "S17 Split-Band Before/After (engine/styles/S17-split-band-before-after.prompt.md)",
+  "tagline": "Cream-over-white before/after split: mono labels, big bold statements, one orange text selection.",
+  "whenToUse": [
+    "Spine C listicles where each item replaces an old habit (Flip + proof per item)",
+    "Opinionated 'how AI changed this job' takes (pure flips, logged as a deviation)",
+    "Not for diagrams, head-to-heads (S03) or system builds"
+  ],
+  "format": { "width": 1080, "height": 1350, "ratio": "4:5" },
+  "fonts": {
+    "statement": "Inter 650, opsz 32 (Google Fonts variable Inter) — statements, cover headlines, deliverable, byline",
+    "label": "JetBrains Mono 400 — labels, count line, command chip, counter"
+  },
+  "palette": {
+    "beforeBand": "#F5EBE0 cream (y 0-668)",
+    "seam": "#EFE4D7 (y 668-675)",
+    "afterBand": "#FFFFFF (y 675-1350)",
+    "ink": "#0E0E0E",
+    "selection": "#F8CFA8 apricot, multiply; bars + dots #D9551F; selected text #3A1808",
+    "counter": "#6B635B"
+  },
+  "layouts": ["cover", "flip", "flipProof", "twinProof", "cta"],
+  "fitPass": {
+    "statements": "126 px on a 115 px line, both statements share one size, shrink in 2 px steps to the 96 px floor until each fits 908 px and its line budget (3; 1 for proof/twin after; 2 with a chip)",
+    "cover": "130 px headlines, shrink to 96 px until every line and selection box fits 908 px",
+    "deliverable": "74 px on 84 px, floor 56 px, <= 2 lines",
+    "copyLimits": "label <= 20 chars, statement <= 7 words, proof after <= 15 chars, cover subject/phrases <= 13, count line <= 30, CTA before <= 6 words, keyword <= 10, deliverable lines <= 24, command <= 34",
+    "onFailure": "a red FIT/COPY banner across the top of the slide (visible in the export on purpose) + console.error + window.fitReport"
+  },
+  "tweakable": {
+    "global": ["accent", "labelBefore", "labelAfter"],
+    "perSlide": ["before", "after", "size", "cmd (chip or CTA keyword)", "deliverable"]
+  },
+  "files": {
+    "slides.html": "copy to carousel root, edit DECK labels + slides[] at bottom",
+    "recipe.md": "how-to, slide fields, pitfalls",
+    "preview.png": "cover + Flip + proof rendered from this file's sample slides"
+  },
+  "exportNaming": "slide-NN-YYYY-MM-DD.png via shared/export.mjs"
+}

@@ -310,6 +310,7 @@ function artLabel(s, kind) {
   if (own) return `${kind.toUpperCase()}${slide} · ${code} · ${fmtX(own.mult)}${own.interior_style && kind === 'interior' && own.interior_style !== s.id ? ` (${own.interior_style})` : ''}`;
   const ev = code && s.evidence?.find((e) => e.code === code);
   if (ev) return `${kind.toUpperCase()}${slide} · ${code} · ${short(ev.likes)} / ${short(ev.comments)}`;
+  if (s.exemplars.sample) return `${kind.toUpperCase()} · sample render`;
   return `${kind.toUpperCase()}${slide}${code ? ` · ${code}` : ''}`;
 }
 

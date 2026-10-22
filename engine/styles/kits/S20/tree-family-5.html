@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S20 family tree, 5 children</title>
+<!--
+  S20 Slate Family Tree, family tree, 5 children. Zone family band 8-92% x 52-88% = 907 x 486 (1.87:1) (CSS px on the 1080 x 1350 slide; use the plate's measured
+  --zones-only out bbox when it differs). Transparent: render WITHOUT --bg.
+    node shared/render-card.mjs cards/tree-family-5.html cards/tree-family-5.png --w 907 --h 486 --scale 2
+  Edit only the JSON below. See README.md for the limits.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+</head>
+<body>
+<script id="data" type="application/json">
+{
+  "variant": "family",
+  "definition": "MCP servers plug outside tools straight into the chat.",
+  "children": [
+    {
+      "name": "GitHub",
+      "chips": [
+        "Open PRs",
+        "Reviews",
+        "`gh pr`"
+      ]
+    },
+    {
+      "name": "Browser",
+      "chips": [
+        "Clicks",
+        "Fill form",
+        "Read logs",
+        "Snapshots"
+      ]
+    },
+    {
+      "name": "Notion",
+      "chips": [
+        "Pull data",
+        "Drafts"
+      ]
+    },
+    {
+      "name": "Sentry",
+      "chips": [
+        "Errors",
+        "Traces",
+        "`issues`"
+      ]
+    },
+    {
+      "name": "Figma",
+      "chips": [
+        "Frames",
+        "Tokens",
+        "Comments",
+        "Variables"
+      ]
+    }
+  ]
+}
+</script>
+<script src="tree.js"></script>
+</body>
+</html>

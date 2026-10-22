@@ -1,0 +1,73 @@
+{
+  "id": "03-command-press",
+  "name": "Command Press",
+  "version": "1.1.0",
+  "tagline": "Blueprint/engineering-drawing editorial for skill & command roundups.",
+  "whenToUse": [
+    "Skill / command roundups (/dumbify, /storytelling, …) — one slide per skill",
+    "N-skills / N-steps explainers where each item is a named command",
+    "Before/after, audit, or 'I turned this into a skill' content",
+    "Big grouped lists (20–36 skills / MCPs / plugins in 4–6 layers): layout 'atlas', style S22"
+  ],
+  "format": {
+    "width": 1080,
+    "height": 1350,
+    "ratio": "4:5"
+  },
+  "fonts": {
+    "headline": "Anton (Google) — heavy condensed grotesque, all-caps, slash-prefixed",
+    "body": "Inter",
+    "mono": "JetBrains Mono — chrome / labels"
+  },
+  "palette": {
+    "bg": "#ECE3D4 bone",
+    "ink": "#0E0E0E",
+    "accent": "#D9551F terracotta — CALLOUTS ONLY (+ corner crosshairs)",
+    "chrome": "rgba(14,14,14,.5) ink — structural: grid, dimension line, frame, FIG/SHEET labels"
+  },
+  "rules": {
+    "colorDiscipline": "Orange = 'look here' only (callouts, good-line, corner marks). Structure stays ink. Never let orange do double duty.",
+    "charts": "Two-tone: primary/good line = terracotta, secondary/bad line = ink dashed. Never all-orange.",
+    "headline": "Auto-fits width up to head-size; long names bleed to the right edge deliberately.",
+    "heroes": "Body-slide heroes are HTML, never AI-gen. Only the cover (and S10 FIG drawings) may be Codex plates."
+  },
+  "heroTypes": [
+    "beforeafter",
+    "video",
+    "chart",
+    "image",
+    "none"
+  ],
+  "tweakable": {
+    "global": [
+      "accent",
+      "headSize",
+      "bodySize",
+      "grid"
+    ],
+    "perSlide": [
+      "chip",
+      "rev",
+      "headlineHTML",
+      "fig",
+      "body",
+      "bodyTop",
+      "headSize",
+      "heroBottom",
+      "heroImg",
+      "poseH",
+      "poseDx"
+    ]
+  },
+  "files": {
+    "slides.html": "copy to carousel root, edit slides[] at bottom",
+    "recipe.md": "full how-to + pitfalls",
+    "preview.png": "look reference",
+    "preview-atlas.png": "atlas layout look reference (index, 2 layers, combo, CTA; dashed mascot placeholders)"
+  },
+  "exportNaming": "slide-NN-YYYY-MM-DD.png via shared/export.mjs",
+  "layouts": {
+    "default": "command sheet: one named command per slide, hero.type below",
+    "atlas": "layout:'atlas' (S22 Layered Parts Atlas): atlas.kind layer | index | combo | cta; deck facts in const ATLAS {label, total}; spec in recipe.md 'atlas layout'"
+  }
+}

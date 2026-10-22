@@ -9,8 +9,8 @@ from the exemplars.
 | `styles.json` | The catalog: one entry per style id. Name, one-liner, status, production type, spine fit, attributes, cooldown, exemplar paths, requirements, template. |
 | `<id>-<slug>.prompt.md` | The style's prompt block: the SYSTEM text pasted into every Codex image prompt, the COVER / INTERIOR layouts, and the KEYING rules for magenta (capture) and cyan (logo) zones. |
 | `exemplars/` | One cover and one interior per style (`<id>-cover`, `<id>-interior`), 4:5. They're the art on the pick sheet and the style references attached to a deck's first prompts. |
-| `refs/` | Text-free or keyed layout references that a style's Codex jobs attach (S05, S07, S08, S09), cut from the author's own slides. `refs/src/` holds the builders. |
-| `kits/<id>/` | Per-style HTML card kits (S05–S09, S11): the cards, a README with the render commands, and rendered `samples/`. A deck copies the kit's cards into `$D/cards/`. |
+| `refs/` | Text-free or keyed layout references that a style's Codex jobs attach (S04, S05, S07–S09, S12–S14, S17, S19, S26), drawn from the author's own slides or HTML mocks. `refs/src/` holds the builders that ship. Styles without refs run text-only prompts until your first approved plate becomes the reference. |
+| `kits/<id>/` | Per-style HTML card kits (S04–S14, S18, S20, S23–S28; S15–S17, S19, S21 and S22 work from their HTML template): the cards, a README with the render commands, and rendered `samples/`. A deck copies the kit's cards into `$D/cards/`. |
 | `gallery.jpg` | The pick sheet: one tile per style. Built by `shared/build-gallery.mjs` (see below). |
 | `library/` | A browsable HTML page of every style (cards, filters, attributes, requirements, the prompt block). Built by `shared/build-style-library.mjs`; a build output, git-ignored. |
 
@@ -27,15 +27,37 @@ deck.
 | S01 | Terracotta Zine | Terracotta texture, massive lowercase headline with a period, taped dark app windows | D system build, A explainer | html-native |
 | S02 | Logo Equation | Terracotta, giant white "Tool A + Tool B", two big app-icon tiles joined by a plus | A explainer: tool combos, integrations, set-up tutorials | hybrid |
 | S03 | Newsprint Benchmark | Warm newsprint, Didone italic, diagonal VS split with huge percentages, ruled tables, green verdict bar | B head-to-head / launch test | image-native |
+| S04 | Brutalist Mascot Poster | Cream spec-sheet poster, Anton white-on-orange block line, one big cut-out hero (your mascot or the subject's logo tile) ringed by tag chips | C listicle / use cases, A explainer, D system build | hybrid |
 | S05 | Phone-Photo Monitor | A phone photo of a monitor showing the real thing (README, tool, title screen), with white caption stickers | C repo listicle / quick tips, A explainer | hybrid |
 | S06 | Statue Cover + Graph-Paper Cards | A marble statue offering one real logo tile against a changing sky, huge white wordmark; graph-paper repo-card interiors | C top-N / roundups, A explainer | hybrid |
 | S07 | Dark Network Hero | Near-black glowing network or teal starfield, giant white sans, app tile and brush label | A single-tool reveal, D system reveal | hybrid |
 | S08 | Bone Editorial | Grained kraft-cream, Didone with one cobalt accent, rounded dark app pane, ink doodles, taped sticky | D system reveal, A explainer | hybrid |
 | S09 | Charcoal Studio | Charcoal ground, off-white serif, acid-yellow highlights and stickies, browser windows | A tutorial, D step-by-step build | image-native |
+| S10 | Command-Press Blueprint | Bone and ink grid, Anton /SLASH-COMMAND bleeding right, dimension lines, two-tone audit charts | C skill and command roundups, D levels and builds, A code-heavy explainer | html-native |
 | S11 | Sketchnote Diagram Explainer | Cream, heavy grotesk with a yellow highlighter pill, pastel flow-diagram boxes, hand-drawn arrows | A explainer for cold viewers | image-native |
+| S12 | Voxel Costume Explainer | Near-white, bold sans with line 2 in orange, your mascot in one costume per slide (or a logo tile), side-by-side screenshots | A explainer, D system build | hybrid |
+| S13 | Oversized-Serif Photo Editorial | One dominant oversized serif word over a cinematic photo, fanned preview cards, giant numerals inside | C frameworks / 'N rules' | hybrid |
+| S14 | Scenic Painterly | A painted landscape per slide, cream Didone, paper list card, optionally your mascot doing something different on each slide | C big lists grouped by job | hybrid |
+| S15 | Landscape Specimen | A cinematic landscape per item, the item's name set giant in the sky as a two-font specimen, masthead row, BACK/NEXT nav | C top-N listicle | hybrid |
+| S16 | Neon Node Pipeline | Pure black, glowing numbered icon-node pipelines, one colour per concept; the cover is a grid of every diagram | C 'N patterns', D system build, A explainer | html-native |
+| S17 | Split-Band Before/After | Cream-over-white split on every slide, mono Before: / After: labels, huge grotesk statements, one orange text-selection highlight | C before/after flips | html-native |
+| S18 | Folder-Tab Field Guide | Orange-framed map cover pinned to round medallions; folder-tab interiors with three scene bands | C entries in chapters, D steps | hybrid |
+| S19 | Window-Chrome Build Diary | An app window as the frame, condensed white serif over real artboards, cut-outs breaking out over the chrome; apricot caption pages between | D build diary, A explainer | hybrid |
+| S20 | Slate Family Tree | Chalk slate, index cover of overhead paint-tin icons, light serif names, 'A + B' pill formulas, branching chip trees | C taxonomies | hybrid |
+| S21 | Circled-Count Tip Stack | Cream, lowercase count hook with a hand-circled orange number; three white app-window cards per slide, one finding each | C findings listicle | html-native |
+| S22 | Layered Parts Atlas | Bone blueprint sheet: Anton LAYER n/N over an orange count banner, a detail box with your mascot (or a logo tile), parts numbered across the deck | C big grouped lists | html-native |
+| S23 | Crop-Mark Proof Sheet | Cream crop-mark proof sheet: orange mono chip, a giant width-fitted Anton /COMMAND, one stacked-paper proof module per slide | C skill and command roundups | image-native |
+| S24 | Spotlight Dossier | Grained cream, a soft coloured stage beam lighting each item's real logo, a serif name headline, an ink numbers strip and a mono install card | C repo and tool roundups, A explainer | image-native |
+| S25 | Soft-UI Step Guide | Paper-white product-page tutorial: caps kicker and orange step pill, big sentence-case headline, one soft white UI module per slide, dashed margin traces | A setup guide, D steps | html-native |
+| S26 | Whiteboard Doodle Showcase | Warm paper-white page: a handwritten item name over one orange marker underline, a real capture in a sketched ink frame, a small ink doodle acting out the item | C showcase, A explainer | hybrid |
+| S27 | Icon-Grid Cheat Sheet | Warm-white cheat sheet: two real logo tiles joined by '+', a heavy count hook with one orange pill, a numbered grid of repo tiles | C one-pager or carousel | html-native |
+| S28 | Alpine Product Window | One bright alpine wallpaper behind every interior: a real app-icon tile over a heavy product name, feature chips, one dark window holding a real capture; orange studio cover | C product roundup, A explainer | hybrid |
 
 How each one gets made:
 
+- **S04, S10, S12–S28**: the route is in the skill's Stage 4 table, with the exact commands in the
+  style's kit README (`kits/<id>/`) or template `recipe.md`. Most have no posted deck yet, so their
+  tiles show sample renders from the kit or template; S10 and S24 show real decks.
 - **S01**: Codex paints only the cover plate. Interiors come from the deck's copy of
   `templates/02-terracotta-zine/slides.html` (`{{BRAND}}` and `{{MONTH_YEAR}}` filled in, the
   template's `assets/` copied to the deck's `assets/`), baked with
@@ -74,9 +96,10 @@ COVER                        INTERIOR · slide 2
 [ cover art ]                [ interior art ]
 ```
 
-- **Status**: `card-v1` means the style has a prompt block and can go to Make. Every style here
-  is `card-v1`. The script also accepts `next-wave` (worked for you, no prompt block yet),
-  `test-wave` (seen only on other accounts) and `retired` (hidden unless `--include-retired`).
+- **Status**: `card-v1` means the style has a prompt block, can go to Make and has been proven in a
+  posted deck. `test-wave` means it has a prompt block and kit and can go to Make, but no posted
+  deck has proven it yet: its tile shows sample renders. The script also accepts `next-wave`
+  (worked for you, no prompt block yet) and `retired` (hidden unless `--include-retired`).
 - **Production**: `html-native` means Playwright renders the exact text and AI paints at most the
   illustration plates. `image-native` means AI paints the slide and real assets get composited in.
   `hybrid` means Codex paints the plate and short type; real logos go in through cyan zones,

@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Template 05 — Node Pipeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared/tweak-panel.css">
+<style>
+  /* Style S16 Neon Node Pipeline (engine/styles/S16-node-pipeline.prompt.md). Tokens = the card's SYSTEM block. */
+  :root { --ink:#0E0E0E; --terracotta:#D9551F; --black:#000000; --orange:#D9551F; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { background:#1a1a1a; font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; height:100%; overflow:hidden; }
+  .stage { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; }
+  .slide-wrap { width:1080px; height:1350px; transform-origin:center; }
+  .slide { width:1080px; height:1350px; position:relative; overflow:hidden; background:#000000; color:#F5F5F5; }
+  .layer { position:absolute; left:0; top:0; width:1080px; height:1350px; }
+  svg.wires { position:absolute; left:0; top:0; overflow:visible; z-index:1; }
+
+  /* type */
+  .ttl { position:absolute; left:65px; right:65px; text-align:center; font-weight:800; font-size:60px; line-height:1.1; letter-spacing:-.01em; z-index:6; }
+  .gls { position:absolute; left:65px; right:65px; text-align:center; font-weight:500; font-size:34px; line-height:1.2; color:#D6D6D6; z-index:6; }
+  .cap { font-weight:500; font-size:30px; line-height:1.3; color:#D6D6D6; }
+  .cap b, .cap em { font-weight:600; font-style:normal; color:var(--acc); }
+  .tag { font-family:'JetBrains Mono',monospace; font-weight:500; font-size:28px; line-height:1.2; color:var(--acc); letter-spacing:.02em; }
+  .foot { position:absolute; top:1271px; font-family:'JetBrains Mono',monospace; font-weight:500; font-size:28px; line-height:28px; color:#5E5E5E; letter-spacing:.06em; z-index:6; text-transform:uppercase; }
+  .foot.l { left:65px; } .foot.r { right:65px; }
+
+  /* nodes */
+  .nd { position:absolute; transform:translate(-50%,-50%); width:var(--sz); height:var(--sz); z-index:4; }
+  .nd .sh { position:absolute; inset:0; border-radius:50%; background:var(--fill); border:var(--rw) solid var(--rim); box-shadow:var(--glow); }
+  .nd.k-decision .sh { inset:calc(var(--sz) * .1185); border-radius:calc(var(--sz) * .08); transform:rotate(45deg); }
+  .nd .ic { position:absolute; left:50%; top:50%; width:var(--isz); height:var(--isz); transform:translate(-50%,-50%); color:var(--ico); display:block; }
+  .nd .lg { position:absolute; left:50%; top:50%; width:62%; height:62%; transform:translate(-50%,-50%); object-fit:contain; }
+  .nd.live::after { content:''; position:absolute; inset:-12px; border-radius:50%; border:2px solid var(--acc); opacity:.75; }
+  .bd { position:absolute; transform:translate(-50%,-50%); border-radius:50%; color:#0E0E0E; font-weight:700; display:flex; align-items:center; justify-content:center; z-index:5; line-height:1; }
+  .lb { position:absolute; transform:translateX(-50%); width:max-content; text-align:center; font-weight:600; line-height:1.15; color:#F5F5F5; z-index:3;
+        text-shadow:0 0 2px #000,0 0 4px #000,0 0 8px #000,0 0 12px #000; }
+  .sb { position:absolute; transform:translateX(-50%); width:max-content; text-align:center; font-family:'JetBrains Mono',monospace; font-weight:400; line-height:1.2; color:#BDBDBD; z-index:3;
+        text-shadow:0 0 4px #000,0 0 8px #000; }
+  .lt { position:absolute; width:max-content; font-family:'JetBrains Mono',monospace; font-weight:500; font-size:28px; line-height:1.2; z-index:3; text-shadow:0 0 6px #000; }
+
+  /* proof chip / panels (real-capture slots are <img>) */
+  .chip { position:absolute; border-radius:16px; border:2px solid var(--rim60); overflow:hidden; background:#0B0B0B; z-index:4; }
+  .chip img, .pnl .body img { position:absolute; inset:0; width:100%; height:100%; object-fit:var(--fit,cover); object-position:var(--focus,50% 0%); display:block; }
+  .pnl { position:absolute; background:#0B0B0B; border:2px solid var(--rim60); border-radius:22px; overflow:hidden; z-index:4; }
+  .pnl .bar { position:absolute; left:0; right:0; top:0; height:56px; background:#141414; display:flex; align-items:center; gap:14px; padding:0 20px;
+              font-family:'JetBrains Mono',monospace; font-weight:500; font-size:26px; color:#E6E6E6; white-space:nowrap; }
+  .pnl .bar .pb { position:static; transform:none; flex:0 0 auto; }
+  .pnl .body { position:absolute; left:0; right:0; top:56px; bottom:0; overflow:hidden; }
+  .pnl pre.code { position:absolute; inset:0; padding:26px 30px; font-family:'JetBrains Mono',monospace; font-weight:400; font-size:28px; line-height:1.38; color:#E6E6E6; white-space:pre; overflow:hidden; }
+  .pnl pre.code b { color:var(--acc); font-weight:700; }
+
+  /* covers */
+  .hl { position:absolute; left:65px; right:65px; top:54px; text-align:center; font-weight:800; font-size:84px; line-height:1.08; letter-spacing:-.015em; color:#FFFFFF;
+        text-shadow:0 0 18px rgba(255,255,255,.32), 0 0 2px rgba(255,255,255,.5); z-index:6; }
+  .hl em { font-style:normal; color:#D9551F; text-shadow:0 0 8px rgba(255,138,76,.85), 0 0 30px rgba(255,138,76,.45); }
+  .subrow { position:absolute; left:65px; right:65px; text-align:center; color:#BDBDBD; z-index:6; white-space:nowrap; }
+  .subrow .sl { font-weight:500; font-size:36px; }
+  .subrow .st { font-family:'JetBrains Mono',monospace; font-weight:500; font-size:30px; margin-left:22px; letter-spacing:.04em; }
+  .hair { position:absolute; left:65px; right:65px; height:2px; background:rgba(217,85,31,.55); z-index:6; }
+  .cell { position:absolute; z-index:5; }
+  .cell .cn { position:absolute; left:0; right:0; top:0; text-align:center; font-weight:800; line-height:1.1; white-space:nowrap; }
+  .thumb { position:absolute; overflow:visible; }
+  .thumb > .layer { transform-origin:0 0; }
+
+  /* CTA */
+  .cta1 { position:absolute; left:65px; right:65px; text-align:center; font-weight:800; font-size:88px; line-height:1.05; color:#FFFFFF; z-index:6; letter-spacing:-.015em; }
+  .cta1 .kw { color:#D9551F; text-shadow:0 0 8px rgba(255,138,76,.85), 0 0 30px rgba(255,138,76,.45); }
+  .cta2 { position:absolute; left:65px; right:65px; text-align:center; font-weight:500; font-size:36px; line-height:1.25; color:#CFCFCF; z-index:6; }
+  .mascot { position:absolute; object-fit:contain; z-index:5; }
+
+  /* measuring + fit errors */
+  #measure { position:absolute; left:0; top:0; visibility:hidden; pointer-events:none; }
+  .fit-err { position:absolute; left:20px; right:20px; top:20px; z-index:50; background:rgba(160,0,0,.92); color:#fff; font:600 22px/1.35 'JetBrains Mono',monospace; padding:18px 22px; border-radius:10px; white-space:pre-wrap; }
+
+  /* === UI chrome (hidden on export) === */
+  .ui { position:fixed; bottom:18px; left:50%; transform:translateX(-50%); background:rgba(20,20,20,.92); color:#fff;
+    padding:8px 12px; border-radius:999px; display:flex; gap:12px; align-items:center; font-size:13px; z-index:100; }
+  .ui button { background:#2a2a2a; color:#fff; border:none; padding:6px 12px; border-radius:99px; cursor:pointer; font-size:13px; }
+  .ui button:hover { background:#3a3a3a; }
+  .ui .label { font-family:'JetBrains Mono',monospace; min-width:220px; text-align:center; }
+  .ui .num { color:#D9551F; font-weight:700; }
+  .arrow-btn { width:32px; height:32px; padding:0 !important; }
+  :fullscreen .ui { display:none !important; }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="slide-wrap" id="slideWrap">
+    <div class="slide" id="slide"></div>
+  </div>
+</div>
+
+<div class="ui">
+  <button class="arrow-btn" id="prev">←</button>
+  <span class="label"><span class="num" id="num">1/1</span> &nbsp; <span id="name">—</span></span>
+  <button class="arrow-btn" id="next">→</button>
+  <button id="fs">Fullscreen (F)</button>
+</div>
+
+<button class="tw-toggle" id="twToggle">⚙ Tweaks</button>
+<div class="tw-panel" id="twPanel">
+  <h3>Tweaks <button class="close" id="twClose">×</button></h3>
+  <div class="tw-section">
+    <div class="section-title">GLOBAL</div>
+    <div class="tw-row"><span class="lbl">Deck label (footer)</span><input type="text" id="twDeckLabel"></div>
+    <div class="tw-row"><span class="lbl">Haze opacity <span class="val" id="vHaze"></span></span><input type="range" id="twHaze" min="0" max="30" step="1"></div>
+    <div class="tw-row"><span class="lbl">Connector opacity <span class="val" id="vLine"></span></span><input type="range" id="twLine" min="20" max="80" step="1"></div>
+    <div class="tw-row"><span class="lbl">Bead spacing <span class="val" id="vBead"></span></span><input type="range" id="twBead" min="24" max="64" step="1"></div>
+  </div>
+  <div class="tw-section">
+    <div class="section-title">PER-SLIDE: <span class="name" id="vSlideName">—</span></div>
+    <div class="tw-row"><span class="lbl">Title (HTML; &lt;em&gt; = accent on covers)</span><input type="text" id="twTitle"></div>
+    <div class="tw-row"><span class="lbl">Gloss / subline</span><input type="text" id="twGloss"></div>
+    <div class="tw-row"><span class="lbl">Caption (HTML; &lt;b&gt; = accent phrase)</span><textarea id="twCaption" rows="3"></textarea></div>
+    <div class="tw-row"><span class="lbl">Proof tag</span><input type="text" id="twTag"></div>
+    <div class="tw-row"><span class="lbl">Capture src (proof chip / panel)</span><input type="text" id="twImg"></div>
+    <div class="tw-row"><span class="lbl">Capture focus (object-position)</span><input type="text" id="twFocus"></div>
+    <div class="tw-row"><span class="lbl">Row gap cap <span class="val" id="vGap"></span></span><input type="range" id="twGap" min="40" max="240" step="2"></div>
+  </div>
+  <button class="tw-reset" id="twReset">Reset slide to defaults</button>
+  <button class="tw-reset" id="twExport" style="background:#0E0E0E;color:#fff;margin-top:6px;">📋 Export tweaks (copy JSON)</button>
+  <pre id="twExportOut" style="display:none;margin-top:10px;padding:10px;background:#f5f5f5;border-radius:6px;font-size:10px;white-space:pre-wrap;word-break:break-all;max-height:240px;overflow:auto;"></pre>
+</div>
+
+<script>
+/* ======================================================================================
+   ENGINE — renders slides[].graph data. Deck authors edit only the slides[] script at the
+   bottom (and DECK). See templates/05-node-pipeline/recipe.md.
+   ====================================================================================== */
+
+  // ---- Lucide line icons (ISC, lucide-static 0.460.0, shared/vendor/lucide/) inlined so offline renders match.
+  // To add one: paste the inner markup of shared/vendor/lucide/<name>.svg as another entry.
+  const ICONS = {
+    'search':'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+    'message-circle':'<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+    'file':'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/>',
+    'file-pen':'<path d="M12.5 22H18a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v9.5"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M13.378 15.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/>',
+    'file-code':'<path d="M10 12.5 8 15l2 2.5"/><path d="m14 12.5 2 2.5-2 2.5"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/>',
+    'file-text':'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+    'file-search':'<path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M4.268 21a2 2 0 0 0 1.727 1H18a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v3"/><path d="m9 18-1.5-1.5"/><circle cx="5" cy="14" r="3"/>',
+    'list-checks':'<path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/>',
+    'list-todo':'<rect x="3" y="5" width="6" height="6" rx="1"/><path d="m3 17 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/>',
+    'clipboard-list':'<rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/>',
+    'terminal':'<polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/>',
+    'square-terminal':'<path d="m7 11 2-2-2-2"/><path d="M11 13h4"/><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>',
+    'wrench':'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+    'hammer':'<path d="m15 12-8.373 8.373a1 1 0 1 1-3-3L12 9"/><path d="m18 15 4-4"/><path d="m21.5 11.5-1.914-1.914A2 2 0 0 1 19 8.172V7l-2.26-2.26a6 6 0 0 0-4.202-1.756L9 2.96l.92.82A6.18 6.18 0 0 1 12 8.4V10l2 2h1.172a2 2 0 0 1 1.414.586L18.5 14.5"/>',
+    'git-branch':'<line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/>',
+    'git-merge':'<circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/>',
+    'git-pull-request':'<circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" x2="6" y1="9" y2="21"/>',
+    'git-commit-horizontal':'<circle cx="12" cy="12" r="3"/><line x1="3" x2="9" y1="12" y2="12"/><line x1="15" x2="21" y1="12" y2="12"/>',
+    'layers':'<path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/>',
+    'database':'<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/>',
+    'eye':'<path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/>',
+    'repeat':'<path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/>',
+    'scale':'<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>',
+    'user':'<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+    'users':'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    'zap':'<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>',
+    'check':'<path d="M20 6 9 17l-5-5"/>',
+    'circle-check':'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+    'flask-conical':'<path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/>',
+    'test-tube':'<path d="M14.5 2v17.5c0 1.4-1.1 2.5-2.5 2.5c-1.4 0-2.5-1.1-2.5-2.5V2"/><path d="M8.5 2h7"/><path d="M14.5 16h-5"/>',
+    'bug':'<path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"/><path d="M12 20v-9"/><path d="M6.53 9C4.6 8.8 3 7.1 3 5"/><path d="M6 13H2"/><path d="M3 21c0-2.1 1.7-3.9 3.8-4"/><path d="M20.97 5c0 2.1-1.6 3.8-3.5 4"/><path d="M22 13h-4"/><path d="M17.2 17c2.1.1 3.8 1.9 3.8 4"/>',
+    'brain':'<path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M17.599 6.5a3 3 0 0 0 .399-1.375"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M19.938 10.5a4 4 0 0 1 .585.396"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M19.967 17.484A4 4 0 0 1 18 18"/>',
+    'sparkles':'<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/>',
+    'folder':'<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>',
+    'folder-open':'<path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/>',
+    'play':'<polygon points="6 3 20 12 6 21 6 3"/>',
+    'code':'<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
+    'command':'<path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/>',
+    'globe':'<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>',
+    'settings':'<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
+    'cog':'<path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2"/><path d="M12 22v-2"/><path d="m17 20.66-1-1.73"/><path d="M11 10.27 7 3.34"/><path d="m20.66 17-1.73-1"/><path d="m3.34 7 1.73 1"/><path d="M14 12h8"/><path d="M2 12h2"/><path d="m20.66 7-1.73 1"/><path d="m3.34 17 1.73-1"/><path d="m17 3.34-1 1.73"/><path d="m11 13.73-4 6.93"/>',
+    'shield-check':'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
+    'bot':'<path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/>',
+    'mail':'<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+    'calendar':'<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
+    'clock':'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+    'timer':'<line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/>',
+    'send':'<path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/>',
+    'filter':'<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>',
+    'route':'<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>',
+    'split':'<path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/>',
+    'package':'<path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"/><path d="m7.5 4.27 9 5.15"/>',
+    'puzzle':'<path d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z"/>',
+    'rocket':'<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>',
+    'target':'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+    'gauge':'<path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/>',
+    'server':'<rect width="20" height="8" x="2" y="2" rx="2" ry="2"/><rect width="20" height="8" x="2" y="14" rx="2" ry="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/>',
+    'cloud':'<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>',
+    'lock':'<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+    'key':'<path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/>',
+    'book-open':'<path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>',
+    'notebook-pen':'<path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4"/><path d="M2 6h4"/><path d="M2 10h4"/><path d="M2 14h4"/><path d="M2 18h4"/><path d="M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/>',
+    'list-ordered':'<path d="M10 12h11"/><path d="M10 18h11"/><path d="M10 6h11"/><path d="M4 10h2"/><path d="M4 6h1v4"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/>',
+    'image':'<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>',
+    'video':'<path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/>',
+    'mic':'<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/>',
+    'cpu':'<rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/>',
+    'workflow':'<rect width="8" height="8" x="3" y="3" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect width="8" height="8" x="13" y="13" rx="2"/>',
+    'pencil':'<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>',
+    'scan-search':'<path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3"/><path d="m16 16-1.9-1.9"/>',
+    'undo-2':'<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"/>',
+    'rotate-ccw':'<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
+    'hand':'<path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>',
+    'keyboard':'<path d="M10 8h.01"/><path d="M12 12h.01"/><path d="M14 8h.01"/><path d="M16 12h.01"/><path d="M18 8h.01"/><path d="M6 8h.01"/><path d="M7 16h10"/><path d="M8 12h.01"/><rect width="20" height="16" x="2" y="4" rx="2"/>',
+    'monitor':'<rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>',
+    'app-window':'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M10 4v4"/><path d="M2 8h20"/><path d="M6 4v4"/>',
+  };
+  const ICON_ALIAS = { magnifier:'search', chat:'message-circle', 'chat bubble':'message-circle', checklist:'list-checks',
+    branch:'git-branch', merge:'git-merge', person:'user', bolt:'zap', edit:'file-pen', test:'flask-conical' };
+
+  // ---- SYSTEM tokens (card: accent / glow / deep fill / badge) ----
+  const INK = '#0E0E0E';
+  const PAL = {
+    orange:{ accent:'#D9551F', glow:'#FF8A4C', deep:'#4A1D0B', badge:'#F5EBE0', fill:'#D9551F', rim:'#FF8A4C', icon:'#FFFFFF', dfill:'#D9551F', drim:'#FF8A4C' },
+    white: { accent:'#F2F2F2', glow:'#FFFFFF', deep:'#262626', badge:'#F2F2F2', fill:'#3A3A3A', rim:'#F2F2F2', icon:'#FFFFFF', dfill:'#3A3A3A', drim:'#F2F2F2' },
+    amber: { accent:'#F5A524', glow:'#FFC766', deep:'#4D3208', badge:'#FFE3A3', fill:'#F5A524', rim:'#FFC766', icon:INK, dfill:'#F5A524', drim:'#FFC766' },
+    lime:  { accent:'#A3E635', glow:'#C8F27A', deep:'#2C410E', badge:'#E2F5BD', fill:'#A3E635', rim:'#C8F27A', icon:INK, dfill:'#A3E635', drim:'#C8F27A' },
+    green: { accent:'#2FD27A', glow:'#6EE89B', deep:'#0C3B22', badge:'#C9EFD6', fill:'#2FD27A', rim:'#6EE89B', icon:INK, dfill:'#2FD27A', drim:'#6EE89B' },
+    cobalt:{ accent:'#4F8EF7', glow:'#8DB8FF', deep:'#0F2647', badge:'#F2F2F2', fill:'#4F8EF7', rim:'#8DB8FF', icon:'#FFFFFF', dfill:'#4F8EF7', drim:'#8DB8FF' },
+    grey:  { accent:'#8A8A8A', glow:null,      deep:'#2A2A2A', badge:'#8A8A8A', fill:'#2A2A2A', rim:'#8A8A8A', icon:'#8A8A8A', dfill:'#2A2A2A', drim:'#8A8A8A', label:'#8A8A8A' },
+  };
+  const W = 1080, H = 1350, MX = 65, MY = 54, SAFE_R = W - MX;
+  const pct = (p) => Math.round(H * p / 100);
+
+  // ---- copy caps + layout limits (card: SYSTEM / INTERIOR / Notes "Copy caps") ----
+  const LIMITS = {
+    labelWords: 3, labelChars: { 4:12, 3:16, other:22 }, perRow: 4,
+    proof:   { rows:4, nodes:8, top:16, bottom:66, wrap:1 },
+    explain: { rows:5, rowsIfWrap:4, nodes:9, top:16, bottom:82, wrap:2 },
+    parts:   { perRow:2 },
+    compare: { nodes:4 },
+    rail:    { nodes:5, lineChars:8, lines:2 },
+    systemCover: { rows:4, perRow:3 },
+    titleChars: 26, titleWords: 7, captionWords: 20, tagWords: 4, loopTagWords: 3, subWords: 8,
+    coverHeadWords: 7, coverSubWords: 9, cellChars: 8, codeLines: 14,
+  };
+
+  class FitError extends Error {}
+  let ERRS = [];
+  const fail = (msg) => ERRS.push(msg);
+  let UID = 0;
+
+  const hex2rgb = (h) => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
+  const rgba = (h, a) => { const [r, g, b] = hex2rgb(h); return `rgba(${r},${g},${b},${a})`; };
+  const words = (s) => String(s || '').replace(/<[^>]+>/g, ' ').trim().split(/\s+/).filter(Boolean).length;
+  const plain = (s) => String(s || '').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&');
+  const pad2 = (n) => String(n).padStart(2, '0');
+  const palOf = (c) => { const p = PAL[c || 'orange']; if (!p) throw new FitError(`unknown colour "${c}" (use ${Object.keys(PAL).join(', ')})`); return p; };
+
+  function iconSVG(name, size, color, sw = 2.1) {
+    const key = ICON_ALIAS[name] || name;
+    const inner = ICONS[key];
+    if (!inner) { fail(`unknown icon "${name}" — add shared/vendor/lucide/${key}.svg to ICONS`); return ''; }
+    return `<svg class="ic" style="width:${size}px;height:${size}px;color:${color}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
+  }
+  // logo: 'claude' → assets/claude-white.png · any path (e.g. 'assets/github-white.png') is used as written,
+  // relative to the deck folder.
+  const logoSrc = (l) => (/[\/.]/.test(l) ? l : `assets/${l}-white.png`);
+
+  // storyboard.json form (slides[].graph): rows of node ids + nodes[] + edges[{from,to,kind}].
+  // Resolved in place to rows of node objects so a storyboard graph can be pasted verbatim.
+  function resolveGraph(g) {
+    if (!g || g._resolved) return g;
+    if (Array.isArray(g.nodes)) {
+      const byId = new Map(g.nodes.map((n) => [String(n.id), n]));
+      g.rows = g.rows.map((r) => (Array.isArray(r) ? r : [r]).map((x) => {
+        if (typeof x !== 'string') return x;
+        const n = byId.get(x); if (!n) throw new FitError(`graph row names node "${x}", which isn't in nodes[]`); return { ...n };
+      }));
+    }
+    g._resolved = true; return g;
+  }
+
+  // ---- measuring (offset* = layout px, unaffected by the stage's scale transform) ----
+  let MEAS;
+  function measure(cls, html, maxW, extraStyle = '') {
+    MEAS.className = cls;
+    MEAS.setAttribute('style', `position:absolute;left:0;top:0;transform:none;visibility:hidden;width:max-content;${maxW ? `max-width:${maxW}px;` : ''}${extraStyle}`);
+    MEAS.innerHTML = html;
+    const lh = parseFloat(getComputedStyle(MEAS).lineHeight) || 1;
+    const w = MEAS.offsetWidth, h = MEAS.offsetHeight;
+    return { w, h, lines: Math.round(h / lh) };
+  }
+
+  /* =================== GRAPH LAYOUT =================== */
+  // graph = { rows:[[node,…],…], edges?:['1>2','2~3',{from,to,type}], loop?:{from,to,tag}, output?:'Label' }
+  // node  = { label, kind:'step'|'decision'|'tool', icon, logo, state:'done'|'live'|'ghost', sub, color, id, deep, badge:false }
+  function shapeHalf(n) { return n.kind === 'decision' ? n.size * 0.7629 * 0.7071 : n.size / 2; }
+
+  function normalize(graph, o, slidePal) {
+    if (!graph || !Array.isArray(graph.rows) || !graph.rows.length) throw new FitError('graph.rows is missing');
+    const rows = graph.rows.map((r) => (Array.isArray(r) ? r : [r]).map((n) => ({ ...n })));
+    if (graph.output) rows.push([{ label: graph.output, kind: 'step', icon: 'bolt', badge: false, deep: true, output: true }]);
+    const nodes = []; let badge = 0;
+    rows.forEach((r, ri) => r.forEach((n, ci) => {
+      n.row = ri; n.col = ci; n.kind = n.kind || 'step';
+      if (!['step', 'decision', 'tool'].includes(n.kind)) fail(`node "${n.label}": kind must be step, decision or tool`);
+      n.size = n.output ? (o.outSize || o.size * 1.3) : (n.size || o.size);
+      if (n.badge !== false) n.badge = ++badge; else n.badge = null;
+      n.key = n.id != null ? String(n.id) : (n.badge != null ? String(n.badge) : `r${ri}c${ci}`);
+      n.pal = n.color ? palOf(n.color) : slidePal;
+      if (n.kind === 'tool' && !n.logo) fail(`tool node "${n.label}" needs a logo (white mark in assets/)`);
+      if (n.kind !== 'tool' && !n.icon) fail(`node "${n.label}" needs an icon`);
+      nodes.push(n);
+    }));
+    // first input / final output in deep fill (single-node rows, step kind)
+    const numbered = nodes.filter((n) => n.badge != null);
+    const first = numbered[0], last = numbered[numbered.length - 1];
+    if (o.autoDeep !== false) {
+      if (first && first.deep == null && first.kind === 'step' && rows[first.row].length === 1 && !first.state) first.deep = true;
+      if (last && last !== first && last.deep == null && last.kind === 'step' && rows[last.row].length === 1 && !last.state && !graph.output) last.deep = true;
+    }
+    return { rows, nodes };
+  }
+
+  function checkCopy(n, k, o) {
+    const lab = plain(n.label);
+    if (words(lab) > LIMITS.labelWords) fail(`label "${lab}" has ${words(lab)} words (max ${LIMITS.labelWords})`);
+    if (o.railChars) {
+      const ws = lab.split(/\s+/); const lines = []; let cur = '';
+      for (const w of ws) { if (w.length > o.railChars) fail(`rail label "${lab}": "${w}" is over ${o.railChars} characters a line`);
+        if (!cur) cur = w; else if ((cur + ' ' + w).length <= o.railChars) cur += ' ' + w; else { lines.push(cur); cur = w; } }
+      if (cur) lines.push(cur);
+      if (lines.length > LIMITS.rail.lines) fail(`rail label "${lab}" needs ${lines.length} lines (max ${LIMITS.rail.lines} of ${o.railChars} characters)`);
+    } else {
+      const cap = LIMITS.labelChars[k] || LIMITS.labelChars.other;
+      if (lab.length > cap) fail(`label "${lab}" is ${lab.length} characters (max ${cap} in a ${k}-node row)`);
+    }
+    if (n.sub && words(n.sub) > LIMITS.subWords) fail(`sub-label "${plain(n.sub)}" is over ${LIMITS.subWords} words`);
+  }
+
+  // Vertical layout (pipelines, system cover, tall rails). box = {x,y,w,h}
+  function layoutV(graph, box, o, slidePal) {
+    const { rows, nodes } = normalize(graph, o, slidePal);
+    if (o.maxRows && rows.length > o.maxRows) fail(`${rows.length} rows (max ${o.maxRows} on this layout)`);
+    const nCount = nodes.filter((n) => n.badge != null).length;
+    if (o.maxNodes && nCount > o.maxNodes) fail(`${nCount} nodes (max ${o.maxNodes} on this layout)`);
+    const lblPx = o.lbl, subPx = o.subPx || 28;
+    const rowInfo = rows.map((r, ri) => {
+      const k = r.length;
+      if (k > (o.perRow || LIMITS.perRow)) fail(`row ${ri + 1} has ${k} nodes (max ${o.perRow || LIMITS.perRow} a row)`);
+      const sp = k === 1 ? 0 : Math.min((o.spacing || {})[k] || 236, box.w / k);
+      const maxW = k === 1 ? Math.min(box.w, o.singleMaxW || 560) : sp - 18;
+      let up = 0, down = 0;
+      r.forEach((n) => {
+        checkCopy(n, k, o);
+        const m = measure('lb', n.label, maxW, `font-size:${lblPx}px;`);
+        n.lblW = m.w; n.lblH = m.h; n.lblLines = m.lines;
+        if (m.lines > (o.wrap || 1)) fail(`label "${plain(n.label)}" wraps to ${m.lines} lines (max ${o.wrap || 1} here) — shorten it or cut nodes`);
+        if (n.sub) { const s = measure('sb', n.sub, maxW, `font-size:${subPx}px;`); n.subW = s.w; n.subH = s.h;
+          if (s.lines > 2) fail(`sub-label "${plain(n.sub)}" wraps to ${s.lines} lines (max 2)`); } else { n.subW = 0; n.subH = 0; }
+        n.half = shapeHalf(n);
+        up = Math.max(up, n.half);
+        down = Math.max(down, n.half + 10 + n.lblH + (n.sub ? 6 + n.subH : 0));
+      });
+      return { k, sp, up, down };
+    });
+    if (o.anyWrapRows && rows.length > o.anyWrapRows && nodes.some((n) => n.lblLines > 1 || n.sub)) fail(`${rows.length} rows with a wrapped label or sub-label (max ${o.anyWrapRows})`);
+    const blocks = rowInfo.reduce((a, r) => a + r.up + r.down, 0);
+    const nGaps = rows.length - 1;
+    let gap = 0;
+    if (nGaps > 0) {
+      gap = Math.min(o.gapMax || 140, (box.h - blocks) / nGaps);
+      if (gap < (o.gapMin || 40)) fail(`diagram overflows its band: rows need ${Math.round(blocks + nGaps * (o.gapMin || 40))}px, band is ${box.h}px — cut rows or nodes`);
+    } else if (blocks > box.h) fail(`diagram overflows its band (${Math.round(blocks)}px > ${box.h}px)`);
+    const total = blocks + gap * nGaps;
+    let y = box.y + (o.valign === 'top' ? 0 : Math.max(0, (box.h - total) / 2));
+    const cx = box.x + box.w / 2 + (o.dx || 0);
+    rows.forEach((r, ri) => {
+      const info = rowInfo[ri];
+      const cy = y + info.up;
+      r.forEach((n, ci) => {
+        n.x = cx + (ci - (r.length - 1) / 2) * info.sp; n.y = cy;
+        n.lblTop = n.y + n.half + 10; n.subTop = n.lblTop + n.lblH + 6;
+        n.bottom = n.lblTop + n.lblH + (n.sub ? 6 + n.subH : 0);
+      });
+      // neighbour labels must not touch; labels stay inside the box
+      for (let i = 0; i + 1 < r.length; i++) {
+        const a = r[i], b = r[i + 1];
+        const need = Math.max(a.lblW, a.subW) / 2 + Math.max(b.lblW, b.subW) / 2 + 16;
+        if (need > b.x - a.x) fail(`labels "${plain(a.label)}" and "${plain(b.label)}" collide (row ${ri + 1}) — shorten them`);
+      }
+      r.forEach((n) => { const hw = Math.max(n.lblW, n.subW) / 2;
+        if (n.x - hw < Math.min(box.x, MX) - 2 || n.x + hw > Math.max(box.x + box.w, SAFE_R) + 2) fail(`label "${plain(n.label)}" runs outside the margins`); });
+      y = cy + info.down + gap;
+    });
+    return finishLayout({ rows, nodes, graph, o, dir: 'v', gap });
+  }
+
+  // Horizontal rail (inspector). One row of ≤5 nodes, left to right.
+  function layoutH(graph, box, o, slidePal) {
+    const flat = { ...graph, rows: [graph.rows.flat()] };
+    const { rows, nodes } = normalize(flat, { ...o, autoDeep: false }, slidePal);
+    const k = nodes.length;
+    if (k > LIMITS.rail.nodes) fail(`rail has ${k} nodes (max ${LIMITS.rail.nodes})`);
+    const sp = Math.min(o.railSpacing || 190, box.w / k);
+    let down = 0, half = 0;
+    nodes.forEach((n) => {
+      checkCopy(n, k, { railChars: LIMITS.rail.lineChars });
+      const m = measure('lb', n.label, sp - 14, `font-size:${o.lbl}px;`);
+      n.lblW = m.w; n.lblH = m.h; n.lblLines = m.lines; n.subW = 0; n.subH = 0;
+      if (m.lines > LIMITS.rail.lines) fail(`rail label "${plain(n.label)}" wraps to ${m.lines} lines (max 2)`);
+      n.half = shapeHalf(n); half = Math.max(half, n.half);
+      down = Math.max(down, n.half + 10 + n.lblH);
+    });
+    // block height uses the 2-line label height so rails sit at the same y on every step slide
+    const twoLine = measure('lb', 'Xx<br>Xx', 0, `font-size:${o.lbl}px;`).h;
+    const block = half + Math.max(down, half + 10 + twoLine);
+    const cy = box.y + (box.h - block) / 2 + half;
+    nodes.forEach((n, i) => { n.x = box.x + box.w / 2 + (i - (k - 1) / 2) * sp; n.y = cy;
+      n.lblTop = n.y + n.half + 10; n.bottom = n.lblTop + n.lblH; });
+    for (let i = 0; i + 1 < k; i++) { const a = nodes[i], b = nodes[i + 1];
+      if (a.lblW / 2 + b.lblW / 2 + 12 > b.x - a.x) fail(`rail labels "${plain(a.label)}" and "${plain(b.label)}" collide`); }
+    return finishLayout({ rows, nodes, graph: flat, o, dir: 'h' });
+  }
+
+  function resolveEdges(L) {
+    const { rows, nodes, graph } = L;
+    const byKey = new Map(); nodes.forEach((n) => { byKey.set(n.key, n); if (n.badge != null) byKey.set(String(n.badge), n); if (n.id != null) byKey.set(String(n.id), n); });
+    const find = (k) => { const n = byKey.get(String(k).trim()); if (!n) fail(`edge/loop names node "${k}", which doesn't exist (use a badge number or a node id)`); return n; };
+    let edges = [];
+    if (graph.edges && L.dir === 'v') {
+      for (const e of graph.edges) {
+        if (typeof e === 'string') {
+          const m = e.match(/^\s*([^>~\s]+)\s*([>~])\s*([^>~\s]+)\s*$/);
+          if (!m) { fail(`edge "${e}" — write "1>2" (taken) or "1~2" (ghost)`); continue; }
+          const a = find(m[1]), b = find(m[3]); if (a && b) edges.push({ a, b, ghost: m[2] === '~' });
+        } else { const a = find(e.from), b = find(e.to); if (a && b) edges.push({ a, b, ghost: e.type === 'ghost' || e.kind === 'ghost' }); }
+      }
+    } else if (L.dir === 'h') {
+      for (let i = 0; i + 1 < nodes.length; i++) edges.push({ a: nodes[i], b: nodes[i + 1], ghost: nodes[i + 1].state === 'ghost' });
+    } else {
+      for (let r = 0; r + 1 < rows.length; r++) {
+        const A = rows[r], B = rows[r + 1];
+        if (A.length === 1 || B.length === 1) A.forEach((a) => B.forEach((b) => edges.push({ a, b })));
+        else if (A.length === B.length) A.forEach((a, i) => edges.push({ a, b: B[i] }));
+        else B.forEach((b) => { const a = A.reduce((p, c) => (Math.abs(c.x - b.x) < Math.abs(p.x - b.x) ? c : p)); edges.push({ a, b }); });
+      }
+      edges.forEach((e) => { e.ghost = e.b.state === 'ghost' || e.a.state === 'ghost'; });
+    }
+    L.edges = edges;
+    if (graph.loop) {
+      const lp = graph.loop; const F = find(lp.from), T = find(lp.to);
+      if (lp.tag && words(lp.tag) > LIMITS.loopTagWords) fail(`loop tag "${lp.tag}" is over ${LIMITS.loopTagWords} words`);
+      if (F && T) { if (!(F.y > T.y)) fail('loop must run from a later (lower) node back up to an earlier one'); L.loop = { F, T, tag: lp.tag || '' }; }
+    }
+  }
+
+  function finishLayout(L) {
+    resolveEdges(L);
+    const o = L.o;
+    // loop geometry
+    if (L.loop) {
+      const { F, T } = L.loop;
+      const span = L.nodes.filter((n) => n.y >= T.y - 1 && n.y <= F.y + 1);
+      const xl = Math.max(...span.map((n) => Math.max(n.x + n.half + 14, n.x + Math.max(n.lblW, n.subW) / 2))) + 40;
+      L.loop.xl = xl;
+      if (L.loop.tag) {
+        const maxW = SAFE_R - (xl + 18);
+        if (maxW < 110) fail(`no room for the loop tag right of the loop (x ${Math.round(xl)}) — shorten labels in the looped rows`);
+        const m = measure('lt', L.loop.tag, Math.max(60, maxW));
+        if (m.lines > 2 || m.w > maxW + 1) fail(`loop tag "${L.loop.tag}" doesn't fit right of the loop (${m.lines} lines in ${Math.round(maxW)}px)`);
+        L.loop.tagW = m.w; L.loop.tagH = m.h;
+      }
+    }
+    // bbox (nodes, badges, labels, loop + tag), padded 24
+    let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+    const grow = (a, b, c, d) => { x0 = Math.min(x0, a); y0 = Math.min(y0, b); x1 = Math.max(x1, c); y1 = Math.max(y1, d); };
+    L.nodes.forEach((n) => {
+      const bs = n.size * 36 / 76; const bx = n.x - n.half - bs * 0.3;
+      grow(n.x - n.half, n.y - n.half, n.x + n.half, n.y + n.half);
+      if (n.badge != null) grow(bx - bs / 2, n.y - n.size * 0.16 - bs / 2, bx + bs / 2, n.y);
+      const hw = Math.max(n.lblW, n.subW) / 2; grow(n.x - hw, n.lblTop, n.x + hw, n.bottom);
+      if (n.state === 'live') grow(n.x - n.half - 14, n.y - n.half - 14, n.x + n.half + 14, n.y + n.half + 14);
+    });
+    if (L.loop) grow(L.loop.xl, L.loop.T.y, L.loop.xl + 4 + (L.loop.tagW ? 18 + L.loop.tagW : 0), L.loop.F.y);
+    L.bbox = { x: x0 - 24, y: y0 - 24, w: x1 - x0 + 48, h: y1 - y0 + 48 };
+    return L;
+  }
+
+  /* =================== DRAWING =================== */
+  function nodeHTML(n, o) {
+    const p = n.pal; const sz = n.size; const k = sz / 76;
+    let fill, rim, ico, glowC = p.glow, lblC = p.label || '#F5F5F5', rw = Math.max(2, 3 * k);
+    if (n.kind === 'tool') { fill = '#111111'; rim = p.accent; ico = p.icon; }
+    else if (n.kind === 'decision') { fill = p.dfill; rim = p.drim; ico = p.icon; }
+    else { fill = n.deep ? p.deep : p.fill; rim = p.rim; ico = n.deep ? (p === PAL.grey ? p.icon : '#FFFFFF') : p.icon; }
+    let cls = `nd k-${n.kind}`;
+    let badgeBg = p.badge, badgeFg = INK;
+    if (n.state === 'done') { if (n.kind !== 'tool') { fill = p.deep; ico = p === PAL.grey ? p.icon : '#FFFFFF'; } glowC = null; }
+    if (n.state === 'live') { cls += ' live'; lblC = p.accent; }
+    if (n.state === 'ghost') { fill = '#161616'; rim = '#333333'; ico = '#555555'; lblC = '#555555'; glowC = null; badgeBg = '#333333'; badgeFg = '#8A8A8A'; }
+    const glow = glowC ? `0 0 ${Math.round(8 * k)}px ${rgba(glowC, n.state === 'live' ? .95 : .7)}, 0 0 ${Math.round(26 * k)}px ${rgba(glowC, n.state === 'live' ? .45 : .28)}` : 'none';
+    const isz = Math.round((n.kind === 'decision' ? 28 : 34) * k * (n.output ? 1.15 : 1));
+    let inner = '';
+    if (n.kind === 'tool') inner = `<img class="lg" src="${logoSrc(n.logo)}" alt=""${n.state === 'ghost' ? ' style="opacity:.35"' : ''}>`;
+    else inner = iconSVG(n.icon, isz, ico, 2.1);
+    let h = `<div class="${cls}" style="left:${n.x}px;top:${n.y}px;--sz:${sz}px;--rw:${rw}px;--fill:${fill};--rim:${rim};--acc:${p.accent};--glow:${glow}"><div class="sh"></div>${inner}</div>`;
+    if (n.badge != null && o.badges !== false) {
+      const bs = sz * 36 / 76;
+      h += `<div class="bd" style="left:${n.x - n.half - bs * 0.3}px;top:${n.y - sz * 0.16}px;width:${bs}px;height:${bs}px;font-size:${Math.round(22 * k)}px;background:${badgeBg};color:${badgeFg}">${n.badge}</div>`;
+    }
+    const maxW = Math.ceil(n.lblW) + 2;
+    h += `<div class="lb" style="left:${n.x}px;top:${n.lblTop}px;font-size:${o.lbl}px;max-width:${maxW}px;color:${lblC}">${n.label}</div>`;
+    if (n.sub) h += `<div class="sb" style="left:${n.x}px;top:${n.subTop}px;font-size:${o.subPx || 28}px;max-width:${Math.ceil(n.subW) + 2}px">${n.sub}</div>`;
+    return h;
+  }
+
+  function edgePath(e, L) {
+    const { a, b } = e;
+    if (L.dir === 'h' || Math.abs(a.y - b.y) < 2) {
+      const bs = b.size * 36 / 76;
+      const sx = a.x + a.half + 8, ex = b.x - b.half - (b.badge != null ? bs * 0.8 : 0) - 6;
+      return `M${sx},${a.y} L${ex},${b.y}`;
+    }
+    const sx = a.x, sy = a.bottom + 6, ex = b.x, ey = b.y - b.half - 6;
+    if (Math.abs(sx - ex) < 2) {
+      const len = ey - sy, bow = Math.min(9, len * 0.07);
+      return `M${sx},${sy} C${sx + bow},${sy + len * 0.36} ${ex - bow},${sy + len * 0.64} ${ex},${ey}`;
+    }
+    return `M${sx},${sy} L${ex},${ey}`;
+  }
+
+  function loopPath(lp) {
+    const { F, T, xl } = lp; const R = Math.min(36, (F.y - T.y) / 2 - 2);
+    const sx = F.x + F.half + 10, ex = T.x + T.half + 10;
+    return `M${sx},${F.y} L${xl - R},${F.y} Q${xl},${F.y} ${xl},${F.y - R} L${xl},${T.y + R} Q${xl},${T.y} ${xl - R},${T.y} L${ex},${T.y}`;
+  }
+
+  // elbow path helper: points list → path with rounded corners
+  function roundedPath(pts, R = 22) {
+    let d = `M${pts[0][0]},${pts[0][1]}`;
+    for (let i = 1; i < pts.length - 1; i++) {
+      const [px, py] = pts[i - 1], [cx, cy] = pts[i], [nx, ny] = pts[i + 1];
+      const d1 = Math.hypot(cx - px, cy - py), d2 = Math.hypot(nx - cx, ny - cy); const r = Math.min(R, d1 / 2, d2 / 2);
+      d += ` L${cx - (cx - px) / d1 * r},${cy - (cy - py) / d1 * r} Q${cx},${cy} ${cx + (nx - cx) / d2 * r},${cy + (ny - cy) / d2 * r}`;
+    }
+    const [lx, ly] = pts[pts.length - 1]; return d + ` L${lx},${ly}`;
+  }
+
+  // wires: list of {d, pal, ghost}
+  function wireSVG(wires, hazes, G) {
+    const id = `u${++UID}`;
+    let s = `<svg class="wires" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><defs><filter id="bg${id}" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur stdDeviation="3.2"/></filter>`;
+    hazes.forEach((hz, i) => { s += `<radialGradient id="hz${id}${i}"><stop offset="0" stop-color="${hz.color}" stop-opacity="${G.haze / 100}"/><stop offset=".55" stop-color="${hz.color}" stop-opacity="${G.haze / 250}"/><stop offset="1" stop-color="${hz.color}" stop-opacity="0"/></radialGradient>`; });
+    s += `</defs>`;
+    hazes.forEach((hz, i) => { s += `<ellipse cx="${hz.x}" cy="${hz.y}" rx="${hz.r}" ry="${hz.ry || hz.r}" fill="url(#hz${id}${i})"/>`; });
+    wires.forEach((w) => {
+      if (w.ghost) s += `<path d="${w.d}" fill="none" stroke="#FFFFFF" stroke-opacity=".18" stroke-width="2" stroke-dasharray="7 9" stroke-linecap="round"/>`;
+      else s += `<path d="${w.d}" fill="none" stroke="${w.pal.accent}" stroke-opacity="${G.line / 100}" stroke-width="${w.width || 3}" stroke-linecap="round" data-bead="${w.pal.glow || w.pal.accent}" data-halo="${w.pal.glow ? 1 : 0}" data-filter="bg${id}"/>`;
+    });
+    return s + `</svg>`;
+  }
+
+  function addBeads(root, G) {
+    root.querySelectorAll('path[data-bead]').forEach((p) => {
+      const L = p.getTotalLength(); const sp = G.bead; const n = Math.floor((L - 14) / sp) + 1;
+      if (L < 22) return;
+      const start = (L - (n - 1) * sp) / 2; const col = p.dataset.bead; const halo = p.dataset.halo === '1';
+      let out = '';
+      for (let i = 0; i < n; i++) {
+        const pt = p.getPointAtLength(start + i * sp); const big = i % 3 === 1;
+        if (big && halo) out += `<circle cx="${pt.x}" cy="${pt.y}" r="9" fill="${col}" opacity=".55" filter="url(#${p.dataset.filter})"/>`;
+        out += `<circle cx="${pt.x}" cy="${pt.y}" r="${big ? 4.5 : 3}" fill="${col}"/>`;
+      }
+      p.insertAdjacentHTML('afterend', out);
+    });
+  }
+
+  // haze behind the branching section (rows with 2+ nodes), or the widest row when asked
+  function hazeFor(L, pal, widest) {
+    const multi = L.rows.filter((r) => r.length > 1);
+    const pick = multi.length ? multi : (widest ? [L.rows.reduce((a, r) => (r.length > a.length ? r : a))] : []);
+    if (!pick.length) return [];
+    const ys = pick.map((r) => r[0].y); const y = (Math.min(...ys) + Math.max(...ys)) / 2;
+    const xs = pick.flat().map((n) => n.x); const x = (Math.min(...xs) + Math.max(...xs)) / 2;
+    return [{ x, y, r: W * 0.28, ry: W * 0.28 + (Math.max(...ys) - Math.min(...ys)) / 2, color: pal.accent }];
+  }
+
+  // full diagram layer: wires + nodes (+ loop + tag). Returns html; call addBeads after insertion.
+  function diagramHTML(L, pal, o, G, extraWires = [], opts = {}) {
+    const wires = L.edges.map((e) => ({ d: edgePath(e, L), pal: e.a.pal || pal, ghost: e.ghost }));
+    let tagHTML = '';
+    if (L.loop) {
+      wires.push({ d: loopPath(L.loop), pal, ghost: false });
+      if (L.loop.tag) tagHTML = `<div class="lt" style="left:${L.loop.xl + 18}px;top:${(L.loop.F.y + L.loop.T.y) / 2 - L.loop.tagH / 2}px;max-width:${SAFE_R - L.loop.xl - 18}px;color:${pal.accent}">${L.loop.tag}</div>`;
+    }
+    const hz = opts.noHaze ? [] : hazeFor(L, pal, opts.widestHaze);
+    return wireSVG(wires.concat(extraWires), hz, G) + L.nodes.map((n) => nodeHTML(n, o)).join('') + tagHTML;
+  }
+
+  /* =================== SLIDE PARTS =================== */
+  function titleBlock(s, pal) {
+    const t = s.title || '';
+    if (words(t) > 3 && s.layout !== 'inspector') fail(`title "${plain(t)}" is over 3 words (a 1-3 word name; the gloss carries the rest)`);
+    if (words(t) + words(s.gloss) > LIMITS.titleWords + (s.layout === 'inspector' ? 3 : 0)) fail(`title + gloss is ${words(t) + words(s.gloss)} words (max ${LIMITS.titleWords})`);
+    const tm = measure('ttl', t, 950, 'position:absolute;left:0;right:auto;');
+    if (tm.lines > 1) fail(`title "${plain(t)}" doesn't fit one line at 60px (type never shrinks) — shorten it`);
+    let y = MY; let h = `<div class="ttl" style="top:${y}px;color:${pal.accent};text-shadow:0 0 6px ${rgba(pal.glow || pal.accent, .85)},0 0 28px ${rgba(pal.glow || pal.accent, .42)}">${t}</div>`;
+    y += tm.h + 8;
+    if (s.gloss) { const gm = measure('gls', s.gloss, 950, 'position:absolute;left:0;right:auto;');
+      h += `<div class="gls" style="top:${y}px">${s.gloss}</div>`; y += gm.h;
+      if (gm.lines > 2) fail(`gloss "${plain(s.gloss)}" runs to ${gm.lines} lines (max 2)`); }
+    return { html: h, bottom: y };
+  }
+
+  function footer(idx, opts = {}) {
+    const lab = opts.noLabel ? '' : `<div class="foot l">${G_EFF().deckLabel}</div>`;
+    // DECK.counterOffset / DECK.counterTotal: for decks whose cover (or other slides) are rendered outside
+    // this file, e.g. an HTML-composed cover as slide 01 and this file's slides as 02..N.
+    const off = DECK.counterOffset || 0, tot = DECK.counterTotal || slides.length + off;
+    return lab + `<div class="foot r">${pad2(idx + 1 + off)}/${pad2(tot)}</div>`;
+  }
+
+  function captionCheck(html, maxW, maxLines, where) {
+    if (words(html) > LIMITS.captionWords) fail(`caption is ${words(html)} words (max ${LIMITS.captionWords})`);
+    const m = measure('cap', html, maxW); if (m.lines > maxLines) fail(`caption wraps to ${m.lines} lines in the ${where} (max ${maxLines})`);
+    return m;
+  }
+
+  function chipHTML(x, y, w, h, pal, src, focus, fit) {
+    return `<div class="chip" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;--rim60:${rgba(pal.accent, .6)};--focus:${focus || (fit === 'contain' ? '50% 50%' : '50% 0%')};--fit:${fit || 'cover'}"><img src="${src || ''}" alt=""></div>`;
+  }
+
+  /* =================== LAYOUTS =================== */
+  const LAYOUTS = {};
+
+  // Pipeline slide: variant 'proof' (band with a real capture) | 'explain' (caption only). parts:true = sub-labels, 2 a row.
+  LAYOUTS.pipeline = (s, idx, G, eff) => {
+    const pal = palOf(s.color); const variant = s.variant || 'proof'; const V = LIMITS[variant === 'explain' ? 'explain' : 'proof'];
+    const T = titleBlock(eff, pal);
+    const top = Math.max(pct(V.top), T.bottom + 18), bottom = pct(V.bottom);
+    const parts = !!s.parts;
+    const o = { size: 76, lbl: 30, wrap: V.wrap, maxRows: V.rows, maxNodes: V.nodes, anyWrapRows: V.rowsIfWrap, perRow: parts ? LIMITS.parts.perRow : 4,
+      spacing: parts ? { 2: 420 } : { 2: 340, 3: 290, 4: 236 }, gapMax: eff.gapMax, gapMin: 40 };
+    const L = layoutV(s.graph, { x: MX, y: top, w: W - 2 * MX, h: bottom - top }, o, pal);
+    let extra = [], band = '';
+    if (variant === 'proof') {
+      const pf = eff.proof || {};
+      const bx = Math.round(W * .06), by = pct(70), bw = Math.round(W * .52) - bx, bh = pct(92) - by;
+      band += chipHTML(bx, by, bw, bh, pal, pf.img, pf.focus, pf.fit);
+      const last = L.nodes.filter((n) => n.badge != null).slice(-1)[0];
+      const ccx = bx + bw / 2;
+      if (last) {
+        if (Math.abs(last.x - ccx) < 30) extra.push({ d: `M${last.x},${last.bottom + 6} L${last.x},${by - 8}`, ghost: true });
+        else { const sx = last.x - Math.max(last.lblW / 2, last.half) - 12, sy = last.lblTop + last.lblH / 2;
+          extra.push({ d: roundedPath([[sx, sy], [ccx, sy], [ccx, by - 8]], 26), ghost: true }); }
+      }
+      const rx = Math.round(W * .56), rw = Math.round(W * .94) - rx;
+      if (pf.tag && words(pf.tag) > LIMITS.tagWords) fail(`proof tag "${pf.tag}" is over ${LIMITS.tagWords} words`);
+      const tg = pf.tag ? measure('tag', pf.tag, rw) : { h: 0, lines: 0 };
+      if (tg.lines > 2) fail(`proof tag "${pf.tag}" wraps to ${tg.lines} lines`);
+      const cm = captionCheck(eff.caption || '', rw, 6, 'proof band');
+      const blockH = tg.h + (pf.tag ? 14 : 0) + cm.h;
+      if (blockH > bh) fail(`proof band text is ${Math.round(blockH)}px tall (band ${bh}px)`);
+      let ty = by + (bh - blockH) / 2;
+      if (pf.tag) { band += `<div class="tag" style="position:absolute;left:${rx}px;top:${ty}px;width:${rw}px;--acc:${pal.accent}">${pf.tag}</div>`; ty += tg.h + 14; }
+      band += `<div class="cap" style="position:absolute;left:${rx}px;top:${ty}px;width:${rw}px;--acc:${pal.accent}">${eff.caption || ''}</div>`;
+    } else {
+      const cy0 = pct(85), cy1 = pct(92);
+      const cm = captionCheck(eff.caption || '', W - 2 * MX, 2, 'caption band');
+      band += `<div class="cap" style="position:absolute;left:${MX}px;right:${MX}px;top:${cy0 + Math.max(0, (cy1 - cy0 - cm.h) / 2)}px;text-align:center;--acc:${pal.accent}">${eff.caption || ''}</div>`;
+    }
+    return { html: T.html + diagramHTML(L, pal, o, G, extra) + band + footer(idx), L };
+  };
+
+  // Compare: old way (neutral grey, no glow) vs new way (accent), proof band: caption left, chip right.
+  LAYOUTS.compare = (s, idx, G, eff) => {
+    const pal = palOf(s.color); const T = titleBlock(eff, pal);
+    const headY = Math.max(pct(16), T.bottom + 18);
+    const colW = 460, lx = MX, rx = W - MX - colW;
+    let h = T.html;
+    const heads = [[s.left.head, lx, '#8A8A8A', 'none'], [s.right.head, rx, pal.accent, `0 0 10px ${rgba(pal.glow, .5)}`]];
+    let headH = 0;
+    heads.forEach(([t, x, c, sh]) => { const m = measure('lb', t, colW, 'font-size:32px;'); headH = Math.max(headH, m.h);
+      if (m.lines > 1) fail(`column head "${t}" wraps`);
+      h += `<div style="position:absolute;left:${x}px;width:${colW}px;top:${headY}px;text-align:center;font-weight:600;font-size:32px;line-height:1.15;color:${c};text-shadow:${sh};z-index:6">${t}</div>`; });
+    const gtop = headY + headH + 26, gbot = pct(66);
+    const o = { size: 76, lbl: 30, wrap: 1, maxNodes: LIMITS.compare.nodes, perRow: 2, spacing: { 2: 220 }, gapMax: eff.gapMax, gapMin: 36 };
+    const Lg = layoutV(s.left.graph, { x: lx, y: gtop, w: colW, h: gbot - gtop }, { ...o, autoDeep: false, valign: 'top' }, PAL.grey);
+    const Rg = layoutV(s.right.graph, { x: rx, y: gtop, w: colW, h: gbot - gtop }, { ...o, valign: 'top', gapMax: Math.max(o.gapMin, Lg.gap || o.gapMax) }, pal);
+    const by = pct(70), bh = pct(92) - by;
+    const div = [{ d: `M${W / 2},${headY} L${W / 2},${gbot}`, ghost: true }];
+    const last = Rg.nodes.filter((n) => n.badge != null).slice(-1)[0];
+    const chipX = rx, chipW = colW;
+    if (last) div.push({ d: `M${last.x},${last.bottom + 6} L${last.x},${by - 8}`, ghost: true });
+    h += diagramHTML(Lg, PAL.grey, o, G, [], { noHaze: true }) + diagramHTML(Rg, pal, o, G, div);
+    const pf = eff.proof || {};
+    h += chipHTML(chipX, by, chipW, bh, pal, pf.img, pf.focus, pf.fit);
+    const cm = captionCheck(eff.caption || '', colW, 6, 'proof band');
+    const tg = pf.tag ? measure('tag', pf.tag, colW) : { h: 0 };
+    const blockH = tg.h + (pf.tag ? 14 : 0) + cm.h; let ty = by + (bh - blockH) / 2;
+    if (pf.tag) { h += `<div class="tag" style="position:absolute;left:${lx}px;top:${ty}px;width:${colW}px;--acc:${pal.accent}">${pf.tag}</div>`; ty += tg.h + 14; }
+    h += `<div class="cap" style="position:absolute;left:${lx}px;top:${ty}px;width:${colW}px;--acc:${pal.accent}">${eff.caption || ''}</div>`;
+    return { html: h + footer(idx) };
+  };
+
+  // Inspector: rail of ≤5 nodes (done/live/ghost) + panel holding one capture or an exact-text card.
+  // tall:true → rail down the left 30%, panel on the right. uses:[{node, img, focus, title}] → one zone per live node.
+  LAYOUTS.inspector = (s, idx, G, eff) => {
+    const pal = palOf(s.color); const T = titleBlock(eff, pal);
+    let h = T.html; const o = { size: 64, lbl: 28, wrap: 2 };
+    const flat = s.graph.rows.flat();
+    const inspKey = s.inspect != null ? String(s.inspect) : null;
+    // default states: before the inspected node done, it live, after it ghost
+    let iIdx = inspKey ? flat.findIndex((n, i) => String(n.id ?? i + 1) === inspKey) : flat.findIndex((n) => n.state === 'live');
+    if (iIdx < 0) iIdx = 0;
+    const g2 = { ...s.graph, rows: [flat.map((n, i) => ({ ...n, state: n.state || (i < iIdx ? 'done' : i === iIdx ? 'live' : 'ghost') }))] };
+    const panelPal = pal;
+    const zone = (x, y, w, hgt, node, p) => {
+      let z = `<div class="pnl" style="left:${x}px;top:${y}px;width:${w}px;height:${hgt}px;--rim60:${rgba(panelPal.accent, .6)};--acc:${panelPal.accent}">`;
+      const bs = 30;
+      const title = p.title || plain(node.label);
+      const bm = measure('', title, 0, "font-family:'JetBrains Mono',monospace;font-weight:500;font-size:26px;white-space:nowrap;");
+      if (bm.w > w - 40 - bs - 14) fail(`panel title "${title}" overflows its bar`);
+      z += `<div class="bar"><div class="bd pb" style="width:${bs}px;height:${bs}px;font-size:18px;background:${panelPal.badge}">${node.badge}</div><span>${title}</span></div><div class="body">`;
+      if (p.text != null) {
+        const lines = String(p.text).replace(/^\n/, '').replace(/\n$/, '').split('\n');
+        if (lines.length > LIMITS.codeLines) fail(`exact-text card has ${lines.length} lines (max ${LIMITS.codeLines})`);
+        z += `<pre class="code" data-fitcode="1">${lines.join('\n')}</pre>`;
+      } else z += `<img src="${p.img || ''}" alt="" style="--focus:${p.focus || '50% 0%'};--fit:${p.fit || 'cover'}">`;
+      return z + `</div></div>`;
+    };
+    const wires = [];
+    if (s.tall) {
+      const L = layoutV({ ...g2, rows: g2.rows[0].map((n) => [n]) }, { x: MX, y: Math.max(pct(16), T.bottom + 18), w: Math.round(W * .3) - MX + 30, h: pct(89) - Math.max(pct(16), T.bottom + 18) },
+        { ...o, maxRows: 5, perRow: 1, autoDeep: false, gapMax: 90, singleMaxW: 200 }, pal);
+      L.nodes.forEach((n) => checkCopy(n, 1, { railChars: LIMITS.rail.lineChars }));
+      const px = Math.round(W * .33), py = Math.max(pct(16), T.bottom + 18), pw = SAFE_R - px, ph = pct(89) - py;
+      const N = L.nodes[iIdx];
+      wires.push({ d: roundedPath([[N.x + N.half + 10, N.y], [px - 18, N.y], [px - 18, py + 28], [px - 2, py + 28]], 18), pal });
+      h += diagramHTML(L, pal, o, G, wires, { noHaze: true }) + zone(px, py, pw, ph, N, eff.panel || {});
+    } else {
+      const railTop = Math.max(pct(16), T.bottom + 14);
+      const L = layoutH(g2, { x: MX, y: railTop, w: W - 2 * MX, h: pct(33) - railTop }, o, pal);
+      const py = pct(38), ph = pct(89) - py;
+      if (s.uses) {
+        const k = s.uses.length; if (k < 2 || k > 3) fail('uses variant needs 2 or 3 uses');
+        const zw = (W - 2 * MX - 24 * (k - 1)) / k;
+        const used = s.uses.map((u) => L.nodes.find((n) => String(n.id ?? n.badge) === String(u.node)));
+        used.forEach((N, i) => { if (!N) { fail(`use ${i + 1} names a node that isn't on the rail`); return; }
+          if (N.state !== 'live') fail(`use node "${plain(N.label)}" must be live`);
+          const zx = MX + i * (zw + 24);
+          wires.push({ d: Math.abs(N.x - zx - 35) < 110 && N.x > zx + 20 && N.x < zx + zw - 20 ? `M${N.x},${N.bottom + 6} L${N.x},${py - 2}` : roundedPath([[N.x, N.bottom + 6], [N.x, (N.bottom + py) / 2], [zx + 35, (N.bottom + py) / 2], [zx + 35, py - 2]], 16), pal });
+          h += zone(zx, py, zw, ph, N, s.uses[i]); });
+        for (let i = 1; i < used.length; i++) if (used[i] && used[i - 1] && used[i].x < used[i - 1].x) fail('uses must be listed left to right');
+      } else {
+        const N = L.nodes[iIdx];
+        const bx = MX + 20 + 15, mid = (N.bottom + py) / 2;
+        wires.push({ d: N.x - bx < 110 ? `M${N.x},${N.bottom + 6} L${N.x},${py - 2}` : roundedPath([[N.x, N.bottom + 6], [N.x, mid], [bx, mid], [bx, py - 2]], 18), pal });
+        h += zone(MX, py, W - 2 * MX, ph, N, eff.panel || {});
+      }
+      h += diagramHTML(L, pal, o, G, wires, { noHaze: true });
+    }
+    return { html: h + footer(idx) };
+  };
+
+  function coverHead(eff) {
+    if (words(eff.title) > LIMITS.coverHeadWords) fail(`cover headline is ${words(eff.title)} words (max ${LIMITS.coverHeadWords})`);
+    if (words(eff.gloss) > LIMITS.coverSubWords) fail(`cover subline is ${words(eff.gloss)} words (max ${LIMITS.coverSubWords})`);
+    const hm = measure('hl', eff.title, 950, 'position:absolute;left:0;right:auto;');
+    if (hm.lines > 2) fail(`cover headline wraps to ${hm.lines} lines (max 2)`);
+    let h = `<div class="hl">${eff.title}</div>`; let y = MY + hm.h + 14;
+    const sm = measure('subrow', `<span class="sl">${eff.gloss || ''}</span>${eff.stamp ? `<span class="st">${eff.stamp}</span>` : ''}`, 0, 'position:absolute;left:0;right:auto;');
+    if (sm.w > 950) fail('cover subline + stamp overflow one line');
+    h += `<div class="subrow" style="top:${y}px"><span class="sl">${eff.gloss || ''}</span>${eff.stamp ? `<span class="st">${eff.stamp}</span>` : ''}</div>`;
+    y += sm.h + 22;
+    if (y > pct(24) - 2) fail(`cover hairline lands at ${Math.round(y)}px, below 24% (${pct(24)}px) — shorten the headline`);
+    h += `<div class="hair" style="top:${Math.round(y)}px"></div>`;
+    return h;
+  }
+
+  // System cover: one large centred pipeline (100px nodes, ≤4 rows incl. the output row), unnumbered bolt output.
+  LAYOUTS['cover-system'] = (s, idx, G, eff) => {
+    const pal = palOf(s.color || 'orange');
+    let h = coverHead(eff);
+    const o = { size: 100, outSize: 130, lbl: 34, wrap: 1, maxRows: LIMITS.systemCover.rows, perRow: LIMITS.systemCover.perRow,
+      spacing: { 2: 340, 3: 300 }, gapMax: eff.gapMax, gapMin: 40, autoDeep: true };
+    const L = layoutV(s.graph, { x: MX, y: pct(25) + 16, w: W - 2 * MX, h: pct(90) - pct(25) - 16 }, o, pal);
+    h += diagramHTML(L, pal, o, G, [], { widestHaze: true });
+    return { html: h + footer(idx) };
+  };
+
+  // Overview cover: grid of cells, one per item slide, each = name + the item's own diagram at ~36%.
+  LAYOUTS['cover-overview'] = (s, idx, G, eff) => {
+    let h = coverHead(eff);
+    const cells = s.cells || []; const n = cells.length;
+    const plan = { 1: [1], 2: [2], 3: [3], 4: [2, 2], 5: [3, 2], 6: [3, 3] }[n];
+    if (!plan) { fail(`overview cover takes 1-6 cells (got ${n})`); return { html: h }; }
+    const gy0 = pct(25), gy1 = pct(92), gut = 44, rowGap = 30;
+    const rowH = (gy1 - gy0 - rowGap * (plan.length - 1)) / plan.length;
+    let ci = 0;
+    plan.forEach((k, r) => {
+      const rowCells = cells.slice(ci, ci + k); ci += k;
+      const heroIn = rowCells.some((c) => c.hero);
+      const base = (W - 2 * MX - gut * (k - 1)) / (k - 1 + (heroIn ? 1.25 : 1));
+      const widths = rowCells.map((c) => (c.hero ? base * 1.25 : base));
+      const rowW = widths.reduce((a, b) => a + b, 0) + gut * (k - 1);
+      let x = (W - rowW) / 2; const y = gy0 + r * (rowH + rowGap);
+      rowCells.forEach((c, i) => {
+        const target = slides.find((t) => t.name === c.of);
+        const w = widths[i];
+        if (!target) { fail(`cell "${c.name}" points at slide "${c.of}", which doesn't exist`); x += w + gut; return; }
+        const p = palOf(target.color);
+        if (plain(c.name).length > LIMITS.cellChars) fail(`cell name "${c.name}" is over ${LIMITS.cellChars} characters`);
+        const fs = c.hero ? 64 : 56;
+        const nm = measure('', c.name, 0, `font-weight:800;font-size:${fs}px;line-height:1.1;white-space:nowrap;`);
+        if (nm.w > w + 10) fail(`cell name "${c.name}" is wider than its cell`);
+        const glow = c.hero ? `0 0 8px ${rgba(p.glow, .95)},0 0 34px ${rgba(p.glow, .6)}` : `0 0 6px ${rgba(p.glow, .8)},0 0 24px ${rgba(p.glow, .38)}`;
+        h += `<div class="cell" style="left:${x}px;top:${y}px;width:${w}px;height:${rowH}px"><div class="cn" style="font-size:${fs}px;color:${p.accent};text-shadow:${glow}">${c.name}</div></div>`;
+        // thumbnail: the item slide's own layout, cropped to its diagram bbox, contain-fitted
+        const ERR0 = ERRS.length; const sub = renderBody(slides.indexOf(target), G, true); ERRS.length = ERR0;
+        if (sub && sub.L) {
+          const bb = sub.L.bbox; const th = rowH - nm.h - 14; const sc = Math.min(w / bb.w, th / bb.h);
+          const tw = bb.w * sc, tht = bb.h * sc;
+          h += `<div class="thumb" style="left:${x + (w - tw) / 2}px;top:${y + nm.h + 14 + (th - tht) / 2}px;width:${tw}px;height:${tht}px"><div class="layer" style="transform:translate(${-bb.x * sc}px,${-bb.y * sc}px) scale(${sc})">${sub.diagram}</div></div>`;
+          s._thumbScales = (s._thumbScales || []).concat(Math.round(sc * 100));
+        }
+        x += w + gut;
+      });
+    });
+    return { html: h + footer(idx) };
+  };
+
+  // CTA: every deck colour enters from the top edge, converging into one Claude-orange output node.
+  LAYOUTS.cta = (s, idx, G, eff) => {
+    const orange = PAL.orange;
+    let cols = s.colors;
+    if (!cols) { cols = [...new Set(slides.filter((t) => t.layout !== 'cta').flatMap((t) => [t.color || 'orange', ...((t.graph && t.graph.rows) || []).flat().map((n) => n.color).filter(Boolean)]))]; }
+    if (cols.length === 1) cols = [cols[0], cols[0], cols[0]];
+    const cx = W / 2, cy = pct(40), R = 90;
+    const wires = cols.map((c, i) => {
+      const k = cols.length; const x0 = k === 1 ? cx : 150 + i * (780 / (k - 1)); const xe = cx + (i - (k - 1) / 2) * 16;
+      return { d: `M${x0},-6 C${x0},${cy * 0.45} ${xe},${cy * 0.55} ${xe},${cy - R - 10}`, pal: palOf(c) };
+    });
+    let h = wireSVG(wires, [{ x: cx, y: cy, r: W * 0.28, color: orange.accent }], G);
+    const node = { kind: 'step', icon: 'bolt', size: 180, deep: true, pal: orange, label: '', x: cx, y: cy, half: R, lblTop: 0, lblW: 0, badge: null };
+    h += nodeHTML(node, { lbl: 30 }).replace(/<div class="lb"[\s\S]*$/, '');
+    const kw = s.keyword || 'KEYWORD';
+    const line1 = `Comment <span class="kw">${kw}</span>`;
+    const m1 = measure('cta1', line1, 950, 'position:absolute;left:0;right:auto;');
+    if (m1.lines > 2) fail('CTA line wraps to 3+ lines');
+    const y1 = cy + R + 96; h += `<div class="cta1" style="top:${y1}px">${line1}</div>`;
+    const m2 = measure('cta2', eff.caption || '', 950, 'position:absolute;left:0;right:auto;');
+    if (m2.lines > 2) fail('CTA deliverable line wraps to 3+ lines');
+    h += `<div class="cta2" style="top:${y1 + m1.h + 34}px">${eff.caption || ''}</div>`;
+    if (y1 + m1.h + 34 + m2.h > 1240) fail('CTA copy runs into the footer');
+    if (s.mascot) { const mw = s.mascot.w || 200, mh = s.mascot.h || 200;
+      h += `<img class="mascot" src="${s.mascot.src}" alt="" style="left:${cx + R + 40}px;top:${cy - mh / 2}px;width:${mw}px;height:${mh}px">`; }
+    return { html: h + footer(idx, { noLabel: true }) };
+  };
+
+  /* =================== RENDER =================== */
+  const slideEl = document.getElementById('slide');
+  const G_KEY = 'node-pipeline-global-v1';
+  const sKey = (name) => `node-pipeline-slide-${name}-v1`;
+  const GLOBAL_DEFAULTS = { haze: 12, line: 45, bead: 40 };
+  function loadGlobal() { try { return { ...GLOBAL_DEFAULTS, deckLabel: DECK.label, ...(JSON.parse(localStorage.getItem(G_KEY) || '{}')) }; } catch { return { ...GLOBAL_DEFAULTS, deckLabel: DECK.label }; } }
+  const G_EFF = () => loadGlobal();
+  function saveGlobal(g) { try { localStorage.setItem(G_KEY, JSON.stringify(g)); } catch {} }
+  function loadSlide(name) { try { return JSON.parse(localStorage.getItem(sKey(name)) || '{}'); } catch { return {}; } }
+  function saveSlide(name, v) { try { localStorage.setItem(sKey(name), JSON.stringify(v)); } catch {} }
+
+  function effectiveSlide(idx) {
+    const b = slides[idx]; const d = b.defaults || {}; const o = loadSlide(b.name);
+    const proof = { ...(b.proof || {}) }; const panel = { ...(b.panel || {}) };
+    if (o.img != null) { proof.img = o.img; panel.img = o.img; } if (o.focus != null) { proof.focus = o.focus; panel.focus = o.focus; }
+    if (d.focus && !b.proof?.focus) proof.focus = d.focus; if (d.focus && !b.panel?.focus) panel.focus = d.focus;
+    if (o.tag != null) proof.tag = o.tag;
+    return { ...b, title: o.title ?? b.title, gloss: o.gloss ?? b.gloss, caption: o.caption ?? b.caption, stamp: b.stamp,
+      gapMax: o.gapMax ?? d.gapMax ?? 140, proof, panel };
+  }
+
+  // renderBody: html for one slide (thumbOnly → just {diagram, L} for cover thumbnails)
+  function renderBody(idx, G, thumbOnly) {
+    const s = slides[idx]; const eff = effectiveSlide(idx);
+    const fn = LAYOUTS[s.layout];
+    if (!fn) { fail(`unknown layout "${s.layout}" (use ${Object.keys(LAYOUTS).join(', ')})`); return null; }
+    if (thumbOnly) {
+      if (s.layout !== 'pipeline') { fail(`cover cell "${s.name}": thumbnails come from pipeline slides`); return null; }
+      const pal = palOf(s.color); const V = LIMITS[(s.variant || 'proof') === 'explain' ? 'explain' : 'proof'];
+      const T = titleBlock(eff, pal); const top = Math.max(pct(V.top), T.bottom + 18), bottom = pct(V.bottom);
+      const o = { size: 76, lbl: 30, wrap: V.wrap, perRow: s.parts ? 2 : 4, spacing: s.parts ? { 2: 420 } : { 2: 340, 3: 290, 4: 236 }, gapMax: eff.gapMax, gapMin: 40 };
+      const L = layoutV(s.graph, { x: MX, y: top, w: W - 2 * MX, h: bottom - top }, o, pal);
+      return { L, diagram: diagramHTML(L, pal, o, G) };
+    }
+    return fn(s, idx, G, eff);
+  }
+
+  let i = 0;
+  function render(idx) {
+    ERRS = [];
+    const G = loadGlobal(); const s = slides[idx];
+    slideEl.innerHTML = '<div id="measure"></div>';
+    MEAS = document.getElementById('measure');
+    let out = null;
+    try { out = renderBody(idx, G, false); } catch (e) { if (e instanceof FitError) fail(e.message); else throw e; }
+    const layer = document.createElement('div'); layer.className = 'layer'; layer.innerHTML = out ? out.html : '';
+    slideEl.appendChild(layer);
+    addBeads(layer, G);
+    // post-render checks: exact-text cards may not overflow their panel
+    layer.querySelectorAll('pre[data-fitcode]').forEach((p) => {
+      if (p.scrollWidth > p.clientWidth + 1 || p.scrollHeight > p.clientHeight + 1) fail('exact-text card overflows its panel (widest line or line count)');
+    });
+    document.getElementById('num').textContent = `${idx + 1}/${slides.length}`;
+    document.getElementById('name').textContent = s.name;
+    syncTweakUI();
+    if (ERRS.length) {
+      const box = document.createElement('div'); box.className = 'fit-err';
+      box.textContent = `FIT FAILED — slide ${idx + 1} "${s.name}":\n• ` + ERRS.join('\n• ');
+      slideEl.appendChild(box);
+      throw new FitError(`slide ${idx + 1} "${s.name}": ` + ERRS.join(' | '));
+    }
+  }
+  const safeRender = (idx) => { try { render(idx); } catch (e) { console.error(e.message || e); } };
+
+  /* =================== NAV + TWEAKS =================== */
+  function bootUI() {
+    slides.forEach((s) => [s.graph, s.left && s.left.graph, s.right && s.right.graph].forEach((g) => { try { resolveGraph(g); } catch (e) { console.error(e.message); } }));
+    const TOTAL = () => slides.length;
+    document.getElementById('prev').addEventListener('click', () => { i = (i - 1 + TOTAL()) % TOTAL(); safeRender(i); });
+    document.getElementById('next').addEventListener('click', () => { i = (i + 1) % TOTAL(); safeRender(i); });
+    document.addEventListener('keydown', (e) => {
+      if (e.target.matches('input, textarea')) return;
+      if (e.key === 'ArrowLeft') { i = (i - 1 + TOTAL()) % TOTAL(); safeRender(i); }
+      if (e.key === 'ArrowRight') { i = (i + 1) % TOTAL(); safeRender(i); }
+      if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+    });
+    window.goSlide = (idx) => { i = idx; render(idx); };   // throws on a fit failure → export.mjs exits non-zero
+    window.totalSlides = () => slides.length;
+    document.getElementById('fs').addEventListener('click', () => { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); });
+    const fitStage = () => { const wrap = document.getElementById('slideWrap'); const m = 80; wrap.style.transform = `scale(${Math.min((innerWidth - m) / 1080, (innerHeight - m) / 1350)})`; };
+    addEventListener('resize', fitStage); fitStage();
+
+    const panel = document.getElementById('twPanel');
+    document.getElementById('twToggle').addEventListener('click', () => panel.classList.toggle('open'));
+    document.getElementById('twClose').addEventListener('click', () => panel.classList.remove('open'));
+    const gl = (id, key, num) => document.getElementById(id).addEventListener('input', (e) => { const g = loadGlobal(); g[key] = num ? +e.target.value : e.target.value; saveGlobal(g); safeRender(i); });
+    gl('twDeckLabel', 'deckLabel'); gl('twHaze', 'haze', 1); gl('twLine', 'line', 1); gl('twBead', 'bead', 1);
+    const ps = (id, key, num) => document.getElementById(id).addEventListener('input', (e) => { const s = slides[i]; const cur = loadSlide(s.name); cur[key] = num ? +e.target.value : e.target.value; saveSlide(s.name, cur); safeRender(i); });
+    ps('twTitle', 'title'); ps('twGloss', 'gloss'); ps('twCaption', 'caption'); ps('twTag', 'tag'); ps('twImg', 'img'); ps('twFocus', 'focus'); ps('twGap', 'gapMax', 1);
+    document.getElementById('twReset').addEventListener('click', () => { try { localStorage.removeItem(sKey(slides[i].name)); } catch {} safeRender(i); });
+    document.getElementById('twExport').addEventListener('click', async () => {
+      const out = { global: loadGlobal(), perSlide: {} };
+      slides.forEach((s) => { const o = loadSlide(s.name); if (Object.keys(o).length) out.perSlide[s.name] = o; });
+      const text = JSON.stringify(out, null, 2);
+      try { await navigator.clipboard.writeText(text); } catch {}
+      const box = document.getElementById('twExportOut'); box.textContent = text; box.style.display = 'block';
+    });
+    safeRender(0);
+    document.fonts && document.fonts.ready.then(() => safeRender(i));
+  }
+  function syncTweakUI() {
+    const g = loadGlobal(); const e = effectiveSlide(i); const set = (id, v) => { const el = document.getElementById(id); if (el && document.activeElement !== el) el.value = v ?? ''; };
+    set('twDeckLabel', g.deckLabel); set('twHaze', g.haze); set('twLine', g.line); set('twBead', g.bead);
+    document.getElementById('vHaze').textContent = g.haze + '%'; document.getElementById('vLine').textContent = g.line + '%'; document.getElementById('vBead').textContent = g.bead + 'px';
+    document.getElementById('vSlideName').textContent = slides[i].name;
+    set('twTitle', e.title); set('twGloss', e.gloss); set('twCaption', e.caption); set('twTag', e.proof.tag);
+    set('twImg', e.layout === 'inspector' ? e.panel.img : e.proof.img); set('twFocus', e.layout === 'inspector' ? e.panel.focus : e.proof.focus);
+    set('twGap', e.gapMax); document.getElementById('vGap').textContent = e.gapMax + 'px';
+  }
+</script>
+
+<script>
+/* ======================================================================================
+   CONTENT — one entry per slide. Layouts: cover-system · cover-overview · pipeline (variant
+   proof|explain, parts) · compare · inspector (tall, uses) · cta. Colours: orange (Claude),
+   white, amber, lime, green, cobalt (+ grey, the compare slide's old way). Captures are real
+   screenshots in assets/; tool-node logos are white marks: logo:'claude' → assets/claude-white.png.
+   Sample deck: how a Claude Code /command runs (facts: code.claude.com/docs/en/slash-commands).
+   ====================================================================================== */
+  const DECK = { label: 'CLAUDE CODE · /COMMANDS' };
+
+  const slides = [
+    {
+      name: 'Cover', layout: 'cover-system', color: 'orange',
+      title: 'What happens when you type <em>/fix-issue</em>',
+      gloss: 'One saved prompt, five steps, green tests', stamp: 'OCT 2026',
+      graph: {
+        rows: [
+          [{ label: '/fix-issue 123', icon: 'terminal' }],
+          [{ label: 'Claude', kind: 'tool', logo: 'claude' }],
+          [{ label: 'Read', icon: 'file-search' }, { label: 'Edit', icon: 'file-pen' }, { label: 'Test', icon: 'flask-conical' }],
+        ],
+        output: 'Fixed',
+      },
+      defaults: { gapMax: 120 },
+    },
+    {
+      name: 'What', layout: 'pipeline', variant: 'explain', color: 'orange',
+      title: '/command', gloss: 'a saved prompt with a name',
+      graph: { rows: [
+        [{ label: 'A Markdown file', icon: 'file-text' }],
+        [{ label: 'You type /name', icon: 'terminal' }],
+        [{ label: 'Claude runs it', icon: 'zap' }],
+      ] },
+      caption: 'A /command is a <b>saved prompt</b> that runs when you type its name.',
+      defaults: { gapMax: 120 },
+    },
+    {
+      name: 'Anatomy', layout: 'pipeline', variant: 'explain', parts: true, color: 'orange',
+      title: 'Anatomy', gloss: 'four parts of one command file',
+      graph: { rows: [
+        [{ label: 'Filename', icon: 'file', sub: 'fix-issue.md becomes /fix-issue' }, { label: 'Frontmatter', icon: 'list-checks', sub: 'description and argument hint' }],
+        [{ label: '$ARGUMENTS', icon: 'keyboard', sub: 'whatever you type after the name' }, { label: 'The steps', icon: 'list-ordered', sub: 'the prompt Claude follows' }],
+      ], edges: [] },
+      caption: 'Same file every time, <b>new arguments</b> every run.',
+      defaults: { gapMax: 120 },
+    },
+    {
+      name: 'The run', layout: 'pipeline', variant: 'proof', color: 'orange',
+      title: 'The run', gloss: 'one command, the whole loop',
+      graph: {
+        rows: [
+          [{ label: 'Claude plans', kind: 'tool', logo: 'claude' }],
+          [{ label: 'Read issue', icon: 'file-search' }, { label: 'Grep code', icon: 'search' }, { label: 'Web search', icon: 'globe', state: 'ghost' }],
+          [{ label: 'Edit code', icon: 'file-pen' }],
+          [{ label: 'Tests pass?', kind: 'decision', icon: 'flask-conical' }],
+        ],
+        edges: ['1>2', '1>3', '1~4', '2>5', '3>5', '4~5', '5>6'],
+        loop: { from: 6, to: 5, tag: 'until green' },
+      },
+      proof: { img: 'assets/docs-commands-merged.png', fit: 'contain', tag: 'THE DOCS' },
+      caption: 'A file in <b>.claude/commands/</b> still creates a /command.',
+      defaults: { gapMax: 110 },
+    },
+    {
+      name: 'Why', layout: 'compare', color: 'orange',
+      title: 'Why', gloss: 'type it once, not every time',
+      left: { head: 'By hand', graph: { rows: [
+        [{ label: 'Open the issue', icon: 'person' }], [{ label: 'Paste the prompt', icon: 'person' }], [{ label: 'Explain the repo', icon: 'person' }], [{ label: 'Ask for tests', icon: 'person' }],
+      ] } },
+      right: { head: '/fix-issue', graph: { rows: [
+        [{ label: 'Type /fix-issue', icon: 'terminal' }], [{ label: 'Claude runs it', kind: 'tool', logo: 'claude' }],
+      ] } },
+      proof: { img: 'assets/docs-first-skill.png', focus: '0% 0%' },
+      caption: '<b>4 manual steps</b> become 1&nbsp;command.',
+      defaults: { gapMax: 90 },
+    },
+    {
+      name: 'The file', layout: 'inspector', color: 'orange',
+      title: 'Step 1: write the file', gloss: '.claude/commands/fix-issue.md',
+      graph: { rows: [[
+        { label: 'File', icon: 'file-text' }, { label: 'Args', icon: 'keyboard' }, { label: 'Claude', kind: 'tool', logo: 'claude' }, { label: 'Edit', icon: 'file-pen' }, { label: 'Tests', icon: 'flask-conical' },
+      ]] },
+      inspect: 1,
+      panel: { title: 'fix-issue.md', text:
+`---
+description: Fix a GitHub issue by number
+argument-hint: [issue-number]
+---
+Fix GitHub issue #<b>$ARGUMENTS</b>.
+
+1. Run <b>gh issue view $ARGUMENTS</b>.
+2. Find the code it touches.
+3. Make the fix.
+4. Run <b>npm test</b>. If anything fails,
+   fix it and run again until it passes.` },
+    },
+    {
+      name: 'Arguments', layout: 'inspector', color: 'orange',
+      title: 'Step 2: pass the number', gloss: '/fix-issue 123 fills $ARGUMENTS',
+      graph: { rows: [[
+        { label: 'File', icon: 'file-text' }, { label: 'Args', icon: 'keyboard' }, { label: 'Claude', kind: 'tool', logo: 'claude' }, { label: 'Edit', icon: 'file-pen' }, { label: 'Tests', icon: 'flask-conical' },
+      ]] },
+      inspect: 2,
+      panel: { title: 'docs · string substitutions', img: 'assets/docs-arguments.png', focus: '0% 0%' },
+    },
+    {
+      name: 'CTA', layout: 'cta', color: 'orange',
+      keyword: 'COMMAND', caption: 'and I’ll send you the fix-issue.md file',
+    },
+  ];
+
+  bootUI();
+</script>
+</body>
+</html>

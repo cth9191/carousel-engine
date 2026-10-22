@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S20 recipe card</title>
+<!--
+  S20 Slate Family Tree, recipe card (A's `peak`, proof-slide recipe variant). Zone 8-92% x 26-88%
+  = 907 x 837 (1.08:1) CSS px on the 1080 x 1350 slide; use the plate's measured --zones-only out bbox.
+  Transparent: render WITHOUT --bg.
+    node shared/render-card.mjs cards/recipe.html cards/recipe.png --w 907 --h 837 --scale 2
+  Replace the text in <pre id="recipe"> verbatim (escape < > & as &lt; &gt; &amp;). The fit pass starts at
+  30 px and steps down to the 28 px floor; past that render-card exits 2 (cut the text).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<style>
+  .recipe {
+    position: absolute; inset: 0; box-sizing: border-box;
+    border: 2px solid var(--cream); border-radius: 14px;
+    padding: 34px 40px; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: safe center;
+  }
+  #recipe {
+    margin: 0; color: var(--cream);
+    font: 400 30px/1.45 "JetBrains Mono", Consolas, monospace;
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+</style>
+</head>
+<body>
+<div class="recipe" data-fit><pre id="recipe">{
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": "Bash",
+      "hooks": [{
+        "type": "command",
+        "command": "./hooks/block-rm.sh"
+      }]
+    }],
+    "PostToolUse": [{
+      "matcher": "Edit|Write",
+      "hooks": [{
+        "type": "command",
+        "command": "npx prettier --write ."
+      }]
+    }]
+  }
+}</pre></div>
+<script>
+  window.cardReady = (async () => {
+    await document.fonts.ready;
+    const box = document.querySelector('.recipe');
+    const pre = document.getElementById('recipe');
+    const fits = () => box.scrollHeight <= box.clientHeight + 0.5 && box.scrollWidth <= box.clientWidth + 0.5;
+    let px = 30;
+    for (; px > 28; px -= 0.5) {
+      pre.style.fontSize = px + 'px';
+      if (fits()) break;
+    }
+    pre.style.fontSize = px + 'px';
+    const mono = [...document.fonts].some(f => f.family.replace(/"/g, '') === 'JetBrains Mono' && f.status === 'loaded');
+    window.cardInfo = { mono_px: px, mono_font: mono ? 'JetBrains Mono' : 'fallback' };
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S24 Install Card</title>
+<!--
+  S24 Spotlight Dossier: the install card on a Proof slide (the magenta panel under the star-rule).
+  Copy to $D/cards/install-NN.html (NN = slide) and edit only the JSON in <script id="data">.
+
+    label    orange tracked caps row, "{name} · {our own label}", 40 characters or fewer
+    command  the exact install command, copied from the README and run once, 52 characters or fewer
+             (JetBrains Mono 30 px, fits down to 18 px); an orange '$' prompt is added unless prompt is false
+    prompt   true (default) | false (for a slash command typed inside Claude Code)
+    sub      one grey subline, 48 characters or fewer, carrying at most one verified figure
+
+  Render at the zone's --zones-only out bbox x2 (about 800x222, 3.6:1):
+    node shared/render-card.mjs $D/cards/install-03.html $D/cards/install-03.png --w 800 --h 222 --scale 2 --bg "#121212"
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script id="data" type="application/json">
+{
+  "label": "playwright-mcp · install",
+  "command": "claude mcp add playwright npx @playwright/mcp@latest",
+  "prompt": true,
+  "sub": "one line in your terminal, then restart claude"
+}
+</script>
+</head>
+<body>
+<script src="kit.js"></script>
+<script>
+KIT.ready((d) => {
+  KIT.limit(String(d.label).length <= 40, 'label-over-40-chars');
+  KIT.limit(String(d.command).length <= 52, 'command-over-52-chars');
+  KIT.limit(String(d.sub || '').length <= 48, 'sub-over-48-chars');
+  KIT.limit((String(d.sub || '').match(/\d[\d,.]*/g) || []).length <= 1, 'sub-has-more-than-one-figure');
+  document.body.insertAdjacentHTML('beforeend', `
+    <div class="panel install">
+      <div class="label" data-fit>${KIT.esc(d.label)}</div>
+      <div class="cmd" data-fit data-min="18">${d.prompt === false ? '' : '<span class="p">$</span>'}${KIT.esc(d.command)}</div>
+      ${d.sub ? `<div class="sub" data-fit>${KIT.esc(d.sub)}</div>` : ''}
+    </div>`);
+});
+</script>
+</body>
+</html>

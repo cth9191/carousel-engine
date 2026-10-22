@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S28 page 04: item</title>
+<!-- S28 Alpine Product Window, layout: item. Sample strings: replace every one from storyboard strings[].
+     Plate: fitted/scene.png. Render:
+     node shared/render-card.mjs $D/cards/page-04.html $D/exports/slide-04-YYYY-MM-DD.png --w 1080 --h 1350 --scale 1 --min-px 20 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;600;800;900&family=JetBrains+Mono:wght@500&family=Anton&family=Caveat+Brush&display=block" rel="stylesheet">
+<link rel="stylesheet" href="s28.css">
+<script src="icons.js"></script>
+</head>
+<body>
+<div class="veil-top"></div><div class="veil-foot"></div>
+<div class="head" data-fit data-box>
+  <div class="tile dark glyph "><i data-lucide="chart-column"></i><span class="spark"><i data-lucide="sparkle"></i></span></div>
+  <div class="name" data-fit data-max="104" data-min="76" data-wrap>ccusage</div>
+  <div class="what">Reads your local Claude Code logs and shows what every session cost.</div>
+  <div class="chips"><span class="chip"><i data-lucide="calendar"></i>Daily</span><span class="chip"><i data-lucide="calendar-days"></i>Monthly</span><span class="chip"><i data-lucide="layers"></i>Sessions</span><span class="chip"><i data-lucide="activity"></i>Live blocks</span></div>
+</div>
+<div class="window "><div class="bar"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span class="src">github.com/ccusage/ccusage</span></div><div class="body"><img src="../shots/capture-b.png" alt=""></div></div>
+<div class="foot3"><div class="cell"><i data-lucide="replace"></i><span data-fit>Replaces token guesswork</span></div><div class="cell"><i data-lucide="wrench"></i><span data-fit>A cost report per project</span></div><div class="cell"><i data-lucide="star"></i><span data-fit>19.0k stars · free CLI</span></div></div>
+<div class="counter"><span>{{BRAND}} · 04 / 09 &rarr;</span></div>
+<script>
+// Fit pass. [data-fit][data-max] steps down 2 px (floor data-min) until neither it nor its closest
+// [data-box] overflows; a [data-wrap] element may then wrap to a second line at the floor. Whatever
+// still overflows (or any [data-fit] box) makes render-card exit 2: shorter copy.
+window.cardReady = (async () => {
+  await document.fonts.ready;
+  if (window.lucide) window.lucide();
+  const over = (el) => el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1;
+  for (const el of document.querySelectorAll('[data-fit][data-max]')) {
+    const box = el.closest('[data-box]') || el;
+    let px = +el.dataset.max;
+    const min = +el.dataset.min;
+    el.style.fontSize = px + 'px';
+    while ((over(el) || over(box)) && px > min) { px -= 2; el.style.fontSize = px + 'px'; }
+    if (over(el) && 'wrap' in el.dataset) el.style.whiteSpace = 'normal';
+  }
+  // the chip row fits 952 px or drops chips from the end (3 at least)
+  for (const row of document.querySelectorAll('.chips')) {
+    while (row.scrollWidth > row.clientWidth + 1 && row.children.length > 3) row.lastElementChild.remove();
+  }
+})();
+</script>
+</body>
+</html>
